@@ -1,0 +1,11 @@
+MANIFEST
+README
+LICENSE
+Todo
+t/pod-coverage.t
+t/pod.t
+Makefile.PL
+lib/WWW/Scraper/DigitalArkivet.pm
+lib/WWW/Scraper/DigitalArkivet/Database.pm
+t/001_load.t
+t/002_load.t
