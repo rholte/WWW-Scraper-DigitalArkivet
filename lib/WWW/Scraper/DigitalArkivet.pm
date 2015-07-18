@@ -5,7 +5,7 @@ use warnings;
 BEGIN {
     use Exporter ();
     use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-    $VERSION     = '0.01';
+    $VERSION     = '0.03';
     @ISA         = qw(Exporter);
     #Give a hoot don't pollute, do not export more than needed by default
     @EXPORT      = qw();
@@ -23,7 +23,7 @@ B<WWW::Scraper::DigitalArkivet> - Routines to web scrape Digitalarkivet
 
 =head1 VERSION
 
-v0.2.1 - 21.09.2014
+ 0.03 - 14.07.2015
 
 
 =head1 SYNOPSIS
@@ -83,17 +83,9 @@ are also appreciated.
 
 =head1 REVISION HISTORY
 
-
-=head1 HISTORY
-
-0.01 Wed Jul 15 20:56:09 2015
-    - original version; created by ExtUtils::ModuleMaker 0.54
-
------
-
-v0.2.1 - 01.05.2015 - POD - Documented
-
-v0.1.0 - 01.08.2014 - Created.
+ 0.03 - 14.07.2015 - Module
+ 0.02 - 01.05.2015 - POD - Documented
+ 0.01 - 01.08.2014 - Created.
 
 =cut
 
@@ -102,7 +94,7 @@ use Text::Trim;
 use Web::Scraper;
 use 5.008001;
 #
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 our $res;
 our %site;
 our $gDebug;
@@ -552,13 +544,14 @@ sub padZero {
 }
 
 1;    #return true if this file is required by another program
+
 __END__
 
 =pod
 
 =head1 SEE ALSO
 
-perl(1), I<WWW::Scraper::DigitalArkivet::Database>, I<DigitalArkivet-finn_kilde.pl>, I<DigitalArkivet-eiendom_avansert.pl>,
+perl(1), I<WWW::Scraper::DigitalArkivet::Database>, I<DigitalArkivet-finn_kilde.pl>, I<DigitalArkivet-eiendom_avansert.pl>
 
 
 
@@ -575,15 +568,14 @@ terms of the Artistic License 2.0. For details, see the full text of the
 license in the file LICENSE.
 
 The full text of the license can be found in the
-LICENSE file included with this module, or "L<perlartistic>".
+LICENSE file included with this module or L<perlartistic>
 
 
 =head1  DISCLAIMER OF WARRANTY
 
 This program is distributed in the hope that it will be
-useful, but it is provided “as is” and without any express
+useful, but it is provided 'as is' and without any express
 or implied warranties. For details, see the full text of
 the license in the file LICENSE.
-
 
 =cut
