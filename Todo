@@ -1,5 +1,7 @@
 TODO list for Perl module WWW::Scraper::DigitalArkivet
 
-- Nothing yet
-
-
+    0. Move scripts to "module(s)"
+    1. Slowly changed data/ CDC ?
+    2. Drop indexes on the database before load, reinstate after load.
+    3. Failsafe parameters - remove unwanted chars like " .
+    4. Get hidden inputs (if needed ?? - currently doesn't seem to matter for later use).
