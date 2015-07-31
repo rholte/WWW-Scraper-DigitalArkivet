@@ -1,0 +1,237 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#INSTALLING">INSTALLING</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#SUPPORT">SUPPORT</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#REVISION-HISTORY">REVISION HISTORY</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#processFormInput">processFormInput()</a></li>
+      <li><a href="#labelFor">labelFor()</a></li>
+      <li><a href="#lastPage">lastPage()</a></li>
+      <li><a href="#s2hms">s2hms()</a></li>
+      <li><a href="#padZero">padZero()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+  <li><a href="#DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>WWW::Scraper::DigitalArkivet</b> - Routines to web scrape Digitalarkivet</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<pre><code> 0.03 - 14.07.2015</code></pre>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>  <span class="keyword">use</span> <span class="variable">WWW::Scraper::DigitalArkivet</span><span class="operator">;</span>
+</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Library for routines to web scrape metadata of sources from the Digital Archives of Norway also known as Digitalarkivet. None of the routines are dependable on a database, DBI related routines are split into separate library</p>
+
+<h1 id="INSTALLING">INSTALLING</h1>
+
+<p>You can create it now by using the command shown above from this directory.</p>
+
+<p>At the very least you should be able to use this set of instructions to install the module...</p>
+
+<p>perl Makefile.PL make make test make install</p>
+
+<p>If you are on a windows box you should use &#39;nmake&#39; rather than &#39;make&#39;.</p>
+
+<h1 id="BUGS">BUGS</h1>
+
+<h1 id="SUPPORT">SUPPORT</h1>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
+
+<p>Tested on win7, no known ties to this platform should work for other platforms. see config file - <b>DigitalArkivet.cfg</b></p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
+
+<p>Requires modules Web::Scraper, Text::Trim Databasestructure as of DigitalArkivet-webscraper.mwb v.0.x</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<pre><code>    Rolf B. Holte - L&lt;http://www.holte.nu/&gt; - &lt;rolfbh@disnorge.no&gt;
+    Member of DIS-Norge, The Genealogy Society of Norway-DIS
+    CPAN ID: RBH</code></pre>
+
+<p>Please drop me an email if you use this in any project. It would be nice to know if it&#39;s usable for others in any capacity. Any suggestions for improvement are also appreciated.</p>
+
+<h1 id="REVISION-HISTORY">REVISION HISTORY</h1>
+
+<pre><code> 0.03 - 30.07.2015 - Module
+ 0.02 - 01.05.2015 - POD - Documented
+ 0.01 - 01.08.2014 - Created.</code></pre>
+
+<h1 id="METHODS">METHODS</h1>
+
+<p>Each subroutine/function (method) is documented. To avoid problems with timeout/ network errors and memory issues data should be gathered in chunks by re-runs, each run should collect a given (not too large) amount of data until there is no more to collect. Some sort of cron job needs to repeat these runs until the whole site is scraped.</p>
+
+<p>Data is collected at different stages and stored in a database. Enabling re-runs to pick up were &quot;left off&quot;.</p>
+
+<p>Note: Memory usage required to hold/store data temporarily in internal data structures depend on chunk sizes. Default chunk size could be larger memory wise, but are kept smaller due to user experience on failure in communications.</p>
+
+<ul>
+
+<li><p><b>Stage 1</b></p>
+
+<p>What are the searchable options? Look at the form, compile list for later use</p>
+
+<pre><code>    a) grab all data about inputs.
+    b) store data (to a database).</code></pre>
+
+</li>
+<li><p><b>Stage 2</b></p>
+
+<p>Scrape url&#39;s based upon options. (For each option combo) save &#39;Result of search&#39;.</p>
+
+</li>
+<li><p><b>Stage 3</b></p>
+
+<p>Examine results from stage 2</p>
+
+<pre><code>    1. Search
+    2. Browse
+    3. Info. Details about each source
+    4.</code></pre>
+
+</li>
+<li><p><b>Stage 4</b></p>
+
+<pre><code>    1. Try ID numbers - not published. Find info about (hidden) sources
+    2. Last 100</code></pre>
+
+</li>
+</ul>
+
+<h2 id="processFormInput">processFormInput()</h2>
+
+<p>Web scrape form inputs - process inputs on form</p>
+
+<ul>
+
+<li><p><b>Input:</b></p>
+
+<pre><code>    $_[0] - filehandle
+    $_[1] - siteID
+    $_[2] - url
+    $_[3] - level
+    $_[4] - scrape
+    $_[5] - seperator</code></pre>
+
+</li>
+<li><p><b>Output:</b> \@data - handle to array containing data</p>
+
+</li>
+</ul>
+
+<h2 id="labelFor">labelFor()</h2>
+
+<p>Decode label attribute &quot;for&quot; eg ka14kt0. The label&#39;s for the attribute has a numbering system up to 3 levels. break string into 3 parts, prefix/number and make an array of each part. Pad with &quot;null&quot; if needed to make an array (of 3). Used later to process hierarchal structures of the inputs.</p>
+
+<ul>
+
+<li><p><b>Input:</b> labelfor (string)</p>
+
+</li>
+<li><p><b>Output:</b> array of 3 strings</p>
+
+</li>
+</ul>
+
+<h2 id="lastPage">lastPage()</h2>
+
+<p>lastPage, of all &quot;lastpages&quot; scraped only last is relevant. web scrape gets too many urls, this routine fixes last page. Need only the actual page number of last page. nor url. (Thus need last page in scope)</p>
+
+<ul>
+
+<li><p><b>Input:</b></p>
+
+</li>
+<li><p><b>Output:</b></p>
+
+</li>
+</ul>
+
+<h2 id="s2hms">s2hms()</h2>
+
+<p>Converts seconds into hours, minutes and seconds</p>
+
+<ul>
+
+<li><p><b>Input:</b> seconds</p>
+
+</li>
+<li><p><b>Output:</b> hh:mm:ss</p>
+
+</li>
+</ul>
+
+<h2 id="padZero">padZero()</h2>
+
+<p>Zero pad string eg. 003 &amp; 02</p>
+
+<ul>
+
+<li><p><b>Input:</b> string</p>
+
+<pre><code>    $_[0] - number (to pad)
+    $_[1] - lenght (maximum)</code></pre>
+
+</li>
+<li><p><b>Output:</b> zero padded number</p>
+
+</li>
+</ul>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>perl(1), <i>WWW::Scraper::DigitalArkivet::Database</i>, <i>DigitalArkivet-finn_kilde.pl</i>, <i>DigitalArkivet-eiendom_avansert.pl</i></p>
+
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
+
+<p>Copyright (c) 2015 Rolf B. Holte - <a href="http://www.holte.nu/">http://www.holte.nu/</a> - &lt;rolfbh@disnorge.no&gt;</p>
+
+<p><b>Artistic License (Perl)</b> Author (Copyright Holder) wishes to maintain &quot;artistic&quot; control over the licensed software and derivative works created from it.</p>
+
+<p>This code is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0.</p>
+
+<p>The full text of the license can be found in the LICENSE file included with this module, or &quot;<a href="http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic">http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic</a>&quot;.</p>
+
+<h1 id="DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</h1>
+
+<p>This program is distributed in the hope that it will be useful, but it is provided &#39;as is&#39; and without any express or implied warranties. For details, see the full text of the license in the file LICENSE.</p>
+
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,184 @@
+NNAAMMEE
+
+    WWWWWW::::SSccrraappeerr::::DDiiggiittaallAArrkkiivveett - Routines to web scrape Digitalarkivet
+
+VVEERRSSIIOONN
+
+     0.03 - 14.07.2015
+
+SSYYNNOOPPSSIISS
+
+      use WWW::Scraper::DigitalArkivet;
+
+DDEESSCCRRIIPPTTIIOONN
+
+    Library for routines to web scrape metadata of sources from the Digital
+    Archives of Norway also known as Digitalarkivet. None of the routines
+    are dependable on a database, DBI related routines are split into
+    separate library
+
+UUSSAAGGEE
+
+    You can create it now by using the command shown above from this
+    directory.
+
+    At the very least you should be able to use this set of instructions to
+    install the module...
+
+    perl Makefile.PL make make test make install
+
+    If you are on a windows box you should use 'nmake' rather than 'make'.
+
+BBUUGGSS
+
+SSUUPPPPOORRTT
+
+CCOONNFFIIGGUURRAATTIIOONN  AANNDD  EENNVVIIRROONNMMEENNTT
+
+    Tested on win7, no known ties to this platform should work for other
+    platforms. see config file - DDiiggiittaallAArrkkiivveett..ccffgg
+
+DDEEPPEENNDDEENNCCIIEESS
+
+    Requires modules Web::Scraper, Text::Trim Databasestructure as of
+    DigitalArkivet-webscraper.mwb v.0.x
+
+AAUUTTHHOORR
+
+        Rolf B. Holte - L<http://www.holte.nu/> - <rolfbh@disnorge.no>
+        Member of DIS-Norge, The Genealogy Society of Norway-DIS
+        CPAN ID: RBH
+
+    Please drop me an email if you use this in any project. It would be nice
+    to know if it's usable for others in any capacity. Any suggestions for
+    improvement are also appreciated.
+
+RREEVVIISSIIOONN  HHIISSTTOORRYY
+
+     0.03 - 14.07.2015 - Module
+     0.02 - 01.05.2015 - POD - Documented
+     0.01 - 01.08.2014 - Created.
+
+MMEETTHHOODDSS
+
+    Each subroutine/function (method) is documented. To avoid problems with
+    timeout/ network errors and memory issues data should be gathered in
+    chunks by re-runs, each run should collect a given (not too large)
+    amount of data until there is no more to collect. Some sort of cron job
+    needs to repeat these runs until the whole site is scraped.
+
+    Data is collected at different stages and stored in a database. Enabling
+    re-runs to pick up were "left off".
+
+    Note: Memory usage required to hold/store data temporarily in internal
+    data structures depend on chunk sizes. Default chunk size could be
+    larger memory wise, but are kept smaller due to user experience on
+    failure in communications.
+
+    *           SSttaaggee  11
+
+                What are the searchable options? Look at the form, compile
+                list for later use
+
+                    a) grab all data about inputs.
+                    b) store data (to a database).
+
+    *           SSttaaggee  22
+
+                Scrape url's based upon options. (For each option combo)
+                save 'Result of search'.
+
+    *           SSttaaggee  33
+
+                Examine results from stage 2
+
+                    1. Search
+                    2. Browse
+                    3. Info. Details about each source
+                    4.
+
+    *           SSttaaggee  44
+
+                    1. Try ID numbers - not published. Find info about (hidden) sources
+                    2. Last 100
+
+  pprroocceessssFFoorrmmIInnppuutt(())
+
+    Web scrape form inputs - process inputs on form
+
+    *           IInnppuutt::
+
+                    $_[0] - level
+                    $_[1] - scrape
+                    $_[2] - seperator
+
+    *           OOuuttppuutt:: \@data - handle to array containing data
+
+  llaabbeellFFoorr(())
+
+    Decode label attribute "for" eg ka14kt0. The label's for the attribute
+    has a numbering system up to 3 levels. break string into 3 parts,
+    prefix/number and make an array of each part. Pad with "null" if needed
+    to make an array (of 3). Used later to process hierarchal structures of
+    the inputs.
+
+    *           IInnppuutt:: labelfor (string)
+
+    *           OOuuttppuutt:: array of 3 strings
+
+  llaassttPPaaggee(())
+
+    lastPage, of all "lastpages" scraped only last is relevant. web scrape
+    gets too many urls, this routine fixes last page. Need only the actual
+    page number of last page. nor url. (Thus need last page in scope)
+
+    *           IInnppuutt::
+
+    *           OOuuttppuutt::
+
+  ss22hhmmss(())
+
+    Converts seconds into hours, minutes and seconds
+
+    *           IInnppuutt:: seconds
+
+    *           OOuuttppuutt:: hh:mm:ss
+
+  ppaaddZZeerroo(())
+
+    Zero pad string eg. 003 & 02
+
+    *           IInnppuutt:: string
+
+                    $_[0] - number (to pad)
+                    $_[1] - lenght (maximum)
+
+    *           OOuuttppuutt:: zero padded number
+
+SSEEEE  AALLSSOO
+
+    perl(1), _W_W_W_:_:_S_c_r_a_p_e_r_:_:_D_i_g_i_t_a_l_A_r_k_i_v_e_t_:_:_D_a_t_a_b_a_s_e,
+    _D_i_g_i_t_a_l_A_r_k_i_v_e_t_-_f_i_n_n___k_i_l_d_e_._p_l, _D_i_g_i_t_a_l_A_r_k_i_v_e_t_-_e_i_e_n_d_o_m___a_v_a_n_s_e_r_t_._p_l
+
+LLIICCEENNCCEE  AANNDD  CCOOPPYYRRIIGGHHTT
+
+    Copyright (c) 2015 Rolf B. Holte - <http://www.holte.nu/> -
+    <rolfbh@disnorge.no>
+
+    AArrttiissttiicc  LLiicceennssee  ((PPeerrll)) Author (Copyright Holder) wishes to maintain
+    "artistic" control over the licensed software and derivative works
+    created from it.
+
+    This code is free software; you can redistribute it and/or modify it
+    under the terms of the Artistic License 2.0. For details, see the full
+    text of the license in the file LICENSE.
+
+    The full text of the license can be found in the LICENSE file included
+    with this module or perlartistic
+
+DDIISSCCLLAAIIMMEERR  OOFF  WWAARRRRAANNTTYY
+
+    This program is distributed in the hope that it will be useful, but it
+    is provided 'as is' and without any express or implied warranties. For
+    details, see the full text of the license in the file LICENSE.
+

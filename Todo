@@ -1,7 +1,11 @@
 TODO list for Perl module WWW::Scraper::DigitalArkivet
 
     0. Move scripts to "module(s)"
-    1. Slowly changed data/ CDC ?
+    		ok - Stage 1 ok, 
+				     Stage 2 (was ok, before making module) Scrape url's based upon options. (For each option combo) save 'Result of search'.
+				     Stage 3 (uncoded) a-Search, b-Browse, c-Info. Examine results from stage 2
+				     Stage 4 (uncoded) a-by id, b-last 100. Keep upto date by checking last 100, and gathering undocumented
+    1. implement Slowly changed data / CDC ?
     2. Drop indexes on the database before load, reinstate after load.
     3. Failsafe parameters - remove unwanted chars like " .
     4. Get hidden inputs (if needed ?? - currently doesn't seem to matter for later use).

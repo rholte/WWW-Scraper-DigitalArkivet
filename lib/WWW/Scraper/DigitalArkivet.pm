@@ -4,13 +4,14 @@ use warnings;
 
 BEGIN {
     use Exporter ();
-    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-    $VERSION     = '0.03';
-    @ISA         = qw(Exporter);
-    #Give a hoot don't pollute, do not export more than needed by default
-    @EXPORT      = qw();
-    @EXPORT_OK   = qw();
-    %EXPORT_TAGS = ();
+    use vars qw/$VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS/;
+    $VERSION = sprintf "%d.%03d", q$Revision: 0.3 $ =~ /(\d+)/g;
+    @ISA         = qw/Exporter/;
+    @EXPORT      = qw//;
+    @EXPORT_OK   = qw/&processFormInput &labelFor &lastPage &s2hms &padZero/;
+    %EXPORT_TAGS = (ALL => [qw/&processFormInput &labelFor &lastPage &s2hms &padZero/],
+                    Stage1  => [qw/&processFormInput/]
+                    );
 }
 
 #-----------------------------------------------------------------------------
@@ -23,7 +24,7 @@ B<WWW::Scraper::DigitalArkivet> - Routines to web scrape Digitalarkivet
 
 =head1 VERSION
 
- 0.03 - 14.07.2015
+ 0.03 - 31.07.2015
 
 
 =head1 SYNOPSIS
@@ -37,7 +38,7 @@ Library for routines to web scrape metadata of sources from the Digital Archives
 of Norway also known as Digitalarkivet. None of the routines are dependable on a
 database, DBI related routines are split into separate library
 
-=head1 USAGE
+=head1 INSTALLING
 
 You can create it now by using the command shown above from this directory.
 
@@ -83,7 +84,7 @@ are also appreciated.
 
 =head1 REVISION HISTORY
 
- 0.03 - 14.07.2015 - Module
+ 0.03 - 31.07.2015 - Module
  0.02 - 01.05.2015 - POD - Documented
  0.01 - 01.08.2014 - Created.
 
@@ -91,21 +92,14 @@ are also appreciated.
 
 #-----------------------------------------------------------------------------
 use Text::Trim;
+#use Time::HiRes;
 use Web::Scraper;
 use 5.008001;
 #
-our $VERSION = '0.03';
-our $res;
-our %site;
-our $gDebug;
-our @input;
-our @select;
-our @radio;
-our @rlist;
-our @data;
+our (@input, @select, @radio, @rlist, @data);
+our ($res, $gDebug);
 
 # ToDo? retrieve from da.toSrape
-
 # Define scraper objects - pattern to scrape/hold data
 $input[0] = scraper {
     # Kildekategori
@@ -282,9 +276,12 @@ Web scrape form inputs - process inputs on form
 
 B<Input:>
 
-    $_[0] - level
-    $_[1] - scrape
-    $_[2] - seperator
+    $_[0] - filehandle
+    $_[1] - siteID
+    $_[2] - url
+    $_[3] - level
+    $_[4] - scrape
+    $_[5] - seperator
 
 =item *
 
@@ -296,27 +293,26 @@ B<Output:> \@data - handle to array containing data
 
 #-----------------------------------------------------------------------------
 sub processFormInput {
-
-    my $level  = $_[0];
-    my $scrape = $_[1];
-    my $tab    = $_[2];    #Fieldseperator
+    my $fh     = $_[0];
+    my $siteID = $_[1];
+    my $url    = $_[2];
+    my $level  = $_[3];
+    my $scrape = $_[4];
+    my $tab    = $_[5];    #Fieldseperator
     my $j      = 0;
     my $id;
     my $lf;
     my $name2;
     my $i;
-
     my $num;
     my @row = ( '', '', '', '', '', '' );
 
-    $res = $scrape->scrape( URI->new( $site{'url'} ) );
+    $res = $scrape->scrape( URI->new( $url ) );
     $num = $#{ $res->{data} } + 1; #starts with 0 add 1 for actual number
-
-    print "\n- - - - -    [$level]: $num elements - - - - -\n";
-
+    print "\n- - - - -    [$level]: $num elements - - - - -";
     # prints only first time when $level=0
     unless ($level) {
-        print FIL join( $tab,
+        print {$fh} join( $tab,
             "siteID", "level", "line", "label_for", "text",
             "name",   "value", "id",   "type",      "name2",
             "lf1",    "lf2",   "lf3" )
@@ -326,7 +322,6 @@ sub processFormInput {
         my $label_for =
           $res->{data}[$i]->{label_for} ? $res->{data}[$i]->{label_for} : "";
         my $name = $res->{data}[$i]->{name} ? $res->{data}[$i]->{name} : "";
-
         #if ((length($label_for)>0) and ($name ne "ko[]") ){
         if ( length($label_for) > 0 ) {
             $j++;    # line
@@ -343,16 +338,15 @@ sub processFormInput {
             $name2 = $name;
             $name2 =~ s/\W//g;
             @row = (
-                $site{'siteID'}, $level, $j, $label_for, $text, $name, $value,
-                $id, $type, $name2
+                $siteID, $level, $j, $label_for, $text, $name, $value,$id, $type, $name2
             );
             #fix label for, split into 3 pieces
             my @LF = &labelFor( $label_for, $tab );
             foreach my $lf (@LF) {
                 push( @row, $lf );
             }
-            print FIL join( $tab, @row );
-            print FIL "\n";
+            print {$fh} join( $tab, @row );
+            print {$fh} "\n";
             push( @data, join( ',', @row ) );
         }
         else {
@@ -366,7 +360,7 @@ sub processFormInput {
         }
     }
     print "j: $j . . $num\n" if ($gDebug);
-    sleep(1);    # Do not DDOS server
+    #Time::HiRes::sleep(0.5); # Do not DDOS server - Sleep for 0.5 seconds
 
     return \@data;
 }
@@ -403,18 +397,22 @@ sub labelFor {
     my @tmp;
     my $i;
     my $x;
+    my $tmp;
     my @string;
+    no warnings 'uninitialized';
 
     if ( length($str) > 0 ) {
         #non digits, split on digits
         @tmp = split /\d/, $str;
         for $i ( 0 .. $#tmp ) {
-            push @prefix, $tmp[$i] if ( length( $tmp[$i] ) > 0 );
+            $tmp = defined $tmp[$i] ? $tmp[$i] : " " ;
+            push @prefix, $tmp;
         }
         #digits, split on non digits
         @tmp = split /\D/, $str;
         for $i ( 0 .. $#tmp ) {
-            push @number, $tmp[$i] if ( length( $tmp[$i] ) > 0 );
+            $tmp = defined $tmp[$i] ? $tmp[$i] : " " ;
+            push @number, $tmp;
         }
         for $i ( 0 .. $#prefix ) {
             push @string, $prefix[$i] . $number[$i];
@@ -461,7 +459,6 @@ sub lastPage {
     my @pageurls = @_;
     if (@pageurls) {
         my @page = split /page=/, $pageurls[-1];
-
         #last page of last array has relevant data
         return $page[-1];
     }
@@ -501,15 +498,14 @@ sub s2hms{
         $s = ($d1-$d)*24;
         $rtn = $d."d ";
     }
-
     my $h1 = $s/3600;
     my $h  = int($h1);
     my $m1 = ($h1-$h)*60;
     my $m  = int($m1);
     $s = ($m1-$m)*60;
     $rtn .= padZero($h,2).":".padZero($m,2).":".padZero($s,2);
-    return $rtn;
 
+    return $rtn;
 }
 
 #-----------------------------------------------------------------------------
@@ -564,11 +560,10 @@ Author (Copyright Holder) wishes to maintain "artistic" control over the license
 software and derivative works created from it.
 
 This code is free software; you can redistribute it and/or modify it under the
-terms of the Artistic License 2.0. For details, see the full text of the
-license in the file LICENSE.
+terms of the Artistic License 2.0.
 
 The full text of the license can be found in the
-LICENSE file included with this module or L<perlartistic>
+LICENSE file included with this module, or "L<http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic>".
 
 
 =head1  DISCLAIMER OF WARRANTY

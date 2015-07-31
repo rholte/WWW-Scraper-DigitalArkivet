@@ -4,15 +4,19 @@ use warnings;
 
 BEGIN {
     use Exporter ();
-    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $gDebug $Connected $runID %cfg);
-    $VERSION     = '0.01';
-    @ISA         = qw(Exporter);
-    @EXPORT      = qw();
-    @EXPORT_OK   = qw(Connect2DB() Disconnect2DB() DBIresetDA() getRunID() DBIform2DB()
-    daResultparms() daGeography() daGeography2() daSource() daListType() daTheme()
-    daFormat() daOrgan() DBIloadCSVresultparms() DBIloadFile() DBIresultParms2DB()
-    DBIresultParms2DB() DBIresultUpdate() DBIresultList2DB() doDBIrunStart()
-    doDBIrunStat() );
+    use vars qw/$VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS/;
+    $VERSION = sprintf "%d.%03d", q$Revision: 0.3 $ =~ /(\d+)/g;
+    @ISA         = qw/Exporter/;
+    @EXPORT      = qw/&Connect2DB &Disconnect2DB &DBIresetDA &getRunID &DBIForm2DB
+    &daResultparms &daGeography &daGeography2 &daSource &daListType &daTheme
+    daFormat &daOrgan &DBIloadCSVresultparms &DBIloadFile &DBIresultParms2DB
+    &DBIresultParms2DB &DBIresultUpdate &DBIresultList2DB &doDBIrunStart
+    &doDBIrunStat/;
+    @EXPORT_OK   = qw/&Connect2DB &Disconnect2DB &DBIresetDA &getRunID &DBIForm2DB
+    &daResultparms &daGeography &daGeography2 &daSource &daListType &daTheme
+    daFormat &daOrgan &DBIloadCSVresultparms &DBIloadFile &DBIresultParms2DB
+    &DBIresultParms2DB &DBIresultUpdate &DBIresultList2DB &doDBIrunStart
+    &doDBIrunStat/;
     %EXPORT_TAGS = ();
 }
 
@@ -42,6 +46,7 @@ the Digital Archives of Norway.
 
 =head1 TODO
 
+See TODO file
 CDC or SCD data approach?
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -58,7 +63,7 @@ Tested on win7, no known ties to this platform should work for other platforms.
 
 =head1 DEPENDENCIES
 
-Requires modules Config::Simple and DBI
+Requires modules Config::Simple and DBI (amd DBD::mysql)
 Database structure as of DA-webscraper.mwb v.0.
 
 
@@ -74,7 +79,7 @@ are also appreciated.
 
 =head1 REVISION HISTORY
 
- 0.04 - 14.07.2015 - Module
+ 0.04 - 31.07.2015 - Module
  0.04 - 01.07.2015 - POD - Documented, minor bugfix'es
  0.03 - 01.10.2014 - Added proc resetDA
  0.02 - 21.09.2014 - Added Tables resultList, resultParms, resultBrowse.
@@ -89,35 +94,14 @@ are also appreciated.
 # modules
 use Config::Simple;
 use DBI;
+use 5.008001;
 
-# import configuration into %cfg hash:
-Config::Simple->import_from( 'DA.cfg', \%cfg );
+our ($Connected, $config, $gDebug, $href, $runID, %cfg );
+my ($InG, $InS, $InL, $InT, $InF, $InO, $gLimit, $driver, $db, $host, $port, $user, $pwd, $attr, $cfg_set);
 
-# Configurations from file overrides defaults (on the left)
-my $driver = defined $cfg{'DBI.driver'} ? $cfg{'DBI.driver'} : "mysql";
-my $db     = defined $cfg{'DBI.db'} ? $cfg{'DBI.db'} : "da";
-my $host   = defined $cfg{'DBI.host'} ? $cfg{'DBI.host'} : "localhost";
-my $port   = defined $cfg{'DBI.port'} ? $cfg{'DBI.port'} : "3306" ;
-my $user   = defined $cfg{'DBI.user'} ? $cfg{'DBI.user'} : "root" ;
-my $pwd    = defined $cfg{'DBI.pwd'} ? $cfg{'DBI.pwd'} : "";
-my $attr   = defined $cfg{'DBI.attr'} ? $cfg{'DBI.attr'} : "PrintError,0,RaiseError,1,mysql_enable_utf8,1" ;
-my $gLimit = defined $cfg{'DBI.limit'} ? $cfg{'DBI.limit'} : 10000;
-my %attr   = @$attr;
-
-# "boolean" vars that prevent SQL to be executed (IF clause).
-# sections can be configured not to 'execute' by having value set to 0
-# settings in configuration file if defined overides default values
-my  $InG    = defined $cfg{'Input.geo'} ? $cfg{'Input..geo'} : 1;
-my  $InS    = defined $cfg{'Input.src'} ? $cfg{'Input.src'} : 1;
-my  $InL    = defined $cfg{'Input.lt'} ? $cfg{'Input.lt'} : 0;
-my  $InT    = defined $cfg{'Input.theme'} ? $cfg{'Input.theme'} : 0;
-my  $InF    = defined $cfg{'Input.format'} ? $cfg{'Input.format'} : 0;
-my  $InO    = defined $cfg{'Input.organ'} ? $cfg{'Input.organ'} : 0;
-
+$runID = undef;
 $Connected = undef; # only defined if connected to DB.
-$runID=&getRunID(); #process id, used as key
-
-
+_readCFG();
 
 
 #-----------------------------------------------------------------------------
@@ -168,6 +152,47 @@ Result pages may contain identical search, browse, info pages. process only uniq
 #-----------------------------------------------------------------------------
 =pod
 
+=head2 _readCFG
+
+  Purpose  : Load configuration
+  Returns  : <none>
+  Argument : <none>
+
+=cut
+
+#-----------------------------------------------------------------------------
+sub _readCFG {
+    # import configuration into %cfg hash:
+    $config = Config::Simple->import_from( 'DigitalArkivet.cfg', \%cfg );
+
+    # Configurations from file overrides defaults (on the left)
+    $gLimit = defined $cfg{'DBI.limit'}  ? $cfg{'DBI.limit'} : "10000";
+    $driver = defined $cfg{'DBI.driver'} ? $cfg{'DBI.driver'} : "mysql";
+    $db     = defined $cfg{'DBI.db'}   ? $cfg{'DBI.db'} : "da";
+    $host   = defined $cfg{'DBI.host'} ? $cfg{'DBI.host'} : "localhost";
+    $port   = defined $cfg{'DBI.port'} ? $cfg{'DBI.port'} : "3306" ;
+    $user   = defined $cfg{'DBI.user'} ? $cfg{'DBI.user'} : "dba" ;
+    $pwd    = defined $cfg{'DBI.pwd'}  ? $cfg{'DBI.pwd'} : "";
+    $attr = {
+                PrintError=>0,
+                RaiseError=>1,       #Make database errors fatal to script
+                mysql_enable_utf8=>1 #charset fix
+           };
+    # "boolean" vars that prevent SQL to be executed (IF clause).
+    # sections can be configured not to 'execute' by having value set to 0
+    # settings in configuration file if defined overides default values
+    $InG    = defined $cfg{'Input.geo'} ? $cfg{'Input..geo'} : 1;
+    $InS    = defined $cfg{'Input.src'} ? $cfg{'Input.src'} : 1;
+    $InL    = defined $cfg{'Input.lt'} ? $cfg{'Input.lt'} : 0;
+    $InT    = defined $cfg{'Input.theme'} ? $cfg{'Input.theme'} : 0;
+    $InF    = defined $cfg{'Input.format'} ? $cfg{'Input.format'} : 0;
+    $InO    = defined $cfg{'Input.organ'} ? $cfg{'Input.organ'} : 0;
+    $cfg_set=1;
+}
+
+#-----------------------------------------------------------------------------
+=pod
+
 =head2 Connect2DB()
 
   Purpose  : Establish and hold connection to a database
@@ -182,15 +207,19 @@ Result pages may contain identical search, browse, info pages. process only uniq
 
 #-----------------------------------------------------------------------------
 sub Connect2DB {
+    _readCFG() if not($cfg_set);
     my $dsn = "dbi:$driver:$db:$host:$port";
     our $dbh;
+    our $runID;
 
-    eval { $dbh = DBI->connect( $dsn, $user, $pwd, \%attr ); };
+    #eval { $dbh = DBI->connect( $dsn, $user, $pwd, \%attr ); };
+    eval { $dbh = DBI->connect( $dsn, $user, $pwd, $attr ); };
     if ( $DBI::err && $@ =~ /^(\S+) (\S+) failed: / ) {
         print "SQL error: $DBI::errstr ($DBI::err) $1 $2 - $@\n";
     }
     else {
         $Connected = 1;
+        $runID = &getRunID(); #process id, used as key
     }
     return $dbh;
 }
@@ -248,22 +277,29 @@ sub DBIresetDA {
   Returns  : (RunID) - integer - Last inserted RunID
   Argument : <none>
   Throws   : Die - on SQL error
-  Comment  : Every Run has a unique process number (autoincrement).
-           : Used to identify which data is collected when. Every run has a
-           : unique process number (autoincremented). Used to identify which
-           : data is collected when. (During which run).
+  Comment  : Every 'Run' has a unique process (autoincrement) number.
+           : Used to identify which data is collected during which run.
 
 =cut
 
 #-----------------------------------------------------------------------------
 sub getRunID {
     our $dbh = &Connect2DB() if not($Connected);
-    my $sql= qq{SELECT `runID` FROM `$cfg{'DBI.db'}`.`run` ORDER BY `runID` DESC LIMIT 1};
+    my $rtn = defined $cfg{'Run.ID'} ? $cfg{'Run.ID'} : 1; #failsafe value
+    my $sql = qq{CALL getRunID()};
+    #my $sql= qq{SELECT `runID` FROM `$db`.`run` ORDER BY `runID` DESC LIMIT 1};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $sth->execute();
     ($runID) = $sth->fetchrow_array;
-    return  $runID;
+    if (defined $runID) {
+        if ($runID>$rtn) {
+            $rtn = $runID; #database value used instead
+            $config->param("Run.ID",$runID);
+            $config->write();
+        }
+    return $rtn;
+    }
 }
 
 #-----------------------------------------------------------------------------
@@ -275,12 +311,12 @@ sub getRunID {
   Returns  : (RunID) - last insert id (mysql)
   Argument : action, hash ref to options
   Throws   : Die - on SQL error
-  Comment  : hashref pass as argument is converted into string &key1=value1&key2=value2 etc
+  Comment  : hashref pass as argument is converted into string of &key1=value1&key2=value2..
            : Invokes stored procedure `runStart` with 2 arguments
            : (Options) -string of options conveterd from hashref (options to "run" started)
            : (State) - sleep state
-           : Marks beginning of data gathering (Starts log into the database)
-           : Enables logging of progress "of run"/ harvesting of data
+           : Marks beginning of data gathering enables logging of progress
+           : "of run"/ harvesting of data
 
  See Also  : doDBIrunStat()
 
@@ -295,14 +331,13 @@ sub doDBIrunStart {
     my $pState = defined $cfg{'Sleep.state'} ? $cfg{'Sleep.state'} : 0;
     #build option string eg &opt1=x&opt2=y
     my $Options=join '&',map {uri_escape($_).'='.uri_escape($href->{$_})} grep {defined $href->{$_}} keys %$href;
-    my $sql = qq{CALL `$cfg{'DBI.db'}`.`runStart`( ?, ? ) } ;
+    my $sql= qq{SELECT `runID` FROM `$db`.`run` ORDER BY `runID` DESC LIMIT 1};
     our $sth = $dbh->prepare($sql)
             or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $sth->execute($Options, $pState);
     $rtn = $sth->{mysql_insertid};
     return  $rtn
 }
-
 
 #-----------------------------------------------------------------------------
 =pod
@@ -326,7 +361,8 @@ sub doDBIrunStat {
     use URI::Escape;
     my $pID    = shift; # runID
     our $dbh = &Connect2DB() if not($Connected);
-    my $sql = qq{CALL `$cfg{'DBI.db'}`.`runStat`( ? ) } ;
+    my $sql = qq{CALL `$db`.`runStat`( ? ) } ;
+    #my $sql = qq{CALL `da`.`runStat`( ? ) } ;
     our $sth = $dbh->prepare($sql)
             or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     print "Can't execute SQL statement: ", $sth->errstr(), "\n" unless ($sth->execute($pID));
@@ -359,14 +395,14 @@ sub doDBIrunStat {
 sub DBIForm2DB {
     my @data = @{ $_[0] };
     our $dbh = &Connect2DB() if not($Connected);
-    my @fields = (qq(`siteID` `level` `line` `label_for` `text` `name` `value` `id` `type` `name2` `lf1` `lf2` `lf3`));
+    my $i=0;
+    my @fields = (qw(`siteID` `level` `line` `label_for` `text` `name` `value` `id` `type` `name2` `lf1` `lf2` `lf3`));
     my $fieldlist = join ", ", @fields;
-    my $field_placeholders = join ", ", map { '?' } @fields;
-    my $sql = qq{REPLACE INTO `$cfg{'DBI.db'}`.`form` ( $fieldlist ) VALUES( $field_placeholders )};
+    my $field_placeholders = join ", ", map {'?'} @fields;
+    my $sql = qq{REPLACE INTO `$db`.`form` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     foreach my $row (@data) {
-        #my $xx=0;
         $_ = $row;
         my (
             $siteID, $level, $line, $label_for, $text,
@@ -426,7 +462,7 @@ sub daResultparms {
     my %rtn = ();
     my $LIMIT ="";
     $LIMIT = "LIMIT $gLimit" if ($gLimit);
-    my $sql = qq{SELECT `resultID`,`url` FROM `$cfg{'DBI.db'}`.`resultparms` WHERE `checked`=false AND `siteID`=? AND `skip`= ? ORDER BY `resultID` $LIMIT};
+    my $sql = qq{SELECT `resultID`,`url` FROM `$db`.`resultparms` WHERE `checked`=false AND `siteID`=? AND `skip`= ? ORDER BY `resultID` $LIMIT};
     our $dbh = &Connect2DB() if not($Connected);
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
@@ -464,7 +500,8 @@ sub daResultparms {
 sub daGeography {
     my @rows_loh = ();
     if ($InG){
-        my $sql = qq{SELECT `r`,`f`,`k`,`bit` FROM `$cfg{'DBI.db'}`.`vgeography` WHERE `siteID`=? ORDER BY `k` };
+        my $sql = qq{SELECT `r`,`f`,`k`,`bit` FROM `$db`.`vgeography` WHERE `siteID`=? ORDER BY `k` };
+        #my $sql = qq{SELECT `r`,`f`,`k`,`bit` FROM `da`.`vgeography` WHERE `siteID`=? ORDER BY `k` };
         our $dbh = &Connect2DB() if not($Connected);
         our $sth = $dbh->prepare($sql)
           or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
@@ -502,7 +539,7 @@ sub daGeography {
 sub daGeography2 {
     my @rows_loh = ();
     if($InG) {
-        my $sql = qq{SELECT `r`,`f`,`bit` FROM `$cfg{'DBI.db'}`.`vgeography2` WHERE `siteID`=? ORDER BY `f` };
+        my $sql = qq{SELECT `r`,`f`,`bit` FROM `$db`.`vgeography2` WHERE `siteID`=? ORDER BY `f` };
         our $dbh = &Connect2DB() if not($Connected);
         our $sth = $dbh->prepare($sql)
           or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
@@ -540,7 +577,7 @@ sub daSource {
     my @rows_loh = ();
     if ($InS) {
         our $dbh = &Connect2DB() if not($Connected);
-        my $sql = qq{SELECT `ka`,`kt`,`bit` FROM `$cfg{'DBI.db'}`.`vInputKT` where `siteID`=?};
+        my $sql = qq{SELECT `ka`,`kt`,`bit` FROM `$db`.`vInputKT` where `siteID`=?};
         our $sth = $dbh->prepare($sql)
           or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
         $sth->execute( $_[0] );
@@ -578,7 +615,7 @@ sub daListType {
     my @rows_loh = ();
     if ($InL) {
         our $dbh = &Connect2DB() if not($Connected);
-        my $sql = qq{SELECT `ka`,`lt`,`bit` FROM `$cfg{'DBI.db'}`.`vInputLT` where `siteID`=?};
+        my $sql = qq{SELECT `ka`,`lt`,`bit` FROM `$db`.`vInputLT` where `siteID`=?};
         our $sth = $dbh->prepare($sql)
           or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
         $sth->execute( $_[0] );
@@ -614,7 +651,7 @@ sub daTheme {
     my @rows_loh = ();
     if  ($InT) {
         our $dbh = &Connect2DB() if not($Connected);
-        my $sql= qq{SELECT `theme`,`bit` FROM `$cfg{'DBI.db'}`.`vInputTheme` where `siteID`=?};
+        my $sql= qq{SELECT `theme`,`bit` FROM `$db`.`vInputTheme` where `siteID`=?};
         our $sth = $dbh->prepare($sql)
              or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
           $sth->execute($_[0]);
@@ -651,7 +688,8 @@ sub daFormat {
     my @rows_loh = ();
     if ($InF) {
         our $dbh = &Connect2DB() if not($Connected);
-        my $sql= qq{SELECT `format`,`bit` FROM `$cfg{'DBI.db'}`.`vInputFormat` where `siteID`=?};
+        my $sql= qq{SELECT `format`,`bit` FROM `$db`.`vInputFormat` where `siteID`=?};
+        #my $sql= qq{SELECT `format`,`bit` FROM `da`.`vInputFormat` where `siteID`=?};
         our $sth = $dbh->prepare($sql)
           or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
         $sth->execute($_[0]);
@@ -686,18 +724,16 @@ sub daFormat {
 #-----------------------------------------------------------------------------
 sub daOrgan {
     my @rows_loh = ();
-
-# ToDo: vInputOK must be in DB !!
- # SELECT * FROM `vinput` where `siteID`=1 and `name2`in ('ok','ko')
-#    if ($InO) {
-#        our $dbh = &Connect2DB() if not($Connected);
-#        my $sql= qq{SELECT `ok`,`ko`,`bit` FROM `$cfg{'DBI.db'}`.`vInputOK` where `siteID`=?};
-#        our $sth = $dbh->prepare($sql)
-#          or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
-#        $sth->execute($_[0]);
-#        my $r=$sth->rows;
-#        @rows_loh = @{$sth->fetchall_arrayref({})};
-#    }
+    if ($InO) {
+        our $dbh = &Connect2DB() if not($Connected);
+        my $sql= qq{SELECT `ok`,`ko`,`bit` FROM `$db`.`vInputKO` where `siteID`=?};
+        #my $sql= qq{SELECT `ok`,`ko`,`bit` FROM `da`.`vInputKO` where `siteID`=?};
+        our $sth = $dbh->prepare($sql)
+          or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
+        $sth->execute($_[0]);
+        my $r=$sth->rows;
+        @rows_loh = @{$sth->fetchall_arrayref({})};
+    }
     return ( \@rows_loh );
 }
 
@@ -728,7 +764,7 @@ sub DBIloadCSVresultparms {
     my $lf     = exists $cfg{'DBI.lTerm'} ? $cfg{'DBI.fTerm'} : '\x{0A}'; #default linfeed is  x0A (LF)
     my $rows=0;
     our $dbh = &Connect2DB() if not($Connected);
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$cfg{'DBI.db'}`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' IGNORE 1 LINES (resultID, siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip)};
+    my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' IGNORE 1 LINES (resultID, siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip)};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
@@ -776,7 +812,8 @@ sub DBIloadFile {
     my $rows=0;
     our $dbh = &Connect2DB() if not($Connected);
     my $fieldlist = join ", ", @fields;
-    my $sql = qq{LOAD DATA REPLACE INFILE $file INTO `$cfg{'DBI.db'}`.`$table` ( $fieldlist ) TERMINATED BY  '$tab' $set )};
+    my $sql = qq{LOAD DATA REPLACE INFILE $file INTO `$db`.`$table` ( $fieldlist ) TERMINATED BY  '$tab' $set )};
+    #my $sql = qq{LOAD DATA REPLACE INFILE $file INTO `da`.`$table` ( $fieldlist ) TERMINATED BY  '$tab' $set )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
@@ -836,7 +873,8 @@ sub DBIresultParms2DB {
     my @fields =(qw(`siteID` `hits` `url` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko`));
     my $fieldlist = join ", ", @fields;
     my $field_placeholders = join ', ', ('?') x @fields;
-    my $sql = qq{REPLACE INTO `$cfg{'DBI.db'}`.`resultParms` ( $fieldlist ) VALUES( $field_placeholders )};
+    my $sql = qq{REPLACE INTO `$db`.`resultParms` ( $fieldlist ) VALUES( $field_placeholders )};
+    #my $sql = qq{REPLACE INTO `da`.`resultParms` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     if ($sth->execute($row[0],$row[1],$row[2],$row[3],$row[4],$row[5],$row[6],$row[7],$row[8],$row[9],$row[10],$row[11],$row[12]))
@@ -880,7 +918,8 @@ sub DBIresultUpdate {
     my $rtn;
     our $dbh = &Connect2DB() if not($Connected);
     my $skip = ($data[0]>0) ? 0 : 1; #hits >0 -> false else true
-    my $sql =qq{Update `$cfg{'DBI.db'}`.`resultparms` SET `hits`=?, `checked`=?, `skip`=?, `runID`=? WHERE `resultID`=? AND `siteID`=? };
+    my $sql =qq{Update `$db`.`resultparms` SET `hits`=?, `checked`=?, `skip`=?, `runID`=? WHERE `resultID`=? AND `siteID`=? };
+    #my $sql =qq{Update `da`.`resultparms` SET `hits`=?, `checked`=?, `skip`=?, `runID`=? WHERE `resultID`=? AND `siteID`=? };
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     if ($sth->execute($data[0],$data[1],$skip,$runID,$data[2],$data[3]))
@@ -926,9 +965,8 @@ sub DBIresultList2DB {
     my $fieldlist = join ", ", @fields;
     #my $field_placeholders = join ", ", map { '?' } @fields;
     my $field_placeholders = join ', ', ('?') x @fields;
-
-    my $sql =qq{REPLACE INTO `$cfg{'DBI.db'}`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
-
+    my $sql =qq{REPLACE INTO `$db`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
+    #my $sql =qq{REPLACE INTO `da`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     if ($sth->execute($data[0],$data[1],$data[2],$data[3],$data[4],$data[5],$data[6],$data[7],$data[8],$runID))
@@ -963,61 +1001,21 @@ Author (Copyright Holder) wishes to maintain "artistic" control over the license
 software and derivative works created from it.
 
 This code is free software; you can redistribute it and/or modify it under the
-terms of the Artistic License 2.0. For details, see the full text of the
-license in the file LICENSE.
+terms of the Artistic License 2.0.
 
 The full text of the license can be found in the
-LICENSE file included with this module, or "L<perlartistic>".
+LICENSE file included with this module, or "L<http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic>".
 
 
 =head1  DISCLAIMER OF WARRANTY
 
+
 This program is distributed in the hope that it will be
-useful, but it is provided “as is” and without any express
+useful, but it is provided 'as is' and without any express
 or implied warranties. For details, see the full text of
 the license in the file LICENSE.
 
 
 =cut
 
-
-#################### main pod documentation begin ###################
-## Below is the stub of documentation for your module.
-## You better edit it!
-
-
-
-
-=head1 HISTORY
-
-0.01 Wed Jul 15 20:56:09 2015
-    - original version; created by ExtUtils::ModuleMaker 0.54
-
-
-=head1 AUTHOR
-
-    Rolf B. Holte
-    CPAN ID: RBH
-    Member of DIS-Norge, The Genealogy Society of Norway-DIS
-    rolfbh@disnorge.no
-    http://www.holte.nu/
-
-=head1 COPYRIGHT
-
-B<Artistic License (Perl)>
-Author (Copyright Holder) wishes to maintain "artistic" control over the licensed
-software and derivative works created from it.
-
-The full text of the license can be found in the
-LICENSE file included with this module, or "L<perlartistic>".
-=head1 SEE ALSO
-
-perl(1).
-
-=cut
-
-#################### main pod documentation end ###################
-
-
 1;
-# The preceding line will help the module return a true value

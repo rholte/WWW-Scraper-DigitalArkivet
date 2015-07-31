@@ -2,3 +2,7 @@
 lib/WWW/Scraper/podIt.cmd
 lib/WWW/Scraper/ReadMe.html
 lib/WWW/Scraper/DigitalArkivet/README
+lib/WWW/Scraper/DigitalArkivet/pod2htmd.tmp
+*.tmp
+*.cmd
+scripts/Digitalarkivet-webscraper.mwb
