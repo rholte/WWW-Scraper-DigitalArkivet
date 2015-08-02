@@ -14,7 +14,6 @@ use WWW::Scraper::DigitalArkivet::Database qw/&DBIForm2DB/;
 use 5.008001;
 $| = 1;
 
-#globals
 my (@data, @input);
 my (%cfg, %Option, %site);
 
@@ -36,7 +35,7 @@ pod2usage(-verbose => 2)  if ($gMan);
 pod2usage("$0: No parameters given.")  if ((@ARGV == 0) && (-t STDIN));
 pod2usage("$0: 3 parameters required") if ((@ARGV < 3)  && (-t STDIN));
 
-my $aref = \@WWW::Scraper::DigitalArkivet::input; #get arrayRef
+my $aref = \@WWW::Scraper::DigitalArkivet::input; #get arrayRef to @input
 @input = @{$aref};                                #arrayRef -> array
 
 # ToDo(?) Don't use arguments?? -> DigitalArkivet.Site ??
@@ -55,12 +54,11 @@ open my $fh, ">$site{'name'}.csv" or die $!;
 # foreach @input (defined in WWW::Scraper::DigitalArkivet)
 my $t0 = Benchmark->new;
 for my $i ( 0 .. $#input ) {
-
     @data = @{processFormInput( $fh, $site{'siteID'}, $site{'url'}, $i, $input[$i], $seperator )};
 }
 my $t1 = Benchmark->new;
 my $td = timediff($t1, $t0);
-print "\n\n\n processFormInput:   ",timestr($td) if ($gDebug);
+print "\n\n processFormInput:   ",timestr($td) if ($gDebug);
 
 # Stage 1b - store data
 DBIForm2DB( \@data ) if ($dbStorage);
@@ -76,7 +74,7 @@ if ($gDebug||!$dbStorage) {
 }
 print "\n----------------------------------------------";
 print "\n-------------------  Done  -------------------";
-print "\n----------------------------------------------";
+print "\n----------------------------------------------\n";
 1;
 
 __END__
@@ -99,15 +97,15 @@ B<DigitalArkivet-GetForm.pl> - Get data from web form at Digitalarkivet
 
     options/switches:
     -d 1/0 - database   1 store to DB, 0 no storage
-    -h 1/0 - help       brief help message
-    -m 1/0 - manual     full documentation
-    Note: digit must follow option -d1 and -d 1 are the same
+    -h 1/0 - help       brief help message (Synopsis)
+    -m 1/0 - manual     full documentation (POD)
+    Note: digit must follow last option, since SiteID otherwise would be parsed as option value
+          -d1 and -d 1 are the same
 
     Required parameters:
     <siteID>    - identifying number (to site)
     <url>       - url of site
     <name>      - name of site
-
 
     eg.
         DigitalArkivet-GetForm.pl -d1 2 http://digitalarkivet.arkivverket.no/sok/eiendom_avansert eiendom_avansert
@@ -131,10 +129,9 @@ Look at the form, grab all data about inputs. Store data (to a database)
 Storing data in CSV to have better control over data, also storing a CSV
 into a database with "load data" is faster than doing it incrementally.
 
-NB! Default behavior is to store @data in the database. -d switch is not required
-for this. If set, it uses the switch. Not set, looks for noDB in config file
-noDB=1 means don't store to database. Default setting for noDB is 0. A switch will
-override any option set in the config file.
+NB! Use -d option switch to store @data in the database. If set, it uses the switch.
+Not set, looks for noDB in config file noDB=1 means don't store to database.
+Default setting for noDB is 0. A switch will override any option set in the config file.
 
 Todo:
 
@@ -166,9 +163,9 @@ are also appreciated.
 
 =head1 REVISION HISTORY
 
-v1.0.0 - 01.07.2015 - options,POD - Documented
+0.003 - 02.87.2015 - options,POD - Documented
 
-v0.1.0 - 01.08.2014 - Created.
+0.001 - 01.08.2014 - Created.
 
 =cut
 
