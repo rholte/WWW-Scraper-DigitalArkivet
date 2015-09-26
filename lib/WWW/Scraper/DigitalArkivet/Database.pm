@@ -7,17 +7,20 @@ BEGIN {
     use vars qw/$VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS/;
     $VERSION = sprintf "%d.%03d", q$Revision: 0.3 $ =~ /(\d+)/g;
     @ISA         = qw/Exporter/;
-    @EXPORT      = qw/&Connect2DB &Disconnect2DB &DBIresetDA &getRunID &DBIForm2DB
-    &daResultparms &daGeography &daGeography2 &daSource &daListType &daTheme
-    daFormat &daOrgan &DBIloadCSVresultparms &DBIloadFile &DBIresultParms2DB
-    &DBIresultParms2DB &DBIresultUpdate &DBIresultList2DB &doDBIrunStart
-    &doDBIrunStat/;
+    @EXPORT      = qw//;
     @EXPORT_OK   = qw/&Connect2DB &Disconnect2DB &DBIresetDA &getRunID &DBIForm2DB
     &daResultparms &daGeography &daGeography2 &daSource &daListType &daTheme
     daFormat &daOrgan &DBIloadCSVresultparms &DBIloadFile &DBIresultParms2DB
     &DBIresultParms2DB &DBIresultUpdate &DBIresultList2DB &doDBIrunStart
     &doDBIrunStat/;
-    %EXPORT_TAGS = ();
+    %EXPORT_TAGS = (ALL => [qw/&Connect2DB &Disconnect2DB &DBIresetDA &getRunID &DBIForm2DB
+                    &daResultparms &daGeography &daGeography2 &daSource &daListType &daTheme
+                    daFormat &daOrgan &DBIloadCSVresultparms &DBIloadFile &DBIresultParms2DB
+                    &DBIresultParms2DB &DBIresultUpdate &DBIresultList2DB &doDBIrunStart
+                    &doDBIrunStat/],
+                    Stage1  => [qw/&DBIForm2DB/],
+                    Stage2  => [qw/&getRunID &doDBIrunStart &doDBIrunStat/]
+                    );
 }
 
 #-----------------------------------------------------------------------------
@@ -92,16 +95,7 @@ are also appreciated.
 #-----------------------------------------------------------------------------
 
 # modules
-use Config::Simple;
-use DBI;
-use 5.008001;
 
-our ($Connected, $config, $gDebug, $href, $runID, %cfg );
-my ($InG, $InS, $InL, $InT, $InF, $InO, $gLimit, $driver, $db, $host, $port, $user, $pwd, $attr, $cfg_set);
-
-$runID = undef;
-$Connected = undef; # only defined if connected to DB.
-_readCFG();
 
 
 #-----------------------------------------------------------------------------
@@ -147,48 +141,6 @@ Result pages may contain identical search, browse, info pages. process only uniq
 
 =cut
 
-#-----------------------------------------------------------------------------
-################################ subroutines #################################
-#-----------------------------------------------------------------------------
-=pod
-
-=head2 _readCFG
-
-  Purpose  : Load configuration
-  Returns  : <none>
-  Argument : <none>
-
-=cut
-
-#-----------------------------------------------------------------------------
-sub _readCFG {
-    # import configuration into %cfg hash:
-    $config = Config::Simple->import_from( 'DigitalArkivet.cfg', \%cfg );
-
-    # Configurations from file overrides defaults (on the left)
-    $gLimit = defined $cfg{'DBI.limit'}  ? $cfg{'DBI.limit'} : "10000";
-    $driver = defined $cfg{'DBI.driver'} ? $cfg{'DBI.driver'} : "mysql";
-    $db     = defined $cfg{'DBI.db'}   ? $cfg{'DBI.db'} : "da";
-    $host   = defined $cfg{'DBI.host'} ? $cfg{'DBI.host'} : "localhost";
-    $port   = defined $cfg{'DBI.port'} ? $cfg{'DBI.port'} : "3306" ;
-    $user   = defined $cfg{'DBI.user'} ? $cfg{'DBI.user'} : "dba" ;
-    $pwd    = defined $cfg{'DBI.pwd'}  ? $cfg{'DBI.pwd'} : "";
-    $attr = {
-                PrintError=>0,
-                RaiseError=>1,       #Make database errors fatal to script
-                mysql_enable_utf8=>1 #charset fix
-           };
-    # "boolean" vars that prevent SQL to be executed (IF clause).
-    # sections can be configured not to 'execute' by having value set to 0
-    # settings in configuration file if defined overides default values
-    $InG    = defined $cfg{'Input.geo'} ? $cfg{'Input..geo'} : 1;
-    $InS    = defined $cfg{'Input.src'} ? $cfg{'Input.src'} : 1;
-    $InL    = defined $cfg{'Input.lt'} ? $cfg{'Input.lt'} : 0;
-    $InT    = defined $cfg{'Input.theme'} ? $cfg{'Input.theme'} : 0;
-    $InF    = defined $cfg{'Input.format'} ? $cfg{'Input.format'} : 0;
-    $InO    = defined $cfg{'Input.organ'} ? $cfg{'Input.organ'} : 0;
-    $cfg_set=1;
-}
 
 #-----------------------------------------------------------------------------
 =pod
@@ -199,6 +151,7 @@ sub _readCFG {
   Returns  : Database handle
   Argument : <none>
   Throws   : Die - on SQL error
+  Comment  : MySQL
   Comment  : Connects to a database, returns the handle to it for further use.
 
  See Also  : Disconnect2DB()
@@ -254,7 +207,8 @@ sub Disconnect2DB {
   Returns  : Ref to statement handle
   Argument : <none>
   Throws   : Die - on SQL error
-  Comment  : Connect to a database, returns the handle to it for further use.
+  Comment  : MySQL
+           : Connect to a database, returns the handle to it for further use.
 
 =cut
 
@@ -277,7 +231,8 @@ sub DBIresetDA {
   Returns  : (RunID) - integer - Last inserted RunID
   Argument : <none>
   Throws   : Die - on SQL error
-  Comment  : Every 'Run' has a unique process (autoincrement) number.
+  Comment  : MySQL
+           : Every 'Run' has a unique process (autoincrement) number.
            : Used to identify which data is collected during which run.
 
 =cut
@@ -285,7 +240,7 @@ sub DBIresetDA {
 #-----------------------------------------------------------------------------
 sub getRunID {
     our $dbh = &Connect2DB() if not($Connected);
-    my $rtn = defined $cfg{'Run.ID'} ? $cfg{'Run.ID'} : 1; #failsafe value
+    my $rtn = defined $cfg{'ID.Run'} ? $cfg{'ID.Run'} : 1; #failsafe value
     my $sql = qq{CALL getRunID()};
     #my $sql= qq{SELECT `runID` FROM `$db`.`run` ORDER BY `runID` DESC LIMIT 1};
     our $sth = $dbh->prepare($sql)
@@ -295,7 +250,41 @@ sub getRunID {
     if (defined $runID) {
         if ($runID>$rtn) {
             $rtn = $runID; #database value used instead
-            $config->param("Run.ID",$runID);
+            $config->param("ID.Run",$runID);
+            $config->write();
+        }
+    return $rtn;
+    }
+}
+
+#-----------------------------------------------------------------------------
+=pod
+
+=head2 getResultatID()
+
+  Purpose  : Retrieve current getResultatID
+  Returns  : (RunID) - integer - Last inserted getResultatID
+  Argument : <none>
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : (autoincrement) number.
+           :
+
+=cut
+
+#-----------------------------------------------------------------------------
+sub getResultatID {
+    our $dbh = &Connect2DB() if not($Connected);
+    my $rtn = defined $cfg{'ID.Resultat'} ? $cfg{'ID.Resultat'} : 1; #failsafe value
+    my $sql = qq{CALL getResultatID()};
+    our $sth = $dbh->prepare($sql)
+      or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
+    $sth->execute();
+    ($ResultatID) = $sth->fetchrow_array;
+    if (defined $ResultatID) {
+        if ($ResultatID>$rtn) {
+            $rtn = $ResultatID; #database value used instead
+            $config->param("ID.Resultat",$ResultatID);
             $config->write();
         }
     return $rtn;
@@ -311,7 +300,8 @@ sub getRunID {
   Returns  : (RunID) - last insert id (mysql)
   Argument : action, hash ref to options
   Throws   : Die - on SQL error
-  Comment  : hashref pass as argument is converted into string of &key1=value1&key2=value2..
+  Comment  : MySQL
+           : hashref pass as argument is converted into string of &key1=value1&key2=value2..
            : Invokes stored procedure `runStart` with 2 arguments
            : (Options) -string of options conveterd from hashref (options to "run" started)
            : (State) - sleep state
@@ -348,7 +338,8 @@ sub doDBIrunStart {
   Returns  : 1
   Argument : RunID
   Throws   : Die - on SQL error
-  Comment  : invokes stored procedure `runStat`
+  Comment  : MySQL
+           : invokes stored procedure `runStat`
            : Used to track progress of run, also updates som statsical data
            : ()
 
@@ -362,7 +353,6 @@ sub doDBIrunStat {
     my $pID    = shift; # runID
     our $dbh = &Connect2DB() if not($Connected);
     my $sql = qq{CALL `$db`.`runStat`( ? ) } ;
-    #my $sql = qq{CALL `da`.`runStat`( ? ) } ;
     our $sth = $dbh->prepare($sql)
             or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     print "Can't execute SQL statement: ", $sth->errstr(), "\n" unless ($sth->execute($pID));
@@ -380,7 +370,8 @@ sub doDBIrunStat {
   Returns  : Handle to execution of statement
   Argument : Handle to array with data
   Throws   : Die - on SQL error
-  Comment  : All form's have a basic structure that is possible to save in tabular format.
+  Comment  : MySQL
+           : All form's have a basic structure that is possible to save in tabular format.
            : Each input in the form is inspected, the hierarchical structure is preserved
            : along with wich site is was grabbed of. Each input has a hierarchical level,
            : Line is just an index. input(item) may have a label (label_for), a CSS name,
@@ -443,7 +434,8 @@ sub DBIForm2DB {
   Argument : (siteID) - integer - inputs are from this site
              (skip)   - boolean
   Throws   : Die - on SQL error
-  Comment  : Skip false is the default, new items have skip=false, skip true is set for
+  Comment  : MySQL
+           : Skip false is the default, new items have skip=false, skip true is set for
            : items we normally want to skip, eg those with hits=0 this speeds up next re-run.
            : If we want to test those later on, check those who have skip=true.
            :
@@ -487,7 +479,8 @@ sub daResultparms {
                 `bit` - string to put in url to define next search
   Argument : (siteID) - integer - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Gets geographic info for given site, from view.
+  Comment  : MySQL
+           : Gets geographic info for given site, from view.
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
@@ -526,7 +519,8 @@ sub daGeography {
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Gets geographic info for given site, from view.
+  Comment  : MySQL
+           : Gets geographic info for given site, from view.
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
@@ -564,7 +558,8 @@ sub daGeography2 {
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Digital Archives of Norway. Gets source info for given site.
+  Comment  : MySQL
+           : Digital Archives of Norway. Gets source info for given site.
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
@@ -602,7 +597,8 @@ sub daSource {
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Gets source info for given site.
+  Comment  : MySQL
+           : Gets source info for given site.
            : Creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
@@ -638,7 +634,8 @@ sub daListType {
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Data is sorted into themes.
+  Comment  : MySQL
+           : Data is sorted into themes.
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
@@ -675,7 +672,8 @@ sub daTheme {
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : The function creates an array of hashes (to be traversed later).
+  Comment  : MySQL
+           : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
 
@@ -713,7 +711,8 @@ sub daFormat {
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : The function creates an array of hashes (to be traversed later).
+  Comment  : MySQL
+           : The function creates an array of hashes (to be traversed later).
            : (Currently only 2 Organs - mining, industry)
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
@@ -737,6 +736,7 @@ sub daOrgan {
     return ( \@rows_loh );
 }
 
+
 #-----------------------------------------------------------------------------
 =pod
 
@@ -749,7 +749,8 @@ sub daOrgan {
            : ($rows) - number of inserted rows
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Saves file to table "resultparms" using LOAD DATA.
+  Comment  : MySQL
+           : Saves file to table "resultparms" using LOAD DATA.
            : File expected to have headers in first line
 
  See Also  : DBIloadFile()
@@ -788,12 +789,13 @@ sub DBIloadCSVresultparms {
   Purpose  : Generic file loader. Wrapper for DBI Load DATA function.
   Returns  : (\$sth) -  ref to statement handle
            : ($rows) - number of inserted rows
-  Argument :   0-filename,
+  Argument :  0-filename,
                 1-tablename,
                 2-array of fields,
                 3-"SET"
   Throws   : Die - on SQL error
-  Comment  : Bulk saves data from a file to database.
+  Comment  : MySQL
+           : Bulk saves data from a file to database.
            : File expected to have headers in first line
            : SET can be any valid SQL (Should failsafe it?)
 
@@ -849,7 +851,8 @@ sub DBIloadFile {
                 `ok` - code for organ (Organ)
                 `ko` - subcode for `ok`
   Throws   : Die - on SQL error
-  Comment  : Saving form parameters to database one row at a time.
+  Comment  : MySQL
+           : Saving form parameters to database one row at a time.
             :
            : Not all permutations of parameters will yield result (URL - with
            : data to further scrape), some parameters are logically linked,
@@ -858,8 +861,8 @@ sub DBIloadFile {
            : Not all fields in table resultParms get saved/updated.
            : Some things need to be scraped later on.
            : Following fields are for keeping track of next stage
-           :  * Checked=true means site is chekcked/scraped
-           :  * changed/hits/pages/runID is filled in after scrape
+           : * Checked=true means site is chekcked/scraped
+           : * changed/hits/pages/runID is filled in after scrape
 
   See Also : DBIresultUpdate()
 
@@ -897,12 +900,13 @@ sub DBIresultParms2DB {
 
   Purpose  : Update a single line in resultparms.
   Returns  : True/False (ok/fail)
-  Argument :   0=>hits,
+  Argument :  0=>hits,
                 1=>checked,
                 2=>resultID,
                 3=>siteID
   Throws   : Die - on SQL error in preperation, not execution
-  Comment  : First 2 arguments are update values, next 2 are identificators in where clause
+  Comment  : MySQL
+           : First 2 arguments are update values, next 2 are identificators in where clause
            : hits - number of sources to further lookup. pages >1 if data to further lookup.
            : if pages=0, then skip=true (no data found, don't waste time on next normal run).
            : Sometimes not all data can be harvested on a single page,  (pages are then => 2)
@@ -947,7 +951,8 @@ sub DBIresultUpdate {
   Argument : ref to array of array
            : Columns: `resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`
   Throws   : Die - on SQL error
-  Comment  : Digital Archives of Norway "Finn kilde" (Find source) has listing
+  Comment  : MySQL
+           : Digital Archives of Norway "Finn kilde" (Find source) has listing
            : (resultList) that is saved to database.
            : Data from scraping is an array of arrays.
 
@@ -1001,10 +1006,8 @@ Author (Copyright Holder) wishes to maintain "artistic" control over the license
 software and derivative works created from it.
 
 This code is free software; you can redistribute it and/or modify it under the
-terms of the Artistic License 2.0.
-
-The full text of the license can be found in the
-LICENSE file included with this module, or "L<http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic>".
+terms of the Artistic License 2.0. The full text of the license can be found in the
+LICENSE file included with this module, or L<http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic>
 
 
 =head1  DISCLAIMER OF WARRANTY

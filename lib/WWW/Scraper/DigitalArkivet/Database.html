@@ -37,6 +37,7 @@
       <li><a href="#Disconnect2DB">Disconnect2DB()</a></li>
       <li><a href="#DBIresetDA">DBIresetDA()</a></li>
       <li><a href="#getRunID">getRunID()</a></li>
+      <li><a href="#getResultatID">getResultatID()</a></li>
       <li><a href="#doDBIrunStart">doDBIrunStart()</a></li>
       <li><a href="#doDBIrunStat">doDBIrunStat()</a></li>
       <li><a href="#DBIForm2DB">DBIForm2DB()</a></li>
@@ -99,7 +100,7 @@
 
 <h1 id="REVISION-HISTORY">REVISION HISTORY</h1>
 
-<pre><code> 0.04 - 14.07.2015 - Module
+<pre><code> 0.04 - 31.07.2015 - Module
  0.04 - 01.07.2015 - POD - Documented, minor bugfix&#39;es
  0.03 - 01.10.2014 - Added proc resetDA
  0.02 - 21.09.2014 - Added Tables resultList, resultParms, resultBrowse.
@@ -146,6 +147,7 @@
   Returns  : Database handle
   Argument : &lt;none&gt;
   Throws   : Die - on SQL error
+  Comment  : MySQL
   Comment  : Connects to a database, returns the handle to it for further use.
 
  See Also  : Disconnect2DB()</code></pre>
@@ -164,7 +166,8 @@
   Returns  : Ref to statement handle
   Argument : &lt;none&gt;
   Throws   : Die - on SQL error
-  Comment  : Connect to a database, returns the handle to it for further use.</code></pre>
+  Comment  : MySQL
+           : Connect to a database, returns the handle to it for further use.</code></pre>
 
 <h2 id="getRunID">getRunID()</h2>
 
@@ -172,8 +175,19 @@
   Returns  : (RunID) - integer - Last inserted RunID
   Argument : &lt;none&gt;
   Throws   : Die - on SQL error
-  Comment  : Every &#39;Run&#39; has a unique process (autoincrement) number.
+  Comment  : MySQL
+           : Every &#39;Run&#39; has a unique process (autoincrement) number.
            : Used to identify which data is collected during which run.</code></pre>
+
+<h2 id="getResultatID">getResultatID()</h2>
+
+<pre><code>  Purpose  : Retrieve current getResultatID
+  Returns  : (RunID) - integer - Last inserted getResultatID
+  Argument : &lt;none&gt;
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : (autoincrement) number.
+           :</code></pre>
 
 <h2 id="doDBIrunStart">doDBIrunStart()</h2>
 
@@ -181,7 +195,8 @@
   Returns  : (RunID) - last insert id (mysql)
   Argument : action, hash ref to options
   Throws   : Die - on SQL error
-  Comment  : hashref pass as argument is converted into string of &amp;key1=value1&amp;key2=value2..
+  Comment  : MySQL
+           : hashref pass as argument is converted into string of &amp;key1=value1&amp;key2=value2..
            : Invokes stored procedure `runStart` with 2 arguments
            : (Options) -string of options conveterd from hashref (options to &quot;run&quot; started)
            : (State) - sleep state
@@ -196,7 +211,8 @@
   Returns  : 1
   Argument : RunID
   Throws   : Die - on SQL error
-  Comment  : invokes stored procedure `runStat`
+  Comment  : MySQL
+           : invokes stored procedure `runStat`
            : Used to track progress of run, also updates som statsical data
            : ()
 
@@ -210,7 +226,8 @@
   Returns  : Handle to execution of statement
   Argument : Handle to array with data
   Throws   : Die - on SQL error
-  Comment  : All form&#39;s have a basic structure that is possible to save in tabular format.
+  Comment  : MySQL
+           : All form&#39;s have a basic structure that is possible to save in tabular format.
            : Each input in the form is inspected, the hierarchical structure is preserved
            : along with wich site is was grabbed of. Each input has a hierarchical level,
            : Line is just an index. input(item) may have a label (label_for), a CSS name,
@@ -230,7 +247,8 @@
   Argument : (siteID) - integer - inputs are from this site
              (skip)   - boolean
   Throws   : Die - on SQL error
-  Comment  : Skip false is the default, new items have skip=false, skip true is set for
+  Comment  : MySQL
+           : Skip false is the default, new items have skip=false, skip true is set for
            : items we normally want to skip, eg those with hits=0 this speeds up next re-run.
            : If we want to test those later on, check those who have skip=true.
            :
@@ -250,7 +268,8 @@
                 `bit` - string to put in url to define next search
   Argument : (siteID) - integer - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Gets geographic info for given site, from view.
+  Comment  : MySQL
+           : Gets geographic info for given site, from view.
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
@@ -267,7 +286,8 @@
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Gets geographic info for given site, from view.
+  Comment  : MySQL
+           : Gets geographic info for given site, from view.
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
@@ -284,7 +304,8 @@
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Digital Archives of Norway. Gets source info for given site.
+  Comment  : MySQL
+           : Digital Archives of Norway. Gets source info for given site.
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
@@ -302,7 +323,8 @@
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Gets source info for given site.
+  Comment  : MySQL
+           : Gets source info for given site.
            : Creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
@@ -318,7 +340,8 @@
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Data is sorted into themes.
+  Comment  : MySQL
+           : Data is sorted into themes.
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
@@ -334,7 +357,8 @@
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : The function creates an array of hashes (to be traversed later).
+  Comment  : MySQL
+           : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
 
@@ -351,7 +375,8 @@
                 `bit` - string to put in url to define next search
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : The function creates an array of hashes (to be traversed later).
+  Comment  : MySQL
+           : The function creates an array of hashes (to be traversed later).
            : (Currently only 2 Organs - mining, industry)
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
@@ -366,7 +391,8 @@
            : ($rows) - number of inserted rows
   Argument : (siteID) - inputs are from this site
   Throws   : Die - on SQL error
-  Comment  : Saves file to table &quot;resultparms&quot; using LOAD DATA.
+  Comment  : MySQL
+           : Saves file to table &quot;resultparms&quot; using LOAD DATA.
            : File expected to have headers in first line
 
  See Also  : DBIloadFile()</code></pre>
@@ -378,12 +404,13 @@
   Purpose  : Generic file loader. Wrapper for DBI Load DATA function.
   Returns  : (\$sth) -  ref to statement handle
            : ($rows) - number of inserted rows
-  Argument :   0-filename,
+  Argument :  0-filename,
                 1-tablename,
                 2-array of fields,
                 3-&quot;SET&quot;
   Throws   : Die - on SQL error
-  Comment  : Bulk saves data from a file to database.
+  Comment  : MySQL
+           : Bulk saves data from a file to database.
            : File expected to have headers in first line
            : SET can be any valid SQL (Should failsafe it?)
 
@@ -407,7 +434,8 @@
                 `ok` - code for organ (Organ)
                 `ko` - subcode for `ok`
   Throws   : Die - on SQL error
-  Comment  : Saving form parameters to database one row at a time.
+  Comment  : MySQL
+           : Saving form parameters to database one row at a time.
             :
            : Not all permutations of parameters will yield result (URL - with
            : data to further scrape), some parameters are logically linked,
@@ -416,8 +444,8 @@
            : Not all fields in table resultParms get saved/updated.
            : Some things need to be scraped later on.
            : Following fields are for keeping track of next stage
-           :  * Checked=true means site is chekcked/scraped
-           :  * changed/hits/pages/runID is filled in after scrape
+           : * Checked=true means site is chekcked/scraped
+           : * changed/hits/pages/runID is filled in after scrape
 
   See Also : DBIresultUpdate()</code></pre>
 
@@ -427,12 +455,13 @@
 
   Purpose  : Update a single line in resultparms.
   Returns  : True/False (ok/fail)
-  Argument :   0=&gt;hits,
+  Argument :  0=&gt;hits,
                 1=&gt;checked,
                 2=&gt;resultID,
                 3=&gt;siteID
   Throws   : Die - on SQL error in preperation, not execution
-  Comment  : First 2 arguments are update values, next 2 are identificators in where clause
+  Comment  : MySQL
+           : First 2 arguments are update values, next 2 are identificators in where clause
            : hits - number of sources to further lookup. pages &gt;1 if data to further lookup.
            : if pages=0, then skip=true (no data found, don&#39;t waste time on next normal run).
            : Sometimes not all data can be harvested on a single page,  (pages are then =&gt; 2)
@@ -448,7 +477,8 @@
   Argument : ref to array of array
            : Columns: `resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`
   Throws   : Die - on SQL error
-  Comment  : Digital Archives of Norway &quot;Finn kilde&quot; (Find source) has listing
+  Comment  : MySQL
+           : Digital Archives of Norway &quot;Finn kilde&quot; (Find source) has listing
            : (resultList) that is saved to database.
            : Data from scraping is an array of arrays.
 
@@ -464,9 +494,7 @@
 
 <p><b>Artistic License (Perl)</b> Author (Copyright Holder) wishes to maintain &quot;artistic&quot; control over the licensed software and derivative works created from it.</p>
 
-<p>This code is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0.</p>
-
-<p>The full text of the license can be found in the LICENSE file included with this module, or &quot;<a href="http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic">http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic</a>&quot;.</p>
+<p>This code is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0. The full text of the license can be found in the LICENSE file included with this module, or <a href="http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic">http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic</a></p>
 
 <h1 id="DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</h1>
 

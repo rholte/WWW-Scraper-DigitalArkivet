@@ -9,8 +9,8 @@ use Data::Dumper::Simple;
 use Getopt::Std;
 use Pod::Usage;
 use URI;
-use WWW::Scraper::DigitalArkivet  qw/&processFormInput/;
-use WWW::Scraper::DigitalArkivet::Database qw/&DBIForm2DB/;
+use WWW::Scraper::DigitalArkivet  qw/&processFormInput &DBIForm2DB/;
+#use WWW::Scraper::DigitalArkivet::Database qw/&DBIForm2DB/;
 use 5.008001;
 $| = 1;
 
@@ -18,7 +18,7 @@ my (@data, @input);
 my (%cfg, %Option, %site);
 
 # import into %cfg hash:
-Config::Simple->import_from( 'DigitalArkivet.cfg', \%cfg );
+Config::Simple->import_from( 'DigitalArkivet.cfg', \%cfg ) or die Config::Simple->error();
 #
 my $gDebug = $cfg{'Debug.debug'};
 my $seperator = $cfg{'Option.seperator'};
