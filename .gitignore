@@ -4,6 +4,7 @@ lib/WWW/Scraper/ReadMe.html
 lib/WWW/Scraper/DigitalArkivet/README
 lib/WWW/Scraper/DigitalArkivet/pod2htmd.tmp
 *.tmp
+*.lnk
 *.cmd
 *.WinMerge
 scripts/Digitalarkivet-webscraper.mwb
