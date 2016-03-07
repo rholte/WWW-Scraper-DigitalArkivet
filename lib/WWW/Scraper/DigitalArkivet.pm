@@ -123,6 +123,7 @@ use constant { true => 1, false => 0 };
 use Config::Simple;
 use Data::Dumper::Simple;
 use DBI;
+use Log::Log4perl qw(get_logger :levels);
 use Text::CSV_XS qw( csv );
 use Text::Trim;
 #use Time::HiRes qw(sleep);
@@ -130,7 +131,8 @@ use URI;
 use Web::Scraper;
 use 5.008001;
 
-our ($baseURL, $Connected, $config, $gDebug, $href, $runID, $resultID, $ResultList, $info, $resultListID);
+our ($baseURL, $Connected, $config, $gDebug, $href, $runID, $resultID,
+     $ResultList, $info, $resultListID, $recent);
 our (%cfg, %old, %site, @input, @select, @radio, @rlist, @data);
 our ($InG, $InS, $InL, $InT, $InF, $InO, $gLimit, $driver, $db, $host, $port, $res,
     $user, $pwd, $attr, $cfg_set, $gsState, $gsFact, $gsRand, $path, $pr, $maxHits,
@@ -148,6 +150,10 @@ my $count=0;
 
 _readCFG();
 _defineScraper();
+
+#Log::Log4perl->init_and_watch("l4p.conf", 900); #checks reloads log4perl config every 900 sec (15 min)
+#Log::Log4perl->init("l4p.conf"); #checks reloads log4perl config every 900 sec (15 min)
+#my $log = Log::Log4perl->get_logger('Digitalarkivet'); # root
 
 
 #-----------------------------------------------------------------------------
@@ -167,7 +173,8 @@ B<NOTE:>
 Memory usage required to hold/store data temporarily in internal data structures
 depend on chunk sizes. Stage 1 is neither large nor time comsuming. But afterwards
 default chunk size could be larger memory wise, but are kept smaller due to user
-experience on failure in communications. (Stage 2 took at least 3 days to complete)
+experience on failure in communications. (Stage 2 may take 15 days to complete)
+approx 450.000 entries 2.2 seconds foreach entry
 
 =head3 B<Stage 1>
 
@@ -409,23 +416,42 @@ sub _defineScraper {
         };
     };
 
+            #process 'td:nth-child(1)', 'label1' => 'TEXT';
+            #process 'td:nth-child(2)', 'value1' => 'TEXT';
+            #process 'td:nth-child(3)', 'label2' => 'TEXT';
+            #process 'td:nth-child(4)', 'value2' => 'TEXT';
     $info = scraper {
         # Might have 2 tables, 4 coloumns .. label,value label value
         # First infotable
-        process 'table.infotable:first-child > tbody > tr', 'rows1[]' => scraper {
-            process 'td:nth-child(1)', 'label1' => 'TEXT';
-            process 'td:nth-child(2)', 'value1' => 'TEXT';
-            process 'td:nth-child(3)', 'label2' => 'TEXT';
-            process 'td:nth-child(4)', 'value2' => 'TEXT';
+        process 'table.infotable:first-child > tbody > tr', 'about[]' => scraper {
+            process 'td[position() mod 2 = 1 ]' => 'TEXT';
+            process 'td[position() mod 2 = 0 ]' => 'TEXT';
         };
-        # Second infotable
-        process 'table.infotable:nth-child(2) > tbody > tr', 'rows2[]' => scraper {
-            process 'td:nth-child(1)', 'label1' => 'TEXT';
-            process 'td:nth-child(2)', 'value1' => 'TEXT';
-            process 'td:nth-child(3)', 'label2' => 'TEXT';
-            process 'td:nth-child(4)', 'value2' => 'TEXT';
+        # next infotable's
+        process ' h4', 'section[]' ,'title'  => 'TEXT' => scraper {
+            process 'h3', 'list[]' ,'title'  => 'TEXT' => scraper {
+                process 'table.infotable[position() > 1] > tbody > tr', 'info[]' => scraper {
+                    process 'td[position() mod 2 = 1 ]', 'label' => 'TEXT'; # odd
+                    process 'td[position() mod 2 = 0 ]', 'value' => 'TEXT'; # even
+                };
+            };
         };
+        process 'h1', 'title' => 'TEXT';
+        process 'div#contentHeader > div > ul', 'link' => scraper {
+            process 'li > ul > li', 'lists[]' => scraper { 'a', 'name' => 'TEXT', 'url'  => '@href' }
+        };
+        result 'title', 'about', 'section', 'link';
     };
+
+    $recent = scraper {
+        # recent 100 list
+        process 'div.oneCol > ol.numberList > li',
+        'data[]' => scraper {
+             process 'li > a', 'url' => '@href';
+             process 'li > a', 'src' => 'TEXT';
+        };
+        process 'div.oneCol > ol.numberList > li','txt[]' => 'TEXT';
+    }
 }
 
 
@@ -1933,12 +1959,14 @@ sub DBIloadFile {
     my $set    = $_[3] if (length($_[3])); # eg SET columnX = CURRENT_TIMESTAMP
     #y $tab    = exists $cfg{'DBI.fTerm'} ? $cfg{'DBI.fTerm'} : '\x{09}'; #defalt tab is x09 (TAB)
     #y $lf     = exists $cfg{'DBI.lTerm'} ? $cfg{'DBI.fTerm'} : '\x{0A}'; #default linfeed is  x0A (LF)
-    my $tab    = '\t'; #defalt tab is x09 (TAB)
+    #my $tab    = '\t'; #defalt tab is x09 (TAB)
+    my $tab    = ','; #defalt tab is x09 (TAB)
     my $lf     = '\n'; #default linfeed is  x0A (LF)
     my $rows=0;
     our $dbh = &Connect2DB() if not($Connected);
     my $fieldlist = join ", ", @fields;
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`$table` CHARACTER SET UTF8 FIELDS TERMINATED BY '$tab' ENCLOSED BY '"' IGNORE 1 LINES ( $fieldlist ) };
+    #CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES
+    my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`$table` CHARACTER SET UTF8 FIELDS TERMINATED BY  '$tab' ENCLOSED BY '"' IGNORE 1 LINES ( $fieldlist ) };
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
