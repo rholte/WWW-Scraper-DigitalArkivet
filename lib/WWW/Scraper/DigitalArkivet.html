@@ -149,7 +149,7 @@
 
 <p>Each subroutine/function (method) is documented. To avoid problems with timeout/ network errors and memory issues data should be gathered in chunks by re-runs, each run should collect a given (not too large) amount of data until there is no more to collect. Some sort of cron job needs to repeat these runs until the whole site is scraped.</p>
 
-<p><b>NOTE:</b> Memory usage required to hold/store data temporarily in internal data structures depend on chunk sizes. Stage 1 is neither large nor time comsuming. But afterwards default chunk size could be larger memory wise, but are kept smaller due to user experience on failure in communications. (Stage 2 took at least 3 days to complete)</p>
+<p><b>NOTE:</b> Memory usage required to hold/store data temporarily in internal data structures depend on chunk sizes. Stage 1 is neither large nor time comsuming. But afterwards default chunk size could be larger memory wise, but are kept smaller due to user experience on failure in communications. (Stage 2 may take 15 days to complete) approx 450.000 entries 2.2 seconds foreach entry</p>
 
 <h3 id="Stage-1"><b>Stage 1</b></h3>
 

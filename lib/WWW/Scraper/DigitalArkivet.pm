@@ -37,7 +37,7 @@ B<WWW::Scraper::DigitalArkivet> - Routines for scraping Digitalarkivet
 
 =head1 VERSION
 
- 0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, Fifth Stage
+ 0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, (Fifth Stage completed)
  0.05 - 31.07.2015 - Module - First stage complete
  0.04 - 01.07.2015 - POD - Documented, minor bugfix'es
  0.03 - 01.10.2014 - Added proc resetDA
@@ -193,18 +193,18 @@ Scrape URL's based upon options.
 
 Result pages may contain identical search, browse, info pages. process only unique URL's!
 
-    a. Search
-    b. Browse
-    c. Info. Details about each source
+    a. Search (What can be searched)
+    b. Browse (Some sources have index to pages - grab index)
+    c. Info. Details on each source
     d.
 
 =head3 B<Stage 4>
 
-    Try ID numbers - not published. Find info about (hidden) sources
+    Try ID numbers - not published. Find info about (hidden?) sources
 
 =head3 B<Stage 5>
 
-    Last 100
+    Last 100, scrape last 100 regularly and save to database table (recent)
 
 =cut
 
@@ -292,9 +292,7 @@ sub _readCFG {
 sub _defineScraper {
         # ToDo? retrieve from da.toSrape
     # Define scraper objects - pattern to scrape/hold data
-    $input[0] = scraper {
-        # Kildekategori
-        process 'div.listGroup > ul.grouped > li', 'data[]' => scraper {
+    my $inputLabel = scraper {
             process 'input',
               'id'    => '@id',
               'value' => '@value',
@@ -304,70 +302,44 @@ sub _defineScraper {
               'label_for' => '@for',
               'text'      => 'TEXT';
         };
+
+    $input[0] = scraper {
+        # Kildekategori
+        process 'div.listGroup > ul.grouped > li', 'data[]' => $inputLabel;
     };
 
     $input[1] = scraper {
-        process 'ul.sublist1 > li', 'data[]' => scraper {
-            process 'input',
-              'id'    => '@id',
-              'value' => '@value',
-              'type'  => '@type',
-              'name'  => '@name';
-            process 'label',
-              'label_for' => '@for',
-              'text'      => 'TEXT';
-        };
+        process 'ul.sublist1 > li', 'data[]' => $inputLabel;
     };
 
     $input[2] = scraper {
         # Geografi
-        process 'ul.sublist2 > li', 'data[]' => scraper {
-            process 'input',
-              'id'    => '@id',
-              'value' => '@value',
-              'type'  => '@type',
-              'name'  => '@name';
-            process 'label',
-              'label_for' => '@for',
-              'text'      => 'TEXT';
-        };
+        process 'ul.sublist2 > li', 'data[]' => $inputLabel;
     };
 
     $input[3] = scraper {
         # Mainly text inputs
         # Personinformasjon, Hendelsesinformasjon / Eiendomsinformasjon
-        process 'ol.form > li', 'data[]' => scraper {
-            process 'label',
-              'label_for' => '@for',
-              'text'      => 'TEXT';
-            process 'input',
-              'id'    => '@id',
-              'value' => '@value',
-              'type'  => '@type',
-              'name'  => '@name';
-        };
+        process 'ol.form > li', 'data[]' => $inputLabel;
     };
 
     # Radio eiendom_avansert
     $radio[0] = scraper {
         process 'ul > li', 'data' => scraper {
-            process 'label[]',
-              'label_for' => '@for',
-              'text'      => 'TEXT';
             process 'input[]',
               'id'    => '@id',
               'value' => '@value',
               'type'  => '@type',
               'name'  => '@name';
+            process 'label[]',
+              'label_for' => '@for',
+              'text'      => 'TEXT';
         };
     };
 
     # grab select
     $select[0] = scraper {
         process 'ol.form > li', 'data[]' => scraper {
-            process 'label',
-              'label_for' => '@for',
-              'text'      => 'TEXT';
             process 'select',
               'id'      => '@id',
               'name'    => '@name',
@@ -376,20 +348,14 @@ sub _defineScraper {
                   'value' => '@value',
                   'text'  => 'TEXT';
               };
-        };
-    };
-
-    $rlist[0] = scraper {
-        process 'div.listGroup > ul.grouped > li', 'data[]' => scraper {
-            process 'input',
-              'id'    => '@id',
-              'value' => '@value',
-              'type'  => '@type',
-              'name'  => '@name';
             process 'label',
               'label_for' => '@for',
               'text'      => 'TEXT';
         };
+    };
+
+    $rlist[0] = scraper {
+        process 'div.listGroup > ul.grouped > li', 'data[]' => $inputLabel;
     };
 
     $ResultList = scraper {
