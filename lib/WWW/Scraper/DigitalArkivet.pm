@@ -282,7 +282,9 @@ sub _readCFG {
   Argument : <none>
   Throws   : -
   Comment  :
-           :
+           : need to learn about scrapers? checkout
+           :  http://www.perldesignpatterns.com/?WebScraper
+           :  https://teusje.wordpress.com/2010/05/02/web-scraping-with-perl/
 
  See Also  :
 
@@ -719,7 +721,7 @@ sub doDBIrunStat {
            : $_[4] - scrape
            : $_[5] - seperator
   Throws   : -
-  Comment  :
+  Comment  : webpage form shows searchable attributes for metadata on source
            :
 
  See Also  :

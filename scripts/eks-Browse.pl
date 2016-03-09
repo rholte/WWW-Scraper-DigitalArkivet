@@ -60,14 +60,14 @@ sub DAprint {
 
     print "\n";
     print "--------------------------------\n";
-    print "---       Dump av data       ---\n";
+    print "---       Dump data       ---\n";
     print "--------------------------------\n";
-    print Dumper(\$res);
+    #print Dumper(\$res);
+    print DumpTree ($res, 'Resultat');
     print "\n";
     print "--------------------------------\n";
     print "---            End           ---\n";
     print "--------------------------------\n";
-    print DumpTree ($res, 'Resultat');
-}
+ }
 
 1;
