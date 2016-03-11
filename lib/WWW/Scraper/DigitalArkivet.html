@@ -1,0 +1,769 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#INSTALLING">INSTALLING</a></li>
+  <li><a href="#TODO">TODO</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#SUPPORT">SUPPORT</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#REVISION-HISTORY">REVISION HISTORY</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li>
+        <ul>
+          <li><a href="#Stage-1">Stage 1</a></li>
+          <li><a href="#Stage-2">Stage 2</a></li>
+          <li><a href="#Stage-3">Stage 3</a></li>
+          <li><a href="#Stage-4">Stage 4</a></li>
+          <li><a href="#Stage-5">Stage 5</a></li>
+        </ul>
+      </li>
+      <li><a href="#readCFG">_readCFG</a></li>
+      <li><a href="#defineScraper">_defineScraper()</a></li>
+      <li><a href="#s2hms">s2hms()</a></li>
+      <li><a href="#padZero">padZero()</a></li>
+      <li><a href="#Connect2DB">Connect2DB()</a></li>
+      <li><a href="#Disconnect2DB">Disconnect2DB()</a></li>
+      <li><a href="#DBIresetDA">DBIresetDA()</a></li>
+      <li><a href="#getRunID">getRunID()</a></li>
+      <li><a href="#getResultatID">getResultatID()</a></li>
+      <li><a href="#doDBIrunStart">doDBIrunStart()</a></li>
+      <li><a href="#doDBIrunStat">doDBIrunStat()</a></li>
+      <li><a href="#processFormInput">processFormInput()</a></li>
+      <li><a href="#labelFor">labelFor()</a></li>
+      <li><a href="#lastPage">lastPage()</a></li>
+      <li><a href="#DBIForm2DB">DBIForm2DB()</a></li>
+      <li><a href="#buildCSVparamList">buildCSVparamList()</a></li>
+      <li><a href="#buildCSVsrc">buildCSVsrc()</a></li>
+      <li><a href="#buildCSVsimple">buildCSVsimple()</a></li>
+      <li><a href="#processParamList">processParamList()</a></li>
+      <li><a href="#scrapeResultList">scrapeResultList()</a></li>
+      <li><a href="#parm2CSV">parm2CSV()</a></li>
+      <li><a href="#isNew">isNew()</a></li>
+      <li><a href="#daResultparms">daResultparms()</a></li>
+      <li><a href="#daGeography">daGeography()</a></li>
+      <li><a href="#daGeography2">daGeography2()</a></li>
+      <li><a href="#daSource">daSource()</a></li>
+      <li><a href="#daListType">daListType()</a></li>
+      <li><a href="#daTheme">daTheme()</a></li>
+      <li><a href="#daFormat">daFormat()</a></li>
+      <li><a href="#daOrgan">daOrgan()</a></li>
+      <li><a href="#DBIloadCSVresultparms">DBIloadCSVresultparms()</a></li>
+      <li><a href="#DBIloadFile">DBIloadFile()</a></li>
+      <li><a href="#DBIresultParms2DB">DBIresultParms2DB()</a></li>
+      <li><a href="#DBIresultUpdate">DBIresultUpdate()</a></li>
+      <li><a href="#DBIresultList2DB">DBIresultList2DB()</a></li>
+      <li><a href="#parseURI">parseURI()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+  <li><a href="#DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>WWW::Scraper::DigitalArkivet</b> - Routines for scraping Digitalarkivet</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<pre><code> 0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, Fifth Stage
+ 0.05 - 31.07.2015 - Module - First stage complete
+ 0.04 - 01.07.2015 - POD - Documented, minor bugfix&#39;es
+ 0.03 - 01.10.2014 - Added proc resetDA
+ 0.02 - 21.09.2014 - Added Tables resultList, resultParms, resultBrowse.
+                     Views: vgeography,vinput,vinputf,vinputformat,vinputk,
+                            vinputka, vinputkt,vinputlt,vinputr,vinputtheme
+ 0.01 - 01.08.2014 - Created. Tables form, site, toscrape</code></pre>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>  <span class="keyword">use</span> <span class="variable">WWW::Scraper::DigitalArkivet</span><span class="operator">;</span>
+</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Library for routines to web scrape metadata of sources from the Digital Archives of Norway also known as Digitalarkivet. Some of the routines are dependable on a MySQL database (DBI::Mysql)</p>
+
+<h1 id="INSTALLING">INSTALLING</h1>
+
+<p>You can create it now by using the command shown above from this directory.</p>
+
+<p>At the very least you should be able to use this set of instructions to install the module...</p>
+
+<p>perl Makefile.PL make make test make install</p>
+
+<p>If you are on a windows box you should use &#39;nmake&#39; rather than &#39;make&#39;.</p>
+
+<h1 id="TODO">TODO</h1>
+
+<p>See TODO file (Stage 2 basicly completed except log4perl)</p>
+
+<h1 id="BUGS">BUGS</h1>
+
+<h1 id="SUPPORT">SUPPORT</h1>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
+
+<p>Tested on win7, no known ties to this platform. Should work for other platforms. Configuration see config file - <b>DigitalArkivet.cfg</b></p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
+
+<p>Requires modules Web::Scraper, Text::Trim Config::Simple and DBI (amd DBD::mysql)</p>
+
+<p>Databasestructure as of DigitalArkivet-webscraper.mwb v.0. or newer</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<pre><code>    Rolf B. Holte - L&lt;http://www.holte.nu/&gt; - &lt;rolfbh@disnorge.no&gt;
+    Member of DIS-Norge, The Genealogy Society of Norway-DIS
+    CPAN ID: RBH</code></pre>
+
+<p>Please drop me an email if you use this in any project. It would be nice to know if it&#39;s usable for others in any capacity. Any suggestions for improvement are also appreciated.</p>
+
+<h1 id="REVISION-HISTORY">REVISION HISTORY</h1>
+
+<pre><code> 0.04 - xx.08.2015 - Stage 2, Merged with WWW::Scraper::DigitalArkivet::Database
+ 0.03 - 31.07.2015 - Module
+ 0.02 - 01.05.2015 - POD - Documented
+ 0.01 - 01.08.2014 - Created.</code></pre>
+
+<h1 id="METHODS">METHODS</h1>
+
+<p>Each subroutine/function (method) is documented. To avoid problems with timeout/ network errors and memory issues data should be gathered in chunks by re-runs, each run should collect a given (not too large) amount of data until there is no more to collect. Some sort of cron job needs to repeat these runs until the whole site is scraped.</p>
+
+<p><b>NOTE:</b> Memory usage required to hold/store data temporarily in internal data structures depend on chunk sizes. Stage 1 is neither large nor time comsuming. But afterwards default chunk size could be larger memory wise, but are kept smaller due to user experience on failure in communications. (Stage 2 may take 15 days to complete) approx 450.000 entries 2.2 seconds foreach entry</p>
+
+<h3 id="Stage-1"><b>Stage 1</b></h3>
+
+<p>What are the searchable options? Look at the form, compile list for later use</p>
+
+<pre><code>    a) grab all data about inputs.
+    b) store data (to a database).</code></pre>
+
+<h3 id="Stage-2"><b>Stage 2</b></h3>
+
+<p>Scrape URL&#39;s based upon options. (For each option combo) save &#39;Result of search&#39;.</p>
+
+<h3 id="Stage-3"><b>Stage 3</b></h3>
+
+<p>Result pages may contain identical search, browse, info pages. process only unique URL&#39;s!</p>
+
+<pre><code>    a. Search
+    b. Browse
+    c. Info. Details about each source
+    d.</code></pre>
+
+<h3 id="Stage-4"><b>Stage 4</b></h3>
+
+<pre><code>    Try ID numbers - not published. Find info about (hidden) sources</code></pre>
+
+<h3 id="Stage-5"><b>Stage 5</b></h3>
+
+<pre><code>    Last 100</code></pre>
+
+<h2 id="readCFG">_readCFG</h2>
+
+<pre><code>  Purpose  : Load configuration
+  Returns  : &lt;none&gt;
+  Argument : &lt;none&gt;</code></pre>
+
+<h2 id="defineScraper">_defineScraper()</h2>
+
+<pre><code>  Purpose  : Define scraper objects
+  Returns  :
+  Argument : &lt;none&gt;
+  Throws   : -
+  Comment  :
+           :
+
+ See Also  :</code></pre>
+
+<h2 id="s2hms">s2hms()</h2>
+
+<pre><code>  Purpose  : Converts seconds into a string with hours, minutes and seconds
+  Returns  : hh:mm:ss &lt;string&gt;
+  Argument : seconds &lt;integer&gt;
+  Throws   : -
+  Comment  : if seconds &gt;  ...
+
+ See Also  :</code></pre>
+
+<h2 id="padZero">padZero()</h2>
+
+<pre><code>  Purpose  : Zero pad string  eg. 003 &amp; 02
+  Returns  : zero padded number &lt;string&gt;
+  Argument : number (to pad)
+           : lenght (maximum)
+  Throws   : -
+  Comment  :
+           :
+
+ See Also  :</code></pre>
+
+<h2 id="Connect2DB">Connect2DB()</h2>
+
+<pre><code>  Purpose  : Establish and hold connection to a database
+  Returns  : Database handle
+  Argument : &lt;none&gt;
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Connects to a database, returns the handle to it for further use.
+
+ See Also  : Disconnect2DB()</code></pre>
+
+<h2 id="Disconnect2DB">Disconnect2DB()</h2>
+
+<pre><code>  Purpose  : Terminate database connection
+  Returns  : &lt;none&gt;
+  Argument : &lt;none&gt;
+  Comment  : MySQL
+
+ See Also  : Connect2DB()</code></pre>
+
+<h2 id="DBIresetDA">DBIresetDA()</h2>
+
+<pre><code>  Purpose  : Calls stored procedure to reset the database.
+  Returns  : Ref to statement handle
+  Argument : &lt;none&gt;
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Connect to a database, returns the handle to it for further use.</code></pre>
+
+<h2 id="getRunID">getRunID()</h2>
+
+<pre><code>  Purpose  : Retrieve current RunID
+  Returns  : (RunID) - integer - Last inserted RunID
+  Argument : &lt;none&gt;
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Every &#39;Run&#39; has a unique process (autoincrement) number.
+           : Used to identify which data is collected during which run.</code></pre>
+
+<h2 id="getResultatID">getResultatID()</h2>
+
+<pre><code>  Purpose  : Retrieve current getResultatID
+  Returns  : (RunID) - integer - Last inserted getResultatID
+  Argument : &lt;none&gt;
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : (autoincrement) number.
+           :</code></pre>
+
+<h2 id="doDBIrunStart">doDBIrunStart()</h2>
+
+<pre><code>  Purpose  : Start data gathering
+  Returns  : (RunID) - last insert id (mysql)
+  Argument : action, hash ref to options
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : hashref pass as argument is converted into string of &amp;key1=value1&amp;key2=value2..
+           : Invokes stored procedure `runStart` with 2 arguments
+           : (Options) -string of options conveterd from hashref (options to &quot;run&quot; started)
+           : (State) - sleep state
+           : Marks beginning of data gathering enables logging of progress
+           : &quot;of run&quot;/ harvesting of data
+
+ See Also  : doDBIrunStat()</code></pre>
+
+<h2 id="doDBIrunStat">doDBIrunStat()</h2>
+
+<pre><code>  Purpose  : log statistical data of harvesting
+  Returns  : 1
+  Argument : RunID
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : invokes stored procedure `runStat`
+           : Used to track progress of run, also updates som statsical data
+           : ()
+
+ See Also  : doDBIrunStart()</code></pre>
+
+<h2 id="processFormInput">processFormInput()</h2>
+
+<pre><code>  Stage    : 1
+
+  Purpose  : Web scrape form inputs - process inputs from form
+  Returns  : \@data - handle to array containing data
+  Argument : $_[0] - filehandle
+           : $_[1] - siteID
+           : $_[2] - url
+           : $_[3] - level
+           : $_[4] - scrape
+           : $_[5] - seperator
+  Throws   : -
+  Comment  :
+           :
+
+ See Also  :</code></pre>
+
+<h2 id="labelFor">labelFor()</h2>
+
+<pre><code>  Stage    : 1
+
+  Purpose  : Decode label attribute &quot;for&quot; eg ka14kt0
+  Returns  : array of 3 strings
+  Argument : labelfor (string)
+  Throws   : -
+  Comment  : The label&#39;s for the attribute has a numbering system up to 3 levels.
+           : break string into 3 parts, prefix/number and make an array of each
+           : part. Pad with &quot;null&quot; if needed to make an array (of 3).
+           : Used later to process hierarchal structures of the inputs.
+
+ See Also  :</code></pre>
+
+<h2 id="lastPage">lastPage()</h2>
+
+<pre><code>  Stage    : 1
+
+  Purpose  : Actual page number of last page. (not url)
+  Returns  : page number
+  Argument : (pageurls) - array of urls
+  Throws   : -
+  Comment  : lastPage, of all &quot;lastpages&quot; scraped only last is relevant.
+           : web scrape gets too many urls, this routine fixes last page.
+           : (Thus need last page in scope)
+
+ See Also  :</code></pre>
+
+<h2 id="DBIForm2DB">DBIForm2DB()</h2>
+
+<pre><code>  Stage    : 1
+
+  Purpose  : Save form data to database. (Array from form into database).
+  Returns  : Handle to execution of statement
+  Argument : Handle to array with data
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : All form&#39;s have a basic structure that is possible to save in tabular format.
+           : Each input in the form is inspected, the hierarchical structure is preserved
+           : along with wich site is was grabbed of. Each input has a hierarchical level,
+           : Line is just an index. input(item) may have a label (label_for), a CSS name,
+           : text, CSS id, and is of a certain type. Name2, lf1, lf2 and lf3 are just for
+           : help in rebuilding hierarchy.
+
+  Columns  : `siteID` `level` `line` `label_for` `text` `name` `value` `id` `type` `name2` `lf1` `lf2` `lf3`</code></pre>
+
+<h2 id="buildCSVparamList">buildCSVparamList()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Build list of params - save to resultparms.csv
+  Returns  : -
+  Argument : (siteID) - process this site
+           : (url) - url
+           : filename
+  Throws   : Die on failure to close file
+  Comment  : Build list to be traversed later.
+           : List is saved to CSV.
+           : Doesn&#39;t check theme &amp; format for evry place, thus saving time
+           : (Trick to reduce list, no need to check every permutation !)
+           : NB  @organ is not traversed !!  on ToDo ??
+
+ See Also  :</code></pre>
+
+<h2 id="buildCSVsrc">buildCSVsrc()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Build general list of params
+  Returns  : -
+  Argument : (siteID) - process this site
+           : (url) - url
+           : filename
+  Throws   : -
+  Comment  : loop every kt[] &amp; lt[] forearch geographic place
+           : (-&gt;each daGeography  r,f,k)
+           : Not nesting every availible parameter, because there is some
+           : logic to it all.  Short cut can be made, thus buildCSVsimple()
+           : (Trick to reduce list, no need to check every permutation !)
+           : NB  @organ is not traversed !!  on ToDo ??
+
+ See Also  : buildCSVsimple()</code></pre>
+
+<h2 id="buildCSVsimple">buildCSVsimple()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Build simpler list of params
+  Returns  : -
+  Argument : (siteID) - process this site
+           : (url) - url
+           : filename
+  Throws   : -
+  Comment  : Since there is no need to permutate all options to find Theme/
+           : format this is done countywise (fylkesvis). Expect to find same
+           : source in buildCSVsrc -&gt; search only countywise (fylkesvis)
+           : (skip=1 needn&#39;t scrape)
+           :
+           : Trick to reduce list, no need to check every permutation !
+           : NB  @organ is not traversed !!  on ToDo ??
+
+ See Also  : buildCSVsrc()</code></pre>
+
+<h2 id="processParamList">processParamList()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Read unproccessed urls into array (of hashes)
+  Returns  :
+  Argument : &lt;none&gt;
+  Throws   : -
+  Comment  :
+           :
+
+ See Also  :</code></pre>
+
+<h2 id="scrapeResultList">scrapeResultList()</h2>
+
+<pre><code>  Stage    :
+
+  Purpose  : check url, scrape data to build a result list
+  Returns  :
+  Argument : &lt;none&gt;
+  Throws   : -
+  Comment  : if url has hit(s) data is stored into database
+           : this list contains upto 4 urls that will be scraped at next stage
+
+ See Also  :</code></pre>
+
+<h2 id="parm2CSV">parm2CSV()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : save data to predefined filehandle
+  Returns  :
+  Argument : &lt;none&gt;
+  Throws   : -
+  Comment  : saves &quot;prints&quot; to csv file tab seprated
+           :
+
+ See Also  :</code></pre>
+
+<h2 id="isNew">isNew()</h2>
+
+<pre><code>  <span class="variable">Stage</span>    <span class="operator">:</span> <span class="number">2</span>
+  
+  <span class="variable">Purpose</span>  <span class="operator">:</span> <span class="variable">Holds</span> <span class="variable">counter</span> <span class="variable">vaule</span> <span class="keyword">for</span> <span class="variable">a</span> <span class="keyword">given</span> <span class="variable">key</span>
+  <span class="variable">Returns</span>  <span class="operator">:</span> <span class="keyword">undef</span><span class="operator">,</span><span class="number">0</span><span class="operator">,</span><span class="number">1</span>
+  <span class="variable">Argument</span> <span class="operator">:</span> <span class="operator">&lt;</span><span class="variable">none</span><span class="operator">&gt;</span>
+  <span class="variable">Throws</span>   <span class="operator">:</span> <span class="operator">-</span>
+  <span class="variable">Comment</span>  <span class="operator">:</span> <span class="variable">Check's</span> <span class="keyword">if</span> <span class="variable">key</span> <span class="variable">has</span> <span class="variable">incremented</span><span class="operator">,</span> <span class="variable">True</span> <span class="variable">only</span> <span class="keyword">if</span> <span class="variable">newer</span> <span class="operator">(</span><span class="variable">larger</span><span class="operator">)</span>
+           <span class="operator">:</span> <span class="variable">Autoincrements</span> <span class="variable">always</span> <span class="variable">get</span> <span class="variable">larger</span><span class="operator">....</span>
+           <span class="operator">:</span>
+           <span class="operator">:</span> <span class="variable">Use</span> <span class="variable">only</span> <span class="variable">on</span> <span class="variable">counters</span><span class="operator">,</span> <span class="keyword">or</span> <span class="variable">variables</span> <span class="variable">that</span> <span class="variable">have</span> <span class="variable">postiv</span> <span class="variable">increments</span>
+           <span class="operator">:</span> <span class="variable">True</span> <span class="variable">only</span> <span class="keyword">if</span> <span class="variable">new</span><span class="operator">&gt;</span><span class="variable">old</span><span class="operator">{</span><span class="variable">$key</span><span class="operator">},</span> <span class="variable">false</span> <span class="variable">otherwise</span>
+           <span class="operator">:</span> <span class="variable">Note</span><span class="operator">!</span> <span class="variable">returns</span> <span class="keyword">undef</span> <span class="keyword">if</span> <span class="variable">new</span> <span class="operator">==</span> <span class="number">0</span> <span class="operator">(</span><span class="keyword">reset</span> <span class="keyword">state</span><span class="operator">)</span>
+           <span class="operator">:</span> <span class="variable">value</span> <span class="variable">to</span> <span class="variable">check</span> <span class="variable">should</span> <span class="variable">always</span> <span class="variable">be</span> <span class="operator">&gt;</span><span class="number">0</span>
+  
+   <span class="variable">See</span> <span class="variable">Also</span>  <span class="operator">:</span>
+</code></pre>
+
+<h2 id="daResultparms">daResultparms()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Retrieve URLs (and ID) - to be scraped - on Digital Archives of Norway.
+  Returns  : ref to &#39;Array of hashes&#39;
+                `resultID` - id
+                `url`      - url to scrape
+  Argument : (siteID) - integer - inputs are from this site
+             (skip)   - boolean
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Skip false is the default, new items have skip=false, skip true is set for
+           : items we normally want to skip, eg those with hits=0 this speeds up next re-run.
+           : If we want to test those later on, check those who have skip=true.
+           :
+           : `checked` = FALSE -&gt; normally those rows wich isn&#39;t scraped before.</code></pre>
+
+<p>See Also : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</p>
+
+<h2 id="daGeography">daGeography()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Retrieve geographic form options previously stored in the database.
+  Returns  : ref to &#39;Array of hashes&#39;
+                `r` - code for region (region)
+                `f` - code for county (fylke)
+                `k` - code for municipal (kommune)
+                `bit` - string to put in url to define next search
+  Argument : (siteID) - integer - inputs are from this site
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Gets geographic info for given site, from view.
+           : The function creates an array of hashes (to be traversed later).
+           : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
+
+ See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+
+<h2 id="daGeography2">daGeography2()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Retrieve geographic form options previously stored in the database.
+  Returns  : ref to &#39;Array of hashes&#39;
+                `r` - code for region (region)
+                `f` - code for county (fylke)
+                `bit` - string to put in url to define next search
+  Argument : (siteID) - inputs are from this site
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Gets geographic info for given site, from view.
+           : The function creates an array of hashes (to be traversed later).
+           : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
+
+ See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+
+<h2 id="daSource">daSource()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Retrieve source form options previously stored after scraping
+  Returns  : ref to &#39;Array of hashes&#39;
+                `ka` - code for source category (kilde)
+                `kt` - code for source type (kildetype)
+                `bit` - string to put in url to define next search
+  Argument : (siteID) - inputs are from this site
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Digital Archives of Norway. Gets source info for given site.
+           : The function creates an array of hashes (to be traversed later).
+           : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
+
+ See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+
+<h2 id="daListType">daListType()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Retrieve church book list types
+  Returns  : ref to &#39;Array of hashes&#39;
+                `ka` - code for source category (kilde)
+                `kt` - code for source type (kildetype)
+                `lt` - code for list type (listetype)
+                `bit` - string to put in url to define next search
+  Argument : (siteID) - inputs are from this site
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Gets source info for given site.
+           : Creates an array of hashes (to be traversed later).
+           : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
+
+ See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+
+<h2 id="daTheme">daTheme()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Retrieve form options - themes types
+  Returns  : ref to &#39;Array of hashes&#39;
+                `theme` - code for source theme (tema)
+                `bit` - string to put in url to define next search
+  Argument : (siteID) - inputs are from this site
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Data is sorted into themes.
+           : The function creates an array of hashes (to be traversed later).
+           : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
+
+  See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+
+<h2 id="daFormat">daFormat()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Retrieve form options - format types
+  Returns  : ref to &#39;Array of hashes&#39;
+                `format` - code for source format (format)
+                `bit` - string to put in url to define next search
+  Argument : (siteID) - inputs are from this site
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : The function creates an array of hashes (to be traversed later).
+           : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
+
+
+ See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+
+<h2 id="daOrgan">daOrgan()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Retrieve form options - Organ types
+  Returns  : ref to &#39;Array of hashes&#39;
+                `ok` - code for organ (Organ)
+                `ko` - subcode for `ok`
+                `bit` - string to put in url to define next search
+  Argument : (siteID) - inputs are from this site
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : The function creates an array of hashes (to be traversed later).
+           : (Currently only 2 Organs - mining, industry)
+           : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
+
+ See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+
+<h2 id="DBIloadCSVresultparms">DBIloadCSVresultparms()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Bulk save CSV file containing form data from web page
+  Returns  : (\$sth) -  ref to statement handle
+           : ($rows) - number of inserted rows
+  Argument : (siteID) - inputs are from this site
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Saves file to table &quot;resultparms&quot; using LOAD DATA.
+           : File expected to have headers in first line
+
+ See Also  : DBIloadFile()</code></pre>
+
+<h2 id="DBIloadFile">DBIloadFile()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Generic file loader. Wrapper for DBI Load DATA function.
+  Returns  : (\$sth) -  ref to statement handle
+           : ($rows) - number of inserted rows
+  Argument :  0-filename,
+              1-tablename,
+              2-ref to array of fields,
+              3-&quot;SET&quot;
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Bulk saves data from a file to database.
+           : File expected to have headers in first line
+           : SET can be any valid SQL (Should failsafe it?)
+
+ See Also  : DBIloadCSVresultparms()</code></pre>
+
+<h2 id="DBIresultParms2DB">DBIresultParms2DB()</h2>
+
+<pre><code>  Stage    : 2
+
+  Returns  : (\$sth) -  ref to statement handle
+           : ($resultID) - Last ID insterted
+  Argument : list of data to be saved
+                `r` - code for region (region)
+                `f` - code for county (fylke)
+                `k` - code for municipal (kommune)
+                `ka` - code for source category (kilde)
+                `kt` - code for source type (kildetype)
+                `lt` - subcode for `kt`, list type (listetype)
+                `format` - code for ...(Format)
+                `theme` - code for ...(Tema)
+                `ok` - code for organ (Organ)
+                `ko` - subcode for `ok`
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Saving form parameters to database one row at a time.
+            :
+           : Not all permutations of parameters will yield result (URL - with
+           : data to further scrape), some parameters are logically linked,
+           : however, there are 10 different parameters that all have several
+           : possibilities. Each value gives different URL to check (later).
+           : Not all fields in table resultParms get saved/updated.
+           : Some things need to be scraped later on.
+           : Following fields are for keeping track of next stage
+           : * Checked=true means site is chekcked/scraped
+           : * changed/hits/pages/runID is filled in after scrape
+
+  See Also : DBIresultUpdate()</code></pre>
+
+<h2 id="DBIresultUpdate">DBIresultUpdate()</h2>
+
+<pre><code>  Stage    : 2
+
+  Purpose  : Update a single line in resultparms.
+  Returns  : True/False (ok/fail)
+  Argument :  0=&gt;hits,
+                1=&gt;checked,
+                2=&gt;resultID,
+                3=&gt;siteID
+  Throws   : Die - on SQL error in preperation, not execution
+  Comment  : MySQL
+           : First 2 arguments are update values, next 2 are identificators in where clause
+           : hits - number of sources to further lookup. pages &gt;1 if data to further lookup.
+           : if pages=0, then skip=true (no data found, don&#39;t waste time on next normal run).
+           : Sometimes not all data can be harvested on a single page,  (pages are then =&gt; 2)
+
+ See Also  : DBIresultParms2DB()</code></pre>
+
+<h2 id="DBIresultList2DB">DBIresultList2DB()</h2>
+
+<pre><code>  Stage    : 3
+
+  Purpose  : Save array of arrays (resultlist) to the database
+  Returns  : ref to statement handler &amp; Last ID insterted C&lt;\$sth,$resultListID&gt;
+  Argument : ref to array of array
+           : Columns: `resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : Digital Archives of Norway &quot;Finn kilde&quot; (Find source) has listing
+           : (resultList) that is saved to database.
+           : Data from scraping is an array of arrays.
+
+ See Also   :</code></pre>
+
+<h2 id="parseURI">parseURI()</h2>
+
+<pre><code>  Stage    : 5
+
+  Purpose  : Split URI into several elments
+  Returns  : ($base) - base of URI
+           : ($uri)  - uri to metadata-info on source
+           : ($daID) - DA-ID internal (Digitalarkivet) ID
+           : ($cat)  - (Main) category
+           : ($lt)   - List type, subcategory
+           : ($file) - Boolean (&#39;is&#39; file or not)
+  Argument : URI
+  Throws   :
+  Comment  : Parses URI, returns elements into logical parts of the URI
+           : URI has structural info on source. returns URI that shows metadata
+           : of source. Category and lt are main components of logical structure.
+           : Expects URI like http://digitalarkivet.arkivverket.no/kb/sok/dp/17101
+           : or http://xml.arkivverket.no/matrikler/ma01001723.pdf
+
+ See Also   :</code></pre>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>perl(1), <i>DigitalArkivet-GetForm.pl</i>, <i>DigitalArkivet-finn_kilde.pl</i>, <i>DigitalArkivet-eiendom_avansert.pl</i></p>
+
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
+
+<p>Copyright (c) 2015 Rolf B. Holte - <a href="http://www.holte.nu/">http://www.holte.nu/</a> - &lt;rolfbh@disnorge.no&gt;</p>
+
+<p><b>Artistic License (Perl)</b> Author (Copyright Holder) wishes to maintain &quot;artistic&quot; control over the licensed software and derivative works created from it.</p>
+
+<p>This code is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0. The full text of the license can be found in the LICENSE file included with this module, or <a href="http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic">http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic</a></p>
+
+<h1 id="DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</h1>
+
+<p>This program is distributed in the hope that it will be useful, but it is provided &#39;as is&#39; and without any express or implied warranties. For details, see the full text of the license in the file LICENSE.</p>
+
+
+</body>
+
+</html>
+
+

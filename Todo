@@ -1,0 +1,15 @@
+TODO list for Perl module WWW::Scraper::DigitalArkivet
+
+    0. Move scripts to "module(s)"
+    		ok - Stage 1
+            ok - Stage 2 (fix:	log log4perl? & speed ? ), prevent duplicate scripts running
+					(log4perl not complete)
+				Stage 3 (uncoded) a-Search, b-Browse, c-Info. Examine results from stage 2
+				Stage 4 (uncoded) by id. Gathering undocumented
+            ok - Stage 5 last 100. Keep uptodate by checking last 100.
+
+    1. implement Slowly changed data / CDC ?
+		Create views with diff from live and historical data
+    2. Drop indexes on the database before load, reinstate after load.
+    3. Failsafe parameters - remove unwanted chars like " .
+    4. Get hidden inputs (if needed ?? - currently doesn't seem to matter for later use).

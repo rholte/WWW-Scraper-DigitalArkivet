@@ -1,0 +1,363 @@
+<<<<<<< HEAD
+•NAME
+•VERSION
+•SYNOPSIS
+•DESCRIPTION
+•USAGE
+•BUGS
+•SUPPORT
+•CONFIGURATION AND ENVIRONMENT
+•DEPENDENCIES
+•AUTHOR
+•REVISION HISTORY
+•HISTORY
+•METHODS 
+   processFormInput()
+   labelFor()
+   lastPage()
+   s2hms()
+   padZero()
+
+•SEE ALSO
+•LICENCE AND COPYRIGHT
+•DISCLAIMER OF WARRANTY
+=======
+â€¢NAME
+â€¢VERSION
+â€¢SYNOPSIS
+â€¢DESCRIPTION
+â€¢USAGE
+â€¢BUGS
+â€¢SUPPORT
+â€¢CONFIGURATION AND ENVIRONMENT
+â€¢DEPENDENCIES
+â€¢AUTHOR
+â€¢REVISION HISTORY
+â€¢HISTORY
+â€¢METHODS 
+  â—¦processFormInput()
+  â—¦labelFor()
+  â—¦lastPage()
+  â—¦s2hms()
+  â—¦padZero()
+
+â€¢SEE ALSO
+â€¢LICENCE AND COPYRIGHT
+â€¢DISCLAIMER OF WARRANTY
+
+NAME
+
+WWW::Scraper::DigitalArkivet - Routines to web scrape Digitalarkivet
+
+VERSION
+ 0.02 - 21.09.2014
+
+SYNOPSIS
+  use WWW::Scraper::DigitalArkivet;
+
+
+DESCRIPTION
+
+Library for routines to web scrape metadata of sources from the Digital Archives of Norway also known as Digitalarkivet. None of the routines are dependable on a database, DBI related routines are split into separate library
+
+USAGE
+
+You can create it now by using the command shown above from this directory.
+
+At the very least you should be able to use this set of instructions to install the module...
+
+perl Makefile.PL make make test make install
+
+If you are on a windows box you should use 'nmake' rather than 'make'.
+
+BUGS
+
+SUPPORT
+
+CONFIGURATION AND ENVIRONMENT
+
+Tested on win7, no known ties to this platform should work for other platforms. see config file - DigitalArkivet.cfg
+
+DEPENDENCIES
+
+Requires modules Web::Scraper, Text::Trim Databasestructure as of DigitalArkivet-webscraper.mwb v.0.x
+
+AUTHOR
+    Rolf B. Holte - L<http://www.holte.nu/> - <rolfbh@disnorge.no>
+    Member of DIS-Norge, The Genealogy Society of Norway-DIS
+    CPAN ID: RBH
+
+Please drop me an email if you use this in any project. It would be nice to know if it's usable for others in any capacity. Any suggestions for improvement are also appreciated.
+
+REVISION HISTORY
+
+HISTORY
+ 0.03 - 14.07.2015 - Module
+ 0.02 - 01.05.2015 - POD - Documented
+ 0.01 - 01.08.2014 - Created.
+
+METHODS
+
+Each subroutine/function (method) is documented. To avoid problems with timeout/ network errors and memory issues data should be gathered in chunks by re-runs, each run should collect a given (not too large) amount of data until there is no more to collect. Some sort of cron job needs to repeat these runs until the whole site is scraped.
+
+Data is collected at different stages and stored in a database. Enabling re-runs to pick up were "left off".
+
+Note: Memory usage required to hold/store data temporarily in internal data structures depend on chunk sizes. Default chunk size could be larger memory wise, but are kept smaller due to user experience on failure in communications.
+
+â€¢Stage 1
+
+What are the searchable options? Look at the form, compile list for later use
+    a) grab all data about inputs.
+    b) store data (to a database).
+
+
+â€¢Stage 2
+
+Scrape url's based upon options. (For each option combo) save 'Result of search'.
+
+
+â€¢Stage 3
+
+Examine results from stage 2
+    1. Search
+    2. Browse
+    3. Info. Details about each source
+    4.
+
+
+â€¢Stage 4
+    1. Try ID numbers - not published. Find info about (hidden) sources
+    2. Last 100
+
+
+processFormInput()
+
+Web scrape form inputs - process inputs on form
+
+â€¢Input:
+    $_[0] - level
+    $_[1] - scrape
+    $_[2] - seperator
+
+
+â€¢Output: \@data - handle to array containing data
+
+
+labelFor()
+
+Decode label attribute "for" eg ka14kt0. The label's for the attribute has a numbering system up to 3 levels. break string into 3 parts, prefix/number and make an array of each part. Pad with "null" if needed to make an array (of 3). Used later to process hierarchal structures of the inputs.
+
+â€¢Input: labelfor (string)
+
+
+â€¢Output: array of 3 strings
+
+
+lastPage()
+
+lastPage, of all "lastpages" scraped only last is relevant. web scrape gets too many urls, this routine fixes last page. Need only the actual page number of last page. nor url. (Thus need last page in scope)
+
+â€¢Input:
+
+
+â€¢Output:
+
+
+s2hms()
+
+Converts seconds into hours, minutes and seconds
+
+â€¢Input: seconds
+
+
+â€¢Output: hh:mm:ss
+
+
+padZero()
+
+Zero pad string eg. 003 & 02
+
+â€¢Input: string
+    $_[0] - number (to pad)
+    $_[1] - lenght (maximum)
+
+
+â€¢Output: zero padded number
+
+
+SEE ALSO
+
+perl(1), WWW::Scraper::DigitalArkivet::Database, DigitalArkivet-finn_kilde.pl, DigitalArkivet-eiendom_avansert.pl
+
+LICENCE AND COPYRIGHT
+
+Copyright (c) 2015 Rolf B. Holte - http://www.holte.nu/ - <rolfbh@disnorge.no>
+
+Artistic License (Perl) Author (Copyright Holder) wishes to maintain "artistic" control over the licensed software and derivative works created from it.
+
+This code is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0. For details, see the full text of the license in the file LICENSE.
+
+The full text of the license can be found in the LICENSE file included with this module or perlartistic
+
+DISCLAIMER OF WARRANTY
+
+This program is distributed in the hope that it will be useful, but it is provided 'as is' and without any express or implied warranties. For details, see the full text of the license in the file LICENSE.
+>>>>>>> origin/master
+
+NAME
+
+WWW::Scraper::DigitalArkivet - Routines to web scrape Digitalarkivet
+
+VERSION
+
+ 0.03 - 14.07.2015
+
+SYNOPSIS
+  use WWW::Scraper::DigitalArkivet;
+
+
+DESCRIPTION
+
+Library for routines to web scrape metadata of sources from the Digital Archives of Norway also known as Digitalarkivet. None of the routines are dependable on a database, DBI related routines are split into separate library
+
+USAGE
+
+You can create it now by using the command shown above from this directory.
+
+At the very least you should be able to use this set of instructions to install the module...
+
+perl Makefile.PL make make test make install
+
+If you are on a windows box you should use 'nmake' rather than 'make'.
+
+BUGS
+
+SUPPORT
+
+CONFIGURATION AND ENVIRONMENT
+
+Tested on win7, no known ties to this platform should work for other platforms. see config file - DigitalArkivet.cfg
+
+DEPENDENCIES
+
+Requires modules Web::Scraper, Text::Trim Databasestructure as of DigitalArkivet-webscraper.mwb v.0.x
+
+AUTHOR
+    Rolf B. Holte - L<http://www.holte.nu/> - <rolfbh@disnorge.no>
+    Member of DIS-Norge, The Genealogy Society of Norway-DIS
+    CPAN ID: RBH
+
+Please drop me an email if you use this in any project. It would be nice to know if it's usable for others in any capacity. Any suggestions for improvement are also appreciated.
+
+REVISION HISTORY
+
+ 0.03 - 14.07.2015 - Module
+ 0.02 - 01.05.2015 - POD - Documented
+ 0.01 - 01.08.2014 - Created.
+
+METHODS
+
+Each subroutine/function (method) is documented. To avoid problems with timeout/ network errors and memory issues data should be gathered in chunks by re-runs, each run should collect a given (not too large) amount of data until there is no more to collect. Some sort of cron job needs to repeat these runs until the whole site is scraped.
+
+Data is collected at different stages and stored in a database. Enabling re-runs to pick up were "left off".
+
+Note: Memory usage required to hold/store data temporarily in internal data structures depend on chunk sizes. Default chunk size could be larger memory wise, but are kept smaller due to user experience on failure in communications.
+
+•Stage 1
+
+What are the searchable options? Look at the form, compile list for later use
+    a) grab all data about inputs.
+    b) store data (to a database).
+
+
+•Stage 2
+
+Scrape url's based upon options. (For each option combo) save 'Result of search'.
+
+
+•Stage 3
+
+Examine results from stage 2
+    1. Search
+    2. Browse
+    3. Info. Details about each source
+    4.
+
+
+•Stage 4
+    1. Try ID numbers - not published. Find info about (hidden) sources
+    2. Last 100
+
+
+processFormInput()
+
+Web scrape form inputs - process inputs on form
+
+•Input:
+    $_[0] - level
+    $_[1] - scrape
+    $_[2] - seperator
+
+
+•Output: \@data - handle to array containing data
+
+
+labelFor()
+
+Decode label attribute "for" eg ka14kt0. The label's for the attribute has a numbering system up to 3 levels. break string into 3 parts, prefix/number and make an array of each part. Pad with "null" if needed to make an array (of 3). Used later to process hierarchal structures of the inputs.
+
+•Input: labelfor (string)
+
+
+•Output: array of 3 strings
+
+
+lastPage()
+
+lastPage, of all "lastpages" scraped only last is relevant. web scrape gets too many urls, this routine fixes last page. Need only the actual page number of last page. nor url. (Thus need last page in scope)
+
+•Input:
+
+
+•Output:
+
+
+s2hms()
+
+Converts seconds into hours, minutes and seconds
+
+•Input: seconds
+
+
+•Output: hh:mm:ss
+
+
+padZero()
+
+Zero pad string eg. 003 & 02
+
+•Input: string
+    $_[0] - number (to pad)
+    $_[1] - lenght (maximum)
+
+
+•Output: zero padded number
+
+
+SEE ALSO
+
+perl(1), WWW::Scraper::DigitalArkivet::Database, DigitalArkivet-finn_kilde.pl, DigitalArkivet-eiendom_avansert.pl
+
+LICENCE AND COPYRIGHT
+
+Copyright (c) 2015 Rolf B. Holte - http://www.holte.nu/ - <rolfbh@disnorge.no>
+
+Artistic License (Perl) Author (Copyright Holder) wishes to maintain "artistic" control over the licensed software and derivative works created from it.
+
+This code is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0. For details, see the full text of the license in the file LICENSE.
+
+The full text of the license can be found in the LICENSE file included with this module or perlartistic
+
+DISCLAIMER OF WARRANTY
+
+This program is distributed in the hope that it will be useful, but it is provided 'as is' and without any express or implied warranties. For details, see the full text of the license in the file LICENSE.

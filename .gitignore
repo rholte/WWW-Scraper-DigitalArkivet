@@ -1,0 +1,16 @@
+*.bak
+lib/WWW/Scraper/podIt.cmd
+lib/WWW/Scraper/ReadMe.html
+lib/WWW/Scraper/DigitalArkivet/README
+lib/WWW/Scraper/DigitalArkivet/pod2htmd.tmp
+*.tmp
+*.lnk
+*.cmd
+*.WinMerge
+scripts/Digitalarkivet-webscraper.mwb
+z4tenvp5.wtb.txt
+scripts/11448 indeks gml.html
+scripts/Fix-Siste.pl
+scripts/Siste-100.csv
+scripts/11448 indeks ny.html
+scripts/Digitalarkivet-Siste-100.pl
