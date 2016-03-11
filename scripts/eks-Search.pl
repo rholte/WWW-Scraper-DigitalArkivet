@@ -12,20 +12,48 @@ $| = 1;
 my %site;
 my $res;
 my $index;
+my $mode=1; #0->dump 1->dumpTree
 
 
-# NEW !!!!
+# New  kb !!!!
+#kirkebok
 $site{'url'}    = "https://media.digitalarkivet.no/kb/contents/11448";
-$site{'name'}   = "Index-11448";
-&DAindex($site{'url'}, $site{'name'});
+$site{'name'}   = "kb_contents-11448";
+&DA_kb_contents($site{'url'}, $site{'name'});
 
-## OLD !!!!!
+#tinglyst
+#https://media.digitalarkivet.no/view/63061
+#folketelling
+# https://media.digitalarkivet.no/ft/contents/38049
+
+## Old kb !!!!!
 $site{'url'}    = "http://www.arkivverket.no/URN:kb_read?idx_id=11448";
-$site{'name'}   = "Index-old-11448";
-&DAindexOLD($site{'url'}, $site{'name'});
+$site{'name'}   = "kb_read-11448";
+&DA_kb_read($site{'url'}, $site{'name'});
 
+#http://www.arkivverket.no/URN:db_read/ft/38105
+#http://www.arkivverket.no/URN:db_read/db/42182
 
-sub DAindex {
+#skannet
+$site{'url'}    = "http://www.arkivverket.no/URN:db_read/ft/38049";
+$site{'name'}   = "db_read-38049";
+&DA_db_read($site{'url'}, $site{'name'});
+
+#
+$site{'url'}    = "http://www.arkivverket.no/URN:db_read/db/42182";
+$site{'name'}   = "db_read-42182";
+&DA_db_read($site{'url'}, $site{'name'});
+
+#NA
+#$site{'url'}    = "http://www.arkivverket.no/URN:tl_read?idx_id=63061";
+#$site{'name'}   = "tl_read-63061;
+#&DA_tl_read($site{'url'}, $site{'name'});
+
+#$site{'url'}    = "";
+#$site{'name'}   = "_read-;
+#&DA_read($site{'url'}, $site{'name'});
+
+sub DA_kb_contents {
     my $site_url  = shift;
     my $site_name = shift;
 
@@ -48,20 +76,30 @@ sub DAindex {
             result 'page'; # res == page
         };
         $res = $index->scrape( URI->new( $site_url ) );
-        print "\n";
-        print "--------------------------------\n";
-        print "---       Dump data       ---\n";
-        print "--------------------------------\n";
-        #print Dumper(\$res);
-        print DumpTree ($res, 'Page');
-        print "\n";
-        print "--------------------------------\n";
-        print "---            End           ---\n";
-        print "--------------------------------\n";
-
+        &printDump($res);
 };
 
-sub DAindexOLD {
+sub DA_db_read {
+    my $site_url  = shift;
+    my $site_name = shift;
+
+        # main scraper object
+        $index = scraper {
+            process 'div.genericBody','page' => scraper {
+                process 'h2', 'h2[]' => 'TEXT';
+                process 'table > tr', 'row[]' => scraper {
+                    process 'td', 'p[]' => 'TEXT';
+                    process 'a', 'page' => 'TEXT', 'url'  => '@href';
+                }; # search redundant?
+
+            };
+            result 'page'; # res == page
+        };
+        $res = $index->scrape( URI->new( $site_url ) );
+        &printDump($res);
+};
+
+sub DA_kb_read {
     my $site_url  = shift;
     my $site_name = shift;
 
@@ -73,22 +111,22 @@ sub DAindexOLD {
             };
             #result 'row'; # res == row
     };
-
     $res = $index->scrape( URI->new( $site_url ) );
+    &printDump($res);
+};
+
+sub printDump {
     print "\n";
     print "--------------------------------\n";
-    print "---       Dump OLD data       ---\n";
+    print "---         Dump data        ---\n";
     print "--------------------------------\n";
-    #print Dumper(\$res);
-    print DumpTree ($res, 'Row');
+    print Dumper($_[0]) unless $mode;
+    print DumpTree ($_[0], 'Page') if $mode;
     print "\n";
     print "--------------------------------\n";
     print "---            End           ---\n";
     print "--------------------------------\n";
-};
-
-
-
+}
 
 
 1;

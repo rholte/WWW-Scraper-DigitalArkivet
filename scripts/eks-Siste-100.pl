@@ -4,7 +4,9 @@ use warnings;
 
 use URI;
 use Web::Scraper;
-use Data::Dumper::Simple;
+use Data::Dumper::Perltidy;
+use Data::TreeDumper;
+
 
 $| = 1;
 
@@ -14,6 +16,7 @@ my $i;
 my $x;
 my $scrape;
 my ($date, $url, $src, $at, $ath, $tmp, @row);
+my $mode=1; #0->dump 1->dumpTree
 
 
 $site{'url'}    = "http://www.arkivverket.no/arkivverket/Digitalarkivet/Om-Digitalarkivet/Nyhetsarkiv/Siste-100";
@@ -53,8 +56,13 @@ for $i ( 0 .. $#{$res->{data}} ) {
 close CSV;
 print "\n";
 print "--------------------------------\n";
-print "---       Dump av data       ---\n";
+print "---         Dump data        ---\n";
 print "--------------------------------\n";
-print Dumper(\$res);
+print Dumper($_[0]) unless $mode;
+print DumpTree ($_[0], 'Page') if $mode;
+print "\n";
+print "--------------------------------\n";
+print "---            End           ---\n";
+print "--------------------------------\n";
 
 1;

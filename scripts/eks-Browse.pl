@@ -13,6 +13,7 @@ $| = 1;
 my %site;
 my $res;
 my $print;
+my $mode=1; #0->dump 1->dumpTree
 #my ($date, $url, $src, $at, $ath, $tmp, @row);
 
 $site{'url'}    = "http://digitalarkivet.arkivverket.no/kilde/11448";
@@ -57,17 +58,19 @@ sub DAprint {
     # X->txt[]        # li-text
 
     $res = $print->scrape( URI->new( $site_url ) );
+    &printDump($res);
+ }
 
+sub printDump {
     print "\n";
     print "--------------------------------\n";
-    print "---       Dump data       ---\n";
+    print "---         Dump data        ---\n";
     print "--------------------------------\n";
-    #print Dumper(\$res);
-    print DumpTree ($res, 'Resultat');
+    print Dumper($_[0]) unless $mode;
+    print DumpTree ($_[0], 'Page') if $mode;
     print "\n";
     print "--------------------------------\n";
     print "---            End           ---\n";
     print "--------------------------------\n";
- }
-
+}
 1;
