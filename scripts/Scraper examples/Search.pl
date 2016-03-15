@@ -12,18 +12,19 @@ $| = 1;
 my %site;
 my $res;
 my $index;
-my $mode=1; #0->dump 1->dumpTree
+my $dumpMode=1;  #0->dump 1->dumpTree
 
-
+# Search url's often show index for start page of digitized sources
 # New  kb !!!!
-#kirkebok
+#kirkebok (Church book)
 $site{'url'}    = "https://media.digitalarkivet.no/kb/contents/11448";
 $site{'name'}   = "kb_contents-11448";
 &DA_kb_contents($site{'url'}, $site{'name'});
 
-#tinglyst
+#tinglyst (no known index for these yet)
 #https://media.digitalarkivet.no/view/63061
-#folketelling
+
+#folketelling (census)
 # https://media.digitalarkivet.no/ft/contents/38049
 
 ## Old kb !!!!!
@@ -34,7 +35,7 @@ $site{'name'}   = "kb_read-11448";
 #http://www.arkivverket.no/URN:db_read/ft/38105
 #http://www.arkivverket.no/URN:db_read/db/42182
 
-#skannet
+#skannet (digitized)
 $site{'url'}    = "http://www.arkivverket.no/URN:db_read/ft/38049";
 $site{'name'}   = "db_read-38049";
 &DA_db_read($site{'url'}, $site{'name'});
@@ -120,8 +121,8 @@ sub printDump {
     print "--------------------------------\n";
     print "---         Dump data        ---\n";
     print "--------------------------------\n";
-    print Dumper($_[0]) unless $mode;
-    print DumpTree ($_[0], 'Page') if $mode;
+    print Dumper($_[0]) unless $dumpMode;
+    print DumpTree ($_[0], 'Page') if $dumpMode;
     print "\n";
     print "--------------------------------\n";
     print "---            End           ---\n";

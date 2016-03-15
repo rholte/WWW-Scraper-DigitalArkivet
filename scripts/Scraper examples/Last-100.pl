@@ -16,7 +16,7 @@ my $i;
 my $x;
 my $scrape;
 my ($date, $url, $src, $at, $ath, $tmp, @row);
-my $mode=1; #0->dump 1->dumpTree
+my $dumpMode=1;  #0->dump 1->dumpTree
 
 
 $site{'url'}    = "http://www.arkivverket.no/arkivverket/Digitalarkivet/Om-Digitalarkivet/Nyhetsarkiv/Siste-100";
@@ -58,8 +58,8 @@ print "\n";
 print "--------------------------------\n";
 print "---         Dump data        ---\n";
 print "--------------------------------\n";
-print Dumper($res) unless $mode;
-print DumpTree ($res, 'Page') if $mode;
+print Dumper($res) unless $dumpMode;
+print DumpTree ($res, 'Page') if $dumpMode;
 print "\n";
 print "--------------------------------\n";
 print "---            End           ---\n";

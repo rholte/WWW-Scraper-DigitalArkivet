@@ -17,7 +17,7 @@ my $j;
 my $label_for;
 my @scrape;
 my ($name,$text, $value,$id, $type, @row);
-my $mode=1; #0->dump 1->dumpTree
+my $dumpMode=1;  #0->dump 1->dumpTree
 
 #$site{'siteID'} = 1;
 $site{'url'}    = "http://digitalarkivet.arkivverket.no/finn_kilde";
@@ -26,9 +26,7 @@ $site{'name'}   = "finn_kilde";
 open CSV, ">$site{'name'}.dat" or die $!;
 my $seperator = ";";
 
-$scrape[0] = scraper {
-    process 'div.listGroup.open > ul.grouped > li.expandable',
-      'data[]' => scraper {
+my $inputLabel = scraper {
         process 'input',
           'id'    => '@id',
           'value' => '@value',
@@ -37,30 +35,18 @@ $scrape[0] = scraper {
         process 'label',              'label_for' => '@for';
         process 'span.listExpander ', 'text'      => 'TEXT';
       };
+
+$scrape[0] = scraper {
+    process 'div.listGroup.open > ul.grouped > li.expandable',
+      'data[]' => $inputLabel;
 };
 
 $scrape[1] = scraper {
-    process 'ul.sublist1 > li', 'data[]' => scraper {
-        process 'input',
-          'id'    => '@id',
-          'value' => '@value',
-          'type'  => '@type',
-          'name'  => '@name';
-        process 'label', 'label_for' => '@for';
-        process 'span',  'text'      => 'TEXT';
-    }
+    process 'ul.sublist1 > li', 'data[]' => $inputLabel;
 };
 
 $scrape[2] = scraper {
-    process 'ul.sublist2 > li', 'data[]' => scraper {
-        process 'input',
-          'id'    => '@id',
-          'value' => '@value',
-          'type'  => '@type',
-          'name'  => '@name';
-        process 'label', 'label_for' => '@for';
-        process 'span',  'text'      => 'TEXT';
-    }
+    process 'ul.sublist2 > li', 'data[]' => $inputLabel;
 };
 
 for $i ( 0 .. $#scrape ) {
@@ -91,7 +77,7 @@ for $i ( 0 .. $#scrape ) {
             print CSV "\n";
         }
     }
-    sleep(2);
+    sleep(5);
 }
 close CSV;
 
@@ -99,8 +85,8 @@ print "\n";
 print "--------------------------------\n";
 print "---         Dump data        ---\n";
 print "--------------------------------\n";
-print Dumper(\@res) unless $mode;
-print DumpTree (\@res, 'Page') if $mode;
+print Dumper(\@res) unless $dumpMode;
+print DumpTree (\@res, 'Page') if $dumpMode;
 print "\n";
 print "--------------------------------\n";
 print "---            End           ---\n";

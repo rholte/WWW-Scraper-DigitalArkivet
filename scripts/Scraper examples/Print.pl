@@ -12,18 +12,20 @@ $| = 1;
 my %site;
 my $res;
 my $print;
-my $mode=1; #0->dump 1->dumpTree
+my $dumpMode=1;  #0->dump 1->dumpTree
 #my ($date, $url, $src, $at, $ath, $tmp, @row);
+
+# print url's show metadata on source
 
 $site{'url'}    = "http://digitalarkivet.arkivverket.no/kilde/11448";
 $site{'name'}   = "Print-11448";
-&DAprint($site{'url'}, $site{'name'});
+&DA_print($site{'url'}, $site{'name'});
 
 $site{'url'}    = "http://digitalarkivet.arkivverket.no/kilde/11755";
 $site{'name'}   = "Print-11755";
-&DAprint($site{'url'}, $site{'name'});
+&DA_print($site{'url'}, $site{'name'});
 
-sub DAprint {
+sub DA_print {
     my $site_url  = shift;
     my $site_name = shift;
 
@@ -65,8 +67,8 @@ sub printDump {
     print "--------------------------------\n";
     print "---         Dump data        ---\n";
     print "--------------------------------\n";
-    print Dumper($_[0]) unless $mode;
-    print DumpTree ($_[0], 'Page') if $mode;
+    print Dumper($_[0]) unless $dumpMode;
+    print DumpTree ($_[0], 'Page') if $dumpMode;
     print "\n";
     print "--------------------------------\n";
     print "---            End           ---\n";
