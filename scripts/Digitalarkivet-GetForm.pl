@@ -61,8 +61,9 @@ my $td = timediff($t1, $t0);
 print "\n\n processFormInput:   ",timestr($td) if ($gDebug);
 
 # Stage 1b - store data
-DBIForm2DB( \@data ) if ($dbStorage);
+&DBIForm2DB( \@data ) if ($dbStorage);
 close $fh;
+&doDBIfillSCD() if ($dbStorage);
 my $t2 = Benchmark->new;
 $td = timediff($t2, $t1);
 print "\n DBIForm2DB:         ",timestr($td),"\n" if (($dbStorage)&&($gDebug));
