@@ -705,6 +705,36 @@ sub doDBIrunStat {
 }
 
 #-----------------------------------------------------------------------------
+=pod
+
+=head2 doDBIfillSCD()
+
+  Purpose  : fill SCD tables
+  Returns  : 1
+  Argument : SiteID
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : invokes stored procedure `fill_scd` to fill scd tables
+           : (via stored procedure)
+
+ See Also  :
+
+=cut
+
+#-----------------------------------------------------------------------------
+sub doDBIfillSCD {
+
+    my $pID    = shift || 1 ; # siteID
+    our $dbh = &Connect2DB() if not($Connected);
+    my $sql = qq/CALL `$db`.`fill_scd`( ? ) / ;
+    our $sth = $dbh->prepare($sql)
+            or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
+    print "Can't execute SQL statement: ", $sth->errstr(), "\n" unless ($sth->execute($pID));
+    return  1
+}
+
+
+#-----------------------------------------------------------------------------
 #                            S T A G E  1
 #-----------------------------------------------------------------------------
 =pod
