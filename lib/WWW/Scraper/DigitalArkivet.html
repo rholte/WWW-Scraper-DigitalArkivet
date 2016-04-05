@@ -46,6 +46,7 @@
       <li><a href="#getResultatID">getResultatID()</a></li>
       <li><a href="#doDBIrunStart">doDBIrunStart()</a></li>
       <li><a href="#doDBIrunStat">doDBIrunStat()</a></li>
+      <li><a href="#doDBIfillSCD">doDBIfillSCD()</a></li>
       <li><a href="#processFormInput">processFormInput()</a></li>
       <li><a href="#labelFor">labelFor()</a></li>
       <li><a href="#lastPage">lastPage()</a></li>
@@ -84,7 +85,8 @@
 
 <h1 id="VERSION">VERSION</h1>
 
-<pre><code> 0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, Fifth Stage
+<pre><code> 0.07 - 05.04.2016 - Tweeked buildCSVsrc, documentation
+ 0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, (Fifth Stage completed)
  0.05 - 31.07.2015 - Module - First stage complete
  0.04 - 01.07.2015 - POD - Documented, minor bugfix&#39;es
  0.03 - 01.10.2014 - Added proc resetDA
@@ -166,18 +168,18 @@
 
 <p>Result pages may contain identical search, browse, info pages. process only unique URL&#39;s!</p>
 
-<pre><code>    a. Search
-    b. Browse
-    c. Info. Details about each source
+<pre><code>    a. Search (What can be searched)
+    b. Browse (Some sources have index to pages - grab index)
+    c. Info. Details on each source
     d.</code></pre>
 
 <h3 id="Stage-4"><b>Stage 4</b></h3>
 
-<pre><code>    Try ID numbers - not published. Find info about (hidden) sources</code></pre>
+<pre><code>    Try ID numbers - not published. Find info about (hidden?) sources</code></pre>
 
 <h3 id="Stage-5"><b>Stage 5</b></h3>
 
-<pre><code>    Last 100</code></pre>
+<pre><code>    Last 100, scrape last 100 regularly and save to database table (recent)</code></pre>
 
 <h2 id="readCFG">_readCFG</h2>
 
@@ -191,18 +193,21 @@
   Returns  :
   Argument : &lt;none&gt;
   Throws   : -
-  Comment  :
-           :
+  Comment  : need to learn about scrapers? checkout/try
+           :  http://www.perldesignpatterns.com/?WebScraper
+           :  https://teusje.wordpress.com/2010/05/02/web-scraping-with-perl/
 
- See Also  :</code></pre>
+ See Also  : directory &quot;scripts\Scraper examples&quot; contains working scraper
+           : samples.</code></pre>
 
 <h2 id="s2hms">s2hms()</h2>
 
 <pre><code>  Purpose  : Converts seconds into a string with hours, minutes and seconds
   Returns  : hh:mm:ss &lt;string&gt;
-  Argument : seconds &lt;integer&gt;
+  Argument : (s) seconds &lt;integer&gt;
   Throws   : -
-  Comment  : if seconds &gt;  ...
+  Comment  : if seconds &gt;  86400 wich is a day,
+           : it will show days hours minutes seconds (dhms)
 
  See Also  :</code></pre>
 
@@ -210,11 +215,10 @@
 
 <pre><code>  Purpose  : Zero pad string  eg. 003 &amp; 02
   Returns  : zero padded number &lt;string&gt;
-  Argument : number (to pad)
-           : lenght (maximum)
+  Argument : (num) number to pad
+           : (len) maximum lenght
   Throws   : -
-  Comment  :
-           :
+  Comment  : zero pad string to given length
 
  See Also  :</code></pre>
 
@@ -234,7 +238,7 @@
 <pre><code>  Purpose  : Terminate database connection
   Returns  : &lt;none&gt;
   Argument : &lt;none&gt;
-  Comment  : MySQL
+  Comment  : Disconnects MySQL handle, sets global $Conneccted to 0
 
  See Also  : Connect2DB()</code></pre>
 
@@ -245,7 +249,8 @@
   Argument : &lt;none&gt;
   Throws   : Die - on SQL error
   Comment  : MySQL
-           : Connect to a database, returns the handle to it for further use.</code></pre>
+           : Connect to a database, returns the handle to it for further use.
+           : (via stored procedure)</code></pre>
 
 <h2 id="getRunID">getRunID()</h2>
 
@@ -255,7 +260,8 @@
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Every &#39;Run&#39; has a unique process (autoincrement) number.
-           : Used to identify which data is collected during which run.</code></pre>
+           : Used to identify which data is collected during which run.
+           : (via stored procedure)</code></pre>
 
 <h2 id="getResultatID">getResultatID()</h2>
 
@@ -264,8 +270,7 @@
   Argument : &lt;none&gt;
   Throws   : Die - on SQL error
   Comment  : MySQL
-           : (autoincrement) number.
-           :</code></pre>
+           : (autoincrement) number. (via stored procedure)</code></pre>
 
 <h2 id="doDBIrunStart">doDBIrunStart()</h2>
 
@@ -279,7 +284,7 @@
            : (Options) -string of options conveterd from hashref (options to &quot;run&quot; started)
            : (State) - sleep state
            : Marks beginning of data gathering enables logging of progress
-           : &quot;of run&quot;/ harvesting of data
+           : &quot;of run&quot;/ harvesting of data (via stored procedure)
 
  See Also  : doDBIrunStat()</code></pre>
 
@@ -291,10 +296,22 @@
   Throws   : Die - on SQL error
   Comment  : MySQL
            : invokes stored procedure `runStat`
-           : Used to track progress of run, also updates som statsical data
-           : ()
+           : Used to track progress of run, also updates some statistical data
+           : (via stored procedure)
 
  See Also  : doDBIrunStart()</code></pre>
+
+<h2 id="doDBIfillSCD">doDBIfillSCD()</h2>
+
+<pre><code>  Purpose  : fill SCD tables
+  Returns  : 1
+  Argument : SiteID
+  Throws   : Die - on SQL error
+  Comment  : MySQL
+           : invokes stored procedure `fill_scd` to fill scd tables
+           : (via stored procedure)
+
+ See Also  :</code></pre>
 
 <h2 id="processFormInput">processFormInput()</h2>
 
@@ -302,15 +319,14 @@
 
   Purpose  : Web scrape form inputs - process inputs from form
   Returns  : \@data - handle to array containing data
-  Argument : $_[0] - filehandle
-           : $_[1] - siteID
-           : $_[2] - url
-           : $_[3] - level
-           : $_[4] - scrape
-           : $_[5] - seperator
+  Argument : $_[0] - (fh) filehandle
+           : $_[1] - (siteID)
+           : $_[2] - (url)
+           : $_[3] - (level)
+           : $_[4] - (scrape)
+           : $_[5] - (tab) field seperator
   Throws   : -
-  Comment  :
-           :
+  Comment  : webpage form shows searchable attributes for metadata on source
 
  See Also  :</code></pre>
 
@@ -320,7 +336,7 @@
 
   Purpose  : Decode label attribute &quot;for&quot; eg ka14kt0
   Returns  : array of 3 strings
-  Argument : labelfor (string)
+  Argument : $_[0] - (str) labelfor &lt;string&gt;
   Throws   : -
   Comment  : The label&#39;s for the attribute has a numbering system up to 3 levels.
            : break string into 3 parts, prefix/number and make an array of each
@@ -349,7 +365,7 @@
 
   Purpose  : Save form data to database. (Array from form into database).
   Returns  : Handle to execution of statement
-  Argument : Handle to array with data
+  Argument : (data) Handle to array with data
   Throws   : Die - on SQL error
   Comment  : MySQL
            : All form&#39;s have a basic structure that is possible to save in tabular format.
@@ -367,9 +383,9 @@
 
   Purpose  : Build list of params - save to resultparms.csv
   Returns  : -
-  Argument : (siteID) - process this site
-           : (url) - url
-           : filename
+  Argument : $_[0] - (siteID)   - process this site
+           : $_[1] - (base_url) - url
+           : $_[2] - (csvFile)  - filename
   Throws   : Die on failure to close file
   Comment  : Build list to be traversed later.
            : List is saved to CSV.
@@ -385,13 +401,17 @@
 
   Purpose  : Build general list of params
   Returns  : -
-  Argument : (siteID) - process this site
-           : (url) - url
-           : filename
+  Argument : $_[0] - (siteID)   - process this site
+           : $_[1] - (base_url) - url
+           : $_[2] - (csv)      - filename
+           : $_[3] - (FH)       - filhandle
+           : $_[4] - (aref)     - arrayref (turned into array g)
+           : $_[5] - (aref)     - arrayref (turned into array s)
+           : $_[6] - (aref)     - arrayref (turned into array lt)
   Throws   : -
   Comment  : loop every kt[] &amp; lt[] forearch geographic place
            : (-&gt;each daGeography  r,f,k)
-           : Not nesting every availible parameter, because there is some
+           : Not nesting every available parameter, because there is some
            : logic to it all.  Short cut can be made, thus buildCSVsimple()
            : (Trick to reduce list, no need to check every permutation !)
            : NB  @organ is not traversed !!  on ToDo ??
@@ -404,9 +424,13 @@
 
   Purpose  : Build simpler list of params
   Returns  : -
-  Argument : (siteID) - process this site
-           : (url) - url
-           : filename
+  Argument : $_[0] - (siteID)   - process this site
+           : $_[1] - (base_url) - url
+           : $_[2] - (key)      -
+           : $_[3] - (csv)      - filename
+           : $_[4] - (FH)       - filhandle
+           : $_[5] - (aref)     - arrayref (turned into array g)
+           : $_[6] - (aref)     - arrayref (turned into array d)
   Throws   : -
   Comment  : Since there is no need to permutate all options to find Theme/
            : format this is done countywise (fylkesvis). Expect to find same
@@ -422,12 +446,14 @@
 
 <pre><code>  Stage    : 2
 
-  Purpose  : Read unproccessed urls into array (of hashes)
+  Purpose  : Read unprocessed urls into array (of hashes)
   Returns  :
-  Argument : &lt;none&gt;
+  Argument : $_[0] - (siteID) - process this site
+           : $_[1] - (skip)   - True/false (default false)
   Throws   : -
-  Comment  :
-           :
+  Comment  : Loops thru database picks urls of unprocessed parameter items
+           : Starts scraping these (actually scraping urls to scrape later)
+           : (data retrieved is limited, globally set option)
 
  See Also  :</code></pre>
 
@@ -437,7 +463,10 @@
 
   Purpose  : check url, scrape data to build a result list
   Returns  :
-  Argument : &lt;none&gt;
+  Argument : $_[0] - (siteID) - process this site
+           : $_[1] - (resultID) - foreign key, link back to resultParms table
+           : $_[2] - (url) - url to scrape
+           : $_[3] - (page) - start page
   Throws   : -
   Comment  : if url has hit(s) data is stored into database
            : this list contains upto 4 urls that will be scraped at next stage
@@ -450,10 +479,9 @@
 
   Purpose  : save data to predefined filehandle
   Returns  :
-  Argument : &lt;none&gt;
+  Argument : $_[0] - arrayref to data
   Throws   : -
-  Comment  : saves &quot;prints&quot; to csv file tab seprated
-           :
+  Comment  : saves &quot;prints&quot; data to csv file tab seprated
 
  See Also  :</code></pre>
 
@@ -461,9 +489,10 @@
 
 <pre><code>  <span class="variable">Stage</span>    <span class="operator">:</span> <span class="number">2</span>
   
-  <span class="variable">Purpose</span>  <span class="operator">:</span> <span class="variable">Holds</span> <span class="variable">counter</span> <span class="variable">vaule</span> <span class="keyword">for</span> <span class="variable">a</span> <span class="keyword">given</span> <span class="variable">key</span>
+  <span class="variable">Purpose</span>  <span class="operator">:</span> <span class="variable">Holds</span> <span class="variable">counter</span> <span class="variable">value</span> <span class="keyword">for</span> <span class="variable">a</span> <span class="keyword">given</span> <span class="variable">key</span>
   <span class="variable">Returns</span>  <span class="operator">:</span> <span class="keyword">undef</span><span class="operator">,</span><span class="number">0</span><span class="operator">,</span><span class="number">1</span>
-  <span class="variable">Argument</span> <span class="operator">:</span> <span class="operator">&lt;</span><span class="variable">none</span><span class="operator">&gt;</span>
+  <span class="variable">Argument</span> <span class="operator">:</span> <span class="variable">$_</span><span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">-</span> <span class="operator">(</span><span class="variable">key</span><span class="operator">)</span> <span class="operator">-</span> <span class="variable">key</span> <span class="keyword">for</span> <span class="variable">hash</span>
+           <span class="operator">:</span> <span class="variable">$_</span><span class="operator">[</span><span class="number">1</span><span class="operator">]</span> <span class="operator">-</span> <span class="operator">(</span><span class="variable">new</span><span class="operator">)</span> <span class="operator">-</span> <span class="variable">new</span> <span class="variable">value</span>
   <span class="variable">Throws</span>   <span class="operator">:</span> <span class="operator">-</span>
   <span class="variable">Comment</span>  <span class="operator">:</span> <span class="variable">Check's</span> <span class="keyword">if</span> <span class="variable">key</span> <span class="variable">has</span> <span class="variable">incremented</span><span class="operator">,</span> <span class="variable">True</span> <span class="variable">only</span> <span class="keyword">if</span> <span class="variable">newer</span> <span class="operator">(</span><span class="variable">larger</span><span class="operator">)</span>
            <span class="operator">:</span> <span class="variable">Autoincrements</span> <span class="variable">always</span> <span class="variable">get</span> <span class="variable">larger</span><span class="operator">....</span>
@@ -484,13 +513,16 @@
   Returns  : ref to &#39;Array of hashes&#39;
                 `resultID` - id
                 `url`      - url to scrape
-  Argument : (siteID) - integer - inputs are from this site
-             (skip)   - boolean
+  Argument : $_[0] - (siteID) - &lt;integer&gt; process this site
+           : $_[1] - (skip)   - &lt;boolean&gt;
+           :
+
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Skip false is the default, new items have skip=false, skip true is set for
            : items we normally want to skip, eg those with hits=0 this speeds up next re-run.
            : If we want to test those later on, check those who have skip=true.
+           : NB Uses Limit set globally
            :
            : `checked` = FALSE -&gt; normally those rows wich isn&#39;t scraped before.</code></pre>
 
@@ -506,7 +538,7 @@
                 `f` - code for county (fylke)
                 `k` - code for municipal (kommune)
                 `bit` - string to put in url to define next search
-  Argument : (siteID) - integer - inputs are from this site
+  Argument : $_[0] - (siteID) - &lt;integer&gt; inputs are from this site
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Gets geographic info for given site, from view.
@@ -524,7 +556,7 @@
                 `r` - code for region (region)
                 `f` - code for county (fylke)
                 `bit` - string to put in url to define next search
-  Argument : (siteID) - inputs are from this site
+  Argument : $_[0] - (siteID) - &lt;integer&gt; inputs are from this site
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Gets geographic info for given site, from view.
@@ -542,7 +574,7 @@
                 `ka` - code for source category (kilde)
                 `kt` - code for source type (kildetype)
                 `bit` - string to put in url to define next search
-  Argument : (siteID) - inputs are from this site
+  Argument : $_[0] - (siteID) - &lt;integer&gt; inputs are from this site
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Digital Archives of Norway. Gets source info for given site.
@@ -561,7 +593,7 @@
                 `kt` - code for source type (kildetype)
                 `lt` - code for list type (listetype)
                 `bit` - string to put in url to define next search
-  Argument : (siteID) - inputs are from this site
+  Argument : $_[0] - (siteID) - &lt;integer&gt; inputs are from this site
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Gets source info for given site.
@@ -578,7 +610,7 @@
   Returns  : ref to &#39;Array of hashes&#39;
                 `theme` - code for source theme (tema)
                 `bit` - string to put in url to define next search
-  Argument : (siteID) - inputs are from this site
+  Argument : $_[0] - (siteID) - &lt;integer&gt; inputs are from this site
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Data is sorted into themes.
@@ -595,7 +627,7 @@
   Returns  : ref to &#39;Array of hashes&#39;
                 `format` - code for source format (format)
                 `bit` - string to put in url to define next search
-  Argument : (siteID) - inputs are from this site
+  Argument : $_[0] - (siteID) - &lt;integer&gt; inputs are from this site
   Throws   : Die - on SQL error
   Comment  : MySQL
            : The function creates an array of hashes (to be traversed later).
@@ -613,7 +645,7 @@
                 `ok` - code for organ (Organ)
                 `ko` - subcode for `ok`
                 `bit` - string to put in url to define next search
-  Argument : (siteID) - inputs are from this site
+  Argument : $_[0] - (siteID) - &lt;integer&gt; inputs are from this site
   Throws   : Die - on SQL error
   Comment  : MySQL
            : The function creates an array of hashes (to be traversed later).
@@ -629,7 +661,7 @@
   Purpose  : Bulk save CSV file containing form data from web page
   Returns  : (\$sth) -  ref to statement handle
            : ($rows) - number of inserted rows
-  Argument : (siteID) - inputs are from this site
+  Argument : $_[0] - (file) - file with data
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Saves file to table &quot;resultparms&quot; using LOAD DATA.
@@ -644,10 +676,10 @@
   Purpose  : Generic file loader. Wrapper for DBI Load DATA function.
   Returns  : (\$sth) -  ref to statement handle
            : ($rows) - number of inserted rows
-  Argument :  0-filename,
-              1-tablename,
-              2-ref to array of fields,
-              3-&quot;SET&quot;
+  Argument : $_[0] - (file) filename,
+           : $_[1] - (table) tablename,
+           : $_[2] - (fields) ref to array of fields
+           : $_[3] - (set) &quot;SET&quot; statement
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Bulk saves data from a file to database.
@@ -662,17 +694,17 @@
 
   Returns  : (\$sth) -  ref to statement handle
            : ($resultID) - Last ID insterted
-  Argument : list of data to be saved
-                `r` - code for region (region)
-                `f` - code for county (fylke)
-                `k` - code for municipal (kommune)
-                `ka` - code for source category (kilde)
-                `kt` - code for source type (kildetype)
-                `lt` - subcode for `kt`, list type (listetype)
+  Argument : $_[0] - (row) ref to array. list/&quot;row&quot; of data to be saved
+                `r`      - code for region (region)
+                `f`      - code for county (fylke)
+                `k`      - code for municipal (kommune)
+                `ka`     - code for source category (kilde)
+                `kt`     - code for source type (kildetype)
+                `lt`     - subcode for `kt`, list type (listetype)
                 `format` - code for ...(Format)
-                `theme` - code for ...(Tema)
-                `ok` - code for organ (Organ)
-                `ko` - subcode for `ok`
+                `theme`  - code for ...(Tema)
+                `ok`     - code for organ (Organ)
+                `ko`     - subcode for `ok`
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Saving form parameters to database one row at a time.
@@ -695,10 +727,11 @@
 
   Purpose  : Update a single line in resultparms.
   Returns  : True/False (ok/fail)
-  Argument :  0=&gt;hits,
-                1=&gt;checked,
-                2=&gt;resultID,
-                3=&gt;siteID
+  Argument : $_[0] - (data) ref to list of data
+                0=&gt;hits, (value)
+                1=&gt;checked, (value)
+                2=&gt;resultID, (where)
+                3=&gt;siteID, (where)
   Throws   : Die - on SQL error in preperation, not execution
   Comment  : MySQL
            : First 2 arguments are update values, next 2 are identificators in where clause
@@ -714,7 +747,7 @@
 
   Purpose  : Save array of arrays (resultlist) to the database
   Returns  : ref to statement handler &amp; Last ID insterted C&lt;\$sth,$resultListID&gt;
-  Argument : ref to array of array
+  Argument :  $_[0] - (data) ref to array (list)
            : Columns: `resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`
   Throws   : Die - on SQL error
   Comment  : MySQL
@@ -735,7 +768,7 @@
            : ($cat)  - (Main) category
            : ($lt)   - List type, subcategory
            : ($file) - Boolean (&#39;is&#39; file or not)
-  Argument : URI
+  Argument : : $_[0] - (str) &lt;string&gt; URI
   Throws   :
   Comment  : Parses URI, returns elements into logical parts of the URI
            : URI has structural info on source. returns URI that shows metadata
