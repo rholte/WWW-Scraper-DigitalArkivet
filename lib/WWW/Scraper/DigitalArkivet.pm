@@ -1201,17 +1201,12 @@ sub buildCSVsrc(){
                         # lt's only for these (by expirance) ...
                         # NOTE ! Potenially wrong assumption in long run (remove kt restrain or whole if elsif)
                         # todo unless?
-                        if ( (($ka eq '2') && (($kt eq 'AVSK') || ($kt eq 'DIVR') || ($kt eq 'FREG') || ($kt eq 'KLOK') || ($kt eq 'KOMM') || ($kt eq 'LYSN') || ($kt eq 'MINI') || ($kt eq 'RESK' )) )) {
+                        if ( ($ka eq '3') || ($kt eq 'AVSK') || ($kt eq 'DIVR') || ($kt eq 'FREG') || ($kt eq 'KLOK') || ($kt eq 'KOMM') || ($kt eq 'LYSN') || ($kt eq 'MINI')|| ($kt eq 'KLAD') || ($kt eq 'RESK' ) ) {
                             @data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                             $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
                             $resultID++;
                             $rows++;
-                        } elsif ($ka eq '3') {
-                            @data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
-                            $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
-                            $resultID++;
-                            $rows++;
-                        }
+                        } 
                     }
                 }
             }
