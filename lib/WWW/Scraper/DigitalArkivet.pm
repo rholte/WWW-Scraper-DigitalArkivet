@@ -37,6 +37,7 @@ B<WWW::Scraper::DigitalArkivet> - Routines for scraping Digitalarkivet
 
 =head1 VERSION
 
+ 0.07 - 05.04.2016 - Tweeked buildCSVsrc
  0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, (Fifth Stage completed)
  0.05 - 31.07.2015 - Module - First stage complete
  0.04 - 01.07.2015 - POD - Documented, minor bugfix'es
@@ -1150,7 +1151,7 @@ sub buildCSVsrc(){
     # "list" is needed to restart from when script fail's before scraping is completed
     #  ->fault tolerant way to webscrape, recovery enabled
     #our $resultID;
-    my ($r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $skip, $bit, $url,  @data);
+    my ($r, $f, $k, $ka, $kt, $lt, $ltka, $format, $theme, $ok, $ko, $skip, $bit, $url,  @data);
 #    my $siteID   = $site{'finn_kilde'}->{'siteID'};
 #    my $base_url = $site{'finn_kilde'}->{'url'}.'?s=&fra=&til=';
     #my $base_url = shift;
@@ -1188,16 +1189,30 @@ sub buildCSVsrc(){
             $ka = defined $s[$j]{ka} ? $s[$j]{ka} : '';
             $kt = defined $s[$j]{kt} ? $s[$j]{kt} : '';
             $bitSrc = defined $s[$j]{bit} ? $s[$j]{bit} : '';
-            if ( $ka eq '2' ) { # no need to loop @lt unless ka==2
+            # knowledge base, may be wrong in future (then remove  && $ka=... )
+            if ( ($ka eq '2') || ($ka eq '3') ){ # no need to loop @lt unless ka==2 or ka==3
                 my $bitLt = '';
                 for my $l ( 0 .. $#lt ) {
-                    $lt = defined $lt[$l]{lt} ? $lt[$l]{lt} : '';
                     $bitLt = defined $lt[$l]{bit} ? $lt[$l]{bit} : '';
-                    $url = $base_url.$bitGeo.$bitSrc.$bitLt . "&page=";
-                    @data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
-                    $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
-                    $resultID++;
-                    $rows++;
+                    $ltka = defined $lt[$l]{ka} ? $lt[$l]{ka} : '';
+                    if ($ka eq $ltka) {
+                        $lt = defined $lt[$l]{lt} ? $lt[$l]{lt} : '';
+                        $bitLt = defined $lt[$l]{bit} ? $lt[$l]{bit} : '';
+                        $url = $base_url.$bitGeo.$bitSrc.$bitLt . "&page=";
+                        # lt's only for these (by expirance) ...
+                        # NOTE ! Potenially wrong assumption in long run (remove kt restrain or whole if elsif)
+                        # todo unless?
+                        if ( (($ka eq '2') && (($kt eq 'AVSK') || ($kt eq 'DIVR') || ($kt eq 'FREG') || ($kt eq 'KLOK') || ($kt eq 'KOMM') || ($kt eq 'LYSN') || ($kt eq 'MINI') || ($kt eq 'RESK' )) )) {
+                            @data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+                            $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
+                            $resultID++;
+                        } elsif ($ka eq '3') {
+                            @data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+                            $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
+                            $resultID++;
+                            $rows++;
+                        }
+                    }
                 }
             }
             else {
