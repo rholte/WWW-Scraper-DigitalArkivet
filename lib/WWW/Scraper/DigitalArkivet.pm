@@ -37,7 +37,7 @@ B<WWW::Scraper::DigitalArkivet> - Routines for scraping Digitalarkivet
 
 =head1 VERSION
 
- 0.07 - 05.04.2016 - Tweeked buildCSVsrc
+ 0.07 - 05.04.2016 - Tweeked buildCSVsrc, documentation
  0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, (Fifth Stage completed)
  0.05 - 31.07.2015 - Module - First stage complete
  0.04 - 01.07.2015 - POD - Documented, minor bugfix'es
@@ -1193,7 +1193,6 @@ sub buildCSVsrc(){
             if ( ($ka eq '2') || ($ka eq '3') ){ # no need to loop @lt unless ka==2 or ka==3
                 my $bitLt = '';
                 for my $l ( 0 .. $#lt ) {
-                    $bitLt = defined $lt[$l]{bit} ? $lt[$l]{bit} : '';
                     $ltka = defined $lt[$l]{ka} ? $lt[$l]{ka} : '';
                     if ($ka eq $ltka) {
                         $lt = defined $lt[$l]{lt} ? $lt[$l]{lt} : '';
@@ -1206,6 +1205,7 @@ sub buildCSVsrc(){
                             @data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                             $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
                             $resultID++;
+                            $rows++;
                         } elsif ($ka eq '3') {
                             @data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                             $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
