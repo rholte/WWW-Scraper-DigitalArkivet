@@ -1194,8 +1194,9 @@ sub buildCSVsrc(){
                 my $bitLt = '';
                 for my $l ( 0 .. $#lt ) {
                     $ltka = defined $lt[$l]{ka} ? $lt[$l]{ka} : '';
-                    if ($ka eq $ltka) {
-                        $lt = defined $lt[$l]{lt} ? $lt[$l]{lt} : '';
+                    $lt = defined $lt[$l]{lt} ? $lt[$l]{lt} : '';
+                    # || (()&&()) allows empty lt, must allow ka=2 without lt
+                    if (($ka eq $ltka) || (($ltka eq '') && ($lt eq ''))) {
                         $bitLt = defined $lt[$l]{bit} ? $lt[$l]{bit} : '';
                         $url = $base_url.$bitGeo.$bitSrc.$bitLt . "&page=";
                         # lt's only for these (by expirance) ...
@@ -1206,7 +1207,7 @@ sub buildCSVsrc(){
                             $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
                             $resultID++;
                             $rows++;
-                        } 
+                        }
                     }
                 }
             }
