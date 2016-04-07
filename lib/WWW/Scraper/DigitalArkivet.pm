@@ -1035,7 +1035,8 @@ sub buildCSVparamList {
     open our $csvFH, ">:encoding(utf8)", $csvFile or die Text::CSV_XS->error_diag;
     my $csv = Text::CSV_XS->new ({ binary => 1, auto_diag => 1, allow_loose_quotes => 1 });
     $csv->eol ("\r\n");
-    my @fields = (qw(`resultID` `siteID` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko` `url` `skip` `runID`));
+    #my @fields = (qw(`resultID` `siteID` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko` `url` `skip` `runID`));
+    my @fields = (qw( `siteID` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko` `url` `skip` `runID`));
     $csv->print ($csvFH, \@fields) or $csv->error_diag;
 
     my %xtra;
@@ -1189,7 +1190,7 @@ sub buildCSVsrc(){
             $ka = defined $s[$j]{ka} ? $s[$j]{ka} : '';
             $kt = defined $s[$j]{kt} ? $s[$j]{kt} : '';
             $bitSrc = defined $s[$j]{bit} ? $s[$j]{bit} : '';
-            # knowledge base, may be wrong in future (then remove  && $ka=... )
+            # knowledge based, may be wrong in future (then remove  && $ka=... )
             if ( ($ka eq '2') || ($ka eq '3') ){ # no need to loop @lt unless ka==2 or ka==3
                 my $bitLt = '';
                 for my $l ( 0 .. $#lt ) {
@@ -1203,7 +1204,8 @@ sub buildCSVsrc(){
                         # NOTE ! Potenially wrong assumption in long run (remove kt restrain or whole if elsif)
                         # todo unless?
                         if ( ($ka eq '3') || ($kt eq 'AVSK') || ($kt eq 'DIVR') || ($kt eq 'FREG') || ($kt eq 'KLOK') || ($kt eq 'KOMM') || ($kt eq 'LYSN') || ($kt eq 'MINI')|| ($kt eq 'KLAD') || ($kt eq 'RESK' ) ) {
-                            @data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+                            #@data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+                            @data =($siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                             $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
                             $resultID++;
                             $rows++;
@@ -1211,10 +1213,11 @@ sub buildCSVsrc(){
                     }
                 }
             }
-            else {
+            else { # ka <> 2 or 3
                 $lt = ''; # not "liste type"
                 $url = $base_url.$bitGeo.$bitSrc."&page=";
-                @data = ($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+                #@data = ($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+                @data = ( $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                 $csv->print ($FH, \@data) or $csv->error_diag; # save to csv
                 $resultID++;
                 $rows++;
@@ -1299,7 +1302,8 @@ sub buildCSVsimple {
             }
             $bitX = defined $d[$j]{bit} ? $d[$j]{bit} : '';
             $url = $base_url.$bitGeo.$bitX."&page=";
-            @data = ($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+            #@data = ($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+            @data = ($siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
             $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
             $resultID++;
             $rows++;
@@ -1936,7 +1940,8 @@ sub DBIloadCSVresultparms {
     my $lf     = '\n'; #default linfeed is  x0A (LF)
     my $rows=0;
     our $dbh = &Connect2DB() if not($Connected);
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (resultID, siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
+    #my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (resultID, siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
+    my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
