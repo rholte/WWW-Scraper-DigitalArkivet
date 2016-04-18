@@ -1941,7 +1941,7 @@ sub DBIloadCSVresultparms {
     my $rows=0;
     our $dbh = &Connect2DB() if not($Connected);
     #my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (resultID, siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
+    my $sql = qq{LOAD DATA LOCAL INFILE '$file' INSERT IGNORE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
@@ -1995,7 +1995,7 @@ sub DBIloadFile {
     our $dbh = &Connect2DB() if not($Connected);
     my $fieldlist = join ", ", @fields;
     #CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`$table` CHARACTER SET UTF8 FIELDS TERMINATED BY  '$tab' ENCLOSED BY '"' IGNORE 1 LINES ( $fieldlist ) };
+    my $sql = qq{LOAD DATA LOCAL INFILE '$file' INSERT IGNORE INTO TABLE `$db`.`$table` CHARACTER SET UTF8 FIELDS TERMINATED BY  '$tab' ENCLOSED BY '"' IGNORE 1 LINES ( $fieldlist ) };
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
@@ -2056,7 +2056,7 @@ sub DBIresultParms2DB {
     my @fields =(qw(`siteID` `hits` `url` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko`));
     my $fieldlist = join ", ", @fields;
     my $field_placeholders = join ', ', ('?') x @fields;
-    my $sql = qq{REPLACE INTO `$db`.`resultParms` ( $fieldlist ) VALUES( $field_placeholders )};
+    my $sql = qq{INSERT IGNORE INTO `$db`.`resultParms` ( $fieldlist ) VALUES( $field_placeholders )};
     #my $sql = qq{REPLACE INTO `da`.`resultParms` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
@@ -2155,7 +2155,7 @@ sub DBIresultList2DB {
     my $fieldlist = join ", ", @fields;
     #my $field_placeholders = join ", ", map { '?' } @fields;
     my $field_placeholders = join ', ', ('?') x @fields;
-    my $sql =qq{REPLACE INTO `$db`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
+    my $sql =qq{INSERT IGNORE INTO `$db`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
     #my $sql =qq{REPLACE INTO `da`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";

@@ -1,0 +1,1032 @@
+2016/03/28 22:50:57 kb_contents-11448 -> 
+|- h5  [A1]
+|  |- 0 = Fødte og døpte - Gulen (Eivindvik), Husøy, Brekke, Lavik, Bø sokn 
+|  |  [S2]
+|  |- 1 = Konfirmerte - Gulen (Eivindvik), Husøy, Brekke, Lavik, Bø sokn  [S3]
+|  |- 2 = Døde og begravede - Gulen (Eivindvik), Husøy, Brekke, Lavik, Bø sokn 
+|  |  [S4]
+|  |- 3 = Trolovede - Gulen (Eivindvik), Husøy, Brekke, Lavik, Bø sokn  [S5]
+|  |- 4 = Offentlige skriftemål (publice absolverede) - Gulen (Eivindvik),
+|  |  Husøy, Brekke, Lavik, Bø sokn  [S6]
+|  `- 5 = Andre sidekategorier  [S7]
+`- row  [A8]
+   |- 0  [H9]
+   |  |- pages  [A10]
+   |  |  |- 0 =  1798 (s. 142-143)   [S11]
+   |  |  `- 1 =  1799 (s. 150-151)   [S12]
+   |  |- span = 1790-1799  [S13]
+   |  `- url  [A14]
+   |     |- 0 =  blessed in 'URI::https'  [OS15]
+   |     |  `- https://media.digitalarkivet.no/view/11448/54 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/54  [S16]
+   |     `- 1 =  blessed in 'URI::https'  [OS17]
+   |        `- https://media.digitalarkivet.no/view/11448/58 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/58  [S18]
+   |- 1  [H19]
+   |  |- pages  [A20]
+   |  |  |- 0 =  1800 (s. 170-171)   [S21]
+   |  |  |- 1 =  1801 (s. 190-191)   [S22]
+   |  |  |- 2 =  1802 (s. 212-213)   [S23]
+   |  |  |- 3 =  1803 (s. 230-231)   [S24]
+   |  |  |- 4 =  1804 (s. 254-255)   [S25]
+   |  |  |- 5 =  1805 (s. 282-283)   [S26]
+   |  |  |- 6 =  1806 (s. 302-303)   [S27]
+   |  |  |- 7 =  1807 (s. 322-323)   [S28]
+   |  |  `- 8 =  1808 (s. 56-57)   [S29]
+   |  |- span = 1800-1809  [S30]
+   |  `- url  [A31]
+   |     |- 0 =  blessed in 'URI::https'  [OS32]
+   |     |  `- https://media.digitalarkivet.no/view/11448/68 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/68  [S33]
+   |     |- 1 =  blessed in 'URI::https'  [OS34]
+   |     |  `- https://media.digitalarkivet.no/view/11448/78 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/78  [S35]
+   |     |- 2 =  blessed in 'URI::https'  [OS36]
+   |     |  `- https://media.digitalarkivet.no/view/11448/89 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/89  [S37]
+   |     |- 3 =  blessed in 'URI::https'  [OS38]
+   |     |  `- https://media.digitalarkivet.no/view/11448/98 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/98  [S39]
+   |     |- 4 =  blessed in 'URI::https'  [OS40]
+   |     |  `- https://media.digitalarkivet.no/view/11448/110 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/110  [S41]
+   |     |- 5 =  blessed in 'URI::https'  [OS42]
+   |     |  `- https://media.digitalarkivet.no/view/11448/124 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/124  [S43]
+   |     |- 6 =  blessed in 'URI::https'  [OS44]
+   |     |  `- https://media.digitalarkivet.no/view/11448/134 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/134  [S45]
+   |     |- 7 =  blessed in 'URI::https'  [OS46]
+   |     |  `- https://media.digitalarkivet.no/view/11448/144 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/144  [S47]
+   |     `- 8 =  blessed in 'URI::https'  [OS48]
+   |        `- https://media.digitalarkivet.no/view/11448/9 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/9  [S49]
+   |- 2  [H50]
+   |  |- pages  [A51]
+   |  |  `- 0 =  1798-1800 (s. 38-39)   [S52]
+   |  |- span = 1790-1799  [S53]
+   |  `- url  [A54]
+   |     `- 0 =  blessed in 'URI::https'  [OS55]
+   |        `- https://media.digitalarkivet.no/view/11448/2 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/2  [S56]
+   |- 3  [H57]
+   |  |- pages  [A58]
+   |  |  |- 0 =  1798-1800 (s. 38-39)   [S59]
+   |  |  |- 1 =  1801-1802 (s. 40-41)   [S60]
+   |  |  |- 2 =  1803 (s. 42-43)   [S61]
+   |  |  |- 3 =  1804 (s. 44-45)   [S62]
+   |  |  |- 4 =  1805 (s. 46-47)   [S63]
+   |  |  `- 5 =  1808 (s. 50-51)   [S64]
+   |  |- span = 1800-1809  [S65]
+   |  `- url  [A66]
+   |     |- 0 =  blessed in 'URI::https'  [OS67 -> OS55]
+   |     |- 1 =  blessed in 'URI::https'  [OS68]
+   |     |  `- https://media.digitalarkivet.no/view/11448/3 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/3  [S69]
+   |     |- 2 =  blessed in 'URI::https'  [OS70]
+   |     |  `- https://media.digitalarkivet.no/view/11448/4 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/4  [S71]
+   |     |- 3 =  blessed in 'URI::https'  [OS72]
+   |     |  `- https://media.digitalarkivet.no/view/11448/5 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/5  [S73]
+   |     |- 4 =  blessed in 'URI::https'  [OS74]
+   |     |  `- https://media.digitalarkivet.no/view/11448/6 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/6  [S75]
+   |     `- 5 =  blessed in 'URI::https'  [OS76]
+   |        `- https://media.digitalarkivet.no/view/11448/8 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/8  [S77]
+   |- 4  [H78]
+   |  |- pages  [A79]
+   |  |  `- 0 =  1799 (s. 340-341)   [S80]
+   |  |- span = 1790-1799  [S81]
+   |  `- url  [A82]
+   |     `- 0 =  blessed in 'URI::https'  [OS83]
+   |        `- https://media.digitalarkivet.no/view/11448/153 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/153  [S84]
+   |- 5  [H85]
+   |  |- pages  [A86]
+   |  |  |- 0 =  1800 (s. 342-343)   [S87]
+   |  |  |- 1 =  1801 (s. 346-347)   [S88]
+   |  |  |- 2 =  1802 (s. 350-351)   [S89]
+   |  |  |- 3 =  1803 (s. 354-355)   [S90]
+   |  |  |- 4 =  1804 (s. 362-363)   [S91]
+   |  |  |- 5 =  1805 (s. 366-367)   [S92]
+   |  |  |- 6 =  1806 (s. 372-373)   [S93]
+   |  |  |- 7 =  1807 (s. 378-379)   [S94]
+   |  |  `- 8 =  1808 (s. 408-409)   [S95]
+   |  |- span = 1800-1809  [S96]
+   |  `- url  [A97]
+   |     |- 0 =  blessed in 'URI::https'  [OS98]
+   |     |  `- https://media.digitalarkivet.no/view/11448/154 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/154  [S99]
+   |     |- 1 =  blessed in 'URI::https'  [OS100]
+   |     |  `- https://media.digitalarkivet.no/view/11448/156 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/156  [S101]
+   |     |- 2 =  blessed in 'URI::https'  [OS102]
+   |     |  `- https://media.digitalarkivet.no/view/11448/158 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/158  [S103]
+   |     |- 3 =  blessed in 'URI::https'  [OS104]
+   |     |  `- https://media.digitalarkivet.no/view/11448/160 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/160  [S105]
+   |     |- 4 =  blessed in 'URI::https'  [OS106]
+   |     |  `- https://media.digitalarkivet.no/view/11448/164 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/164  [S107]
+   |     |- 5 =  blessed in 'URI::https'  [OS108]
+   |     |  `- https://media.digitalarkivet.no/view/11448/166 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/166  [S109]
+   |     |- 6 =  blessed in 'URI::https'  [OS110]
+   |     |  `- https://media.digitalarkivet.no/view/11448/169 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/169  [S111]
+   |     |- 7 =  blessed in 'URI::https'  [OS112]
+   |     |  `- https://media.digitalarkivet.no/view/11448/172 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/172  [S113]
+   |     `- 8 =  blessed in 'URI::https'  [OS114]
+   |        `- https://media.digitalarkivet.no/view/11448/187 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/187  [S115]
+   |- 6  [H116]
+   |  |- pages  [A117]
+   |  |  |- 0 =  1798-1799 (s. 60-61)   [S118]
+   |  |  `- 1 =  1799 (s. 62-63)   [S119]
+   |  |- span = 1790-1799  [S120]
+   |  `- url  [A121]
+   |     |- 0 =  blessed in 'URI::https'  [OS122]
+   |     |  `- https://media.digitalarkivet.no/view/11448/12 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/12  [S123]
+   |     `- 1 =  blessed in 'URI::https'  [OS124]
+   |        `- https://media.digitalarkivet.no/view/11448/13 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/13  [S125]
+   |- 7  [H126]
+   |  |- pages  [A127]
+   |  |  |- 0 =  1800 (s. 66-67)   [S128]
+   |  |  |- 1 =  1801 (s. 76-77)   [S129]
+   |  |  |- 2 =  1802 (s. 86-87)   [S130]
+   |  |  |- 3 =  1803 (s. 102-103)   [S131]
+   |  |  |- 4 =  1804 (s. 114-115)   [S132]
+   |  |  |- 5 =  1805 (s. 126-127)   [S133]
+   |  |  |- 6 =  1806 (s. 386-387)   [S134]
+   |  |  |- 7 =  1807 (s. 398-399)   [S135]
+   |  |  `- 8 =  1808 (s. 402-403)   [S136]
+   |  |- span = 1800-1809  [S137]
+   |  `- url  [A138]
+   |     |- 0 =  blessed in 'URI::https'  [OS139]
+   |     |  `- https://media.digitalarkivet.no/view/11448/15 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/15  [S140]
+   |     |- 1 =  blessed in 'URI::https'  [OS141]
+   |     |  `- https://media.digitalarkivet.no/view/11448/20 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/20  [S142]
+   |     |- 2 =  blessed in 'URI::https'  [OS143]
+   |     |  `- https://media.digitalarkivet.no/view/11448/25 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/25  [S144]
+   |     |- 3 =  blessed in 'URI::https'  [OS145]
+   |     |  `- https://media.digitalarkivet.no/view/11448/34 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/34  [S146]
+   |     |- 4 =  blessed in 'URI::https'  [OS147]
+   |     |  `- https://media.digitalarkivet.no/view/11448/40 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/40  [S148]
+   |     |- 5 =  blessed in 'URI::https'  [OS149]
+   |     |  `- https://media.digitalarkivet.no/view/11448/46 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/46  [S150]
+   |     |- 6 =  blessed in 'URI::https'  [OS151]
+   |     |  `- https://media.digitalarkivet.no/view/11448/176 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/176  [S152]
+   |     |- 7 =  blessed in 'URI::https'  [OS153]
+   |     |  `- https://media.digitalarkivet.no/view/11448/182 to scalar =
+   |     |     https://media.digitalarkivet.no/view/11448/182  [S154]
+   |     `- 8 =  blessed in 'URI::https'  [OS155]
+   |        `- https://media.digitalarkivet.no/view/11448/184 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/184  [S156]
+   |- 8  [H157]
+   |  |- pages  [A158]
+   |  |  `- 0 =  1802 (s. 406-407)   [S159]
+   |  |- span = 1800-1809  [S160]
+   |  `- url  [A161]
+   |     `- 0 =  blessed in 'URI::https'  [OS162]
+   |        `- https://media.digitalarkivet.no/view/11448/186 to scalar =
+   |           https://media.digitalarkivet.no/view/11448/186  [S163]
+   `- 9  [H164]
+      |- pages  [A165]
+      |  `- 0 =  Side 1   [S166]
+      |- span = Etikett, tittel-, innholdsside  [S167]
+      `- url  [A168]
+         `- 0 =  blessed in 'URI::https'  [OS169]
+            `- https://media.digitalarkivet.no/view/11448/1 to scalar =
+               https://media.digitalarkivet.no/view/11448/1  [S170]
+2016/03/28 22:50:57 kb_read-11448 -> 
+`- row  [A1]
+   |- 0  [H2]
+   |  |- type =   [S3]
+   |  |- url  [A4]
+   |  |  `- 0 =  blessed in 'URI::http'  [OS5]
+   |  |     `- http://www.arkivverket.no to scalar = http://www.arkivverket.no 
+   |  |        [S6]
+   |  `- yearPage  [A7]
+   |     `- 0 =   [S8]
+   |- 1  [H9]
+   |  `- type =        Kildeinformasjon Fylke:Sogn og Fjordane Prestegjeld/sokn
+   |     eller embete:Gulen Kirkeboktype:Ministerialbok Nummer
+   |     (arkivreferanse):A 16 Periode:1798 - 1808
+   |     Oppbevaringssted:Statsarkivet i BergenAntall skannede sider/bilder:
+   |     188  [S10]
+   |- 2  [H11]
+   |  |- type = Fødte og døpte  [S12]
+   |  |- url  [A13]
+   |  |  |- 0 =  blessed in 'URI::http'  [OS14]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-54 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-54  [S15]
+   |  |  |- 1 =  blessed in 'URI::http'  [OS16]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-58 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-58  [S17]
+   |  |  |- 2 =  blessed in 'URI::http'  [OS18]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-68 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-68  [S19]
+   |  |  |- 3 =  blessed in 'URI::http'  [OS20]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-78 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-78  [S21]
+   |  |  |- 4 =  blessed in 'URI::http'  [OS22]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-89 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-89  [S23]
+   |  |  |- 5 =  blessed in 'URI::http'  [OS24]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-98 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-98  [S25]
+   |  |  |- 6 =  blessed in 'URI::http'  [OS26]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-110 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-110  [S27]
+   |  |  |- 7 =  blessed in 'URI::http'  [OS28]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-125 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-125  [S29]
+   |  |  |- 8 =  blessed in 'URI::http'  [OS30]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-134 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-134  [S31]
+   |  |  |- 9 =  blessed in 'URI::http'  [OS32]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-149 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-149  [S33]
+   |  |  `- 10 =  blessed in 'URI::http'  [OS34]
+   |  |     `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-9 to scalar =
+   |  |        http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-9  [S35]
+   |  `- yearPage  [A36]
+   |     |- 0 = 1798 (142-143)  [S37]
+   |     |- 1 = 1799 (150-151)  [S38]
+   |     |- 2 = 1800 (170-171)  [S39]
+   |     |- 3 = 1801 (190-191)  [S40]
+   |     |- 4 = 1802 (212-213)  [S41]
+   |     |- 5 = 1803 (230-231)  [S42]
+   |     |- 6 = 1804 (254-255)  [S43]
+   |     |- 7 = 1805 (282-283)  [S44]
+   |     |- 8 = 1806 (302-303)  [S45]
+   |     |- 9 = 1807 (322-323)  [S46]
+   |     `- 10 = 1808 (334-335)  [S47]
+   |- 3  [H48]
+   |  |- type = Konfirmerte  [S49]
+   |  |- url  [A50]
+   |  |  |- 0 =  blessed in 'URI::http'  [OS51]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-2 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-2  [S52]
+   |  |  |- 1 =  blessed in 'URI::http'  [OS53]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-3 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-3  [S54]
+   |  |  |- 2 =  blessed in 'URI::http'  [OS55]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-4 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-4  [S56]
+   |  |  |- 3 =  blessed in 'URI::http'  [OS57]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-5 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-5  [S58]
+   |  |  |- 4 =  blessed in 'URI::http'  [OS59]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-6 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-6  [S60]
+   |  |  |- 5 =  blessed in 'URI::http'  [OS61]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-7 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-7  [S62]
+   |  |  `- 6 =  blessed in 'URI::http'  [OS63]
+   |  |     `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-8 to scalar =
+   |  |        http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-8  [S64]
+   |  `- yearPage  [A65]
+   |     |- 0 = 1798-1800 (038-39)  [S66]
+   |     |- 1 = 1801-1802 (040-41)  [S67]
+   |     |- 2 = 1803 (042-43)  [S68]
+   |     |- 3 = 1804 (044-45)  [S69]
+   |     |- 4 = 1805 (046-47)  [S70]
+   |     |- 5 = 1805-1807 (048-49)  [S71]
+   |     `- 6 = 1808 (050-51)  [S72]
+   |- 4  [H73]
+   |  |- type = Døde og begravede  [S74]
+   |  |- url  [A75]
+   |  |  |- 0 =  blessed in 'URI::http'  [OS76]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-153 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-153  [S77]
+   |  |  |- 1 =  blessed in 'URI::http'  [OS78]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-154 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-154  [S79]
+   |  |  |- 2 =  blessed in 'URI::http'  [OS80]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-156 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-156  [S81]
+   |  |  |- 3 =  blessed in 'URI::http'  [OS82]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-158 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-158  [S83]
+   |  |  |- 4 =  blessed in 'URI::http'  [OS84]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-160 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-160  [S85]
+   |  |  |- 5 =  blessed in 'URI::http'  [OS86]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-165 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-165  [S87]
+   |  |  |- 6 =  blessed in 'URI::http'  [OS88]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-168 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-168  [S89]
+   |  |  |- 7 =  blessed in 'URI::http'  [OS90]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-166 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-166  [S91]
+   |  |  |- 8 =  blessed in 'URI::http'  [OS92]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-169 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-169  [S93]
+   |  |  |- 9 =  blessed in 'URI::http'  [OS94]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-172 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-172  [S95]
+   |  |  `- 10 =  blessed in 'URI::http'  [OS96]
+   |  |     `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-187 to scalar =
+   |  |        http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-187  [S97]
+   |  `- yearPage  [A98]
+   |     |- 0 = 1799 (340-341)  [S99]
+   |     |- 1 = 1800 (342-343)  [S100]
+   |     |- 2 = 1801 (346-347)  [S101]
+   |     |- 3 = 1802 (350-351)  [S102]
+   |     |- 4 = 1803 (354-355)  [S103]
+   |     |- 5 = 1804 (362-363)  [S104]
+   |     |- 6 = 1804-1806 (370-371)  [S105]
+   |     |- 7 = 1805 (366-367)  [S106]
+   |     |- 8 = 1806 (372-373)  [S107]
+   |     |- 9 = 1807 (378-379)  [S108]
+   |     `- 10 = 1808 (408-409)  [S109]
+   |- 5  [H110]
+   |  |- type = Trolovede  [S111]
+   |  |- url  [A112]
+   |  |  |- 0 =  blessed in 'URI::http'  [OS113]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-12 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-12  [S114]
+   |  |  |- 1 =  blessed in 'URI::http'  [OS115]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-13 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-13  [S116]
+   |  |  |- 2 =  blessed in 'URI::http'  [OS117]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-19 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-19  [S118]
+   |  |  |- 3 =  blessed in 'URI::http'  [OS119]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-21 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-21  [S120]
+   |  |  |- 4 =  blessed in 'URI::http'  [OS121]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-25 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-25  [S122]
+   |  |  |- 5 =  blessed in 'URI::http'  [OS123]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-34 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-34  [S124]
+   |  |  |- 6 =  blessed in 'URI::http'  [OS125]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-40 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-40  [S126]
+   |  |  |- 7 =  blessed in 'URI::http'  [OS127]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-46 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-46  [S128]
+   |  |  |- 8 =  blessed in 'URI::http'  [OS129]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-176 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-176  [S130]
+   |  |  |- 9 =  blessed in 'URI::http'  [OS131]
+   |  |  |  `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-182 to scalar =
+   |  |  |     http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |  |     dx_side=-182  [S132]
+   |  |  `- 10 =  blessed in 'URI::http'  [OS133]
+   |  |     `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-184 to scalar =
+   |  |        http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-184  [S134]
+   |  `- yearPage  [A135]
+   |     |- 0 = 1798-1799 (060-61)  [S136]
+   |     |- 1 = 1799 (062-63)  [S137]
+   |     |- 2 = 1800 (066-67)  [S138]
+   |     |- 3 = 1801 (076-77)  [S139]
+   |     |- 4 = 1802 (100-101)  [S140]
+   |     |- 5 = 1803 (102-103)  [S141]
+   |     |- 6 = 1804 (114-115)  [S142]
+   |     |- 7 = 1805 (126-127)  [S143]
+   |     |- 8 = 1806 (386-387)  [S144]
+   |     |- 9 = 1807 (398-399)  [S145]
+   |     `- 10 = 1808 (402-403)  [S146]
+   |- 6  [H147]
+   |  |- type = Publice absolverede  [S148]
+   |  |- url  [A149]
+   |  |  `- 0 =  blessed in 'URI::http'  [OS150]
+   |  |     `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-186 to scalar =
+   |  |        http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+   |  |        dx_side=-186  [S151]
+   |  `- yearPage  [A152]
+   |     `- 0 = 1802 (406-407)  [S153]
+   `- 7  [H154]
+      |- type = tittel- og registersider m.m.  [S155]
+      |- url  [A156]
+      |  `- 0 =  blessed in 'URI::http'  [OS157]
+      |     `- http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+      |        dx_side=-1 to scalar =
+      |        http://www.arkivverket.no/URN:kb_read?idx_kildeid=11448&uid=ny&i
+      |        dx_side=-1  [S158]
+      `- yearPage  [A159]
+         `- 0 = ---- (001)  [S160]
+2016/03/28 22:50:57 db_read-38049 -> 
+|- h2  [A1]
+|  `- 0 = Tolga prestegjeld, Statlig folketelling 90, 1865  [S2]
+`- row  [A3]
+   |- 0  [H4]
+   |  |- p  [A5]
+   |  |  |- 0 = Tittelside bind 90  [S6]
+   |  |  |- 1 =   [S7]
+   |  |  |- 2 =   [S8]
+   |  |  |- 3 =   [S9]
+   |  |  `- 4 = (3)  [S10]
+   |  |- page = (3)  [S11]
+   |  `- url =  blessed in 'URI::http'  [OS12]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/3/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/3/  [S13]
+   |- 1  [H14]
+   |  |- p  [A15]
+   |  |  |- 0 = Innholdsfortegnelse  [S16]
+   |  |  |- 1 =   [S17]
+   |  |  |- 2 =   [S18]
+   |  |  |- 3 =   [S19]
+   |  |  `- 4 = (4)  [S20]
+   |  |- page = (4)  [S21]
+   |  `- url =  blessed in 'URI::http'  [OS22]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/4/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/4/  [S23]
+   |- 2  [H24]
+   |  |- p  [A25]
+   |  |  |- 0 = Hovedliste  [S26]
+   |  |  |- 1 =   [S27]
+   |  |  |- 2 =   [S28]
+   |  |  |- 3 =   [S29]
+   |  |  `- 4 = (5)  [S30]
+   |  |- page = (5)  [S31]
+   |  `- url =  blessed in 'URI::http'  [OS32]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/5/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/5/  [S33]
+   |- 3  [H34]
+   |  |- p  [A35]
+   |  |  |- 0 = Hovedliste for del av Røros prestegjeld  [S36]
+   |  |  |- 1 =   [S37]
+   |  |  |- 2 =   [S38]
+   |  |  |- 3 =   [S39]
+   |  |  `- 4 = (12)  [S40]
+   |  |- page = (12)  [S41]
+   |  `- url =  blessed in 'URI::http'  [OS42]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/12/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/12/  [S43]
+   |- 4  [H44]
+   |  |- p  [A45]
+   |  |  |- 0 = Spesiallister Vingelen sokn  [S46]
+   |  |  |- 1 = 1: Aasen og Nordvang skoledistrikt  [S47]
+   |  |  |- 2 =   [S48]
+   |  |  |- 3 =   [S49]
+   |  |  `- 4 = (15)  [S50]
+   |  |- page = (15)  [S51]
+   |  `- url =  blessed in 'URI::http'  [OS52]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/15/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/15/  [S53]
+   |- 5  [H54]
+   |  |- p  [A55]
+   |  |  |- 0 =   [S56]
+   |  |  |- 1 = 2: Faste skoledistrikt  [S57]
+   |  |  |- 2 =   [S58]
+   |  |  |- 3 =   [S59]
+   |  |  `- 4 = (24)  [S60]
+   |  |- page = (24)  [S61]
+   |  `- url =  blessed in 'URI::http'  [OS62]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/24/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/24/  [S63]
+   |- 6  [H64]
+   |  |- p  [A65]
+   |  |  |- 0 = Spesiallister Tolga sokn  [S66]
+   |  |  |- 1 = 3a: 2den Afdelings skoledistrikt  [S67]
+   |  |  |- 2 =   [S68]
+   |  |  |- 3 =   [S69]
+   |  |  `- 4 = (36)  [S70]
+   |  |- page = (36)  [S71]
+   |  `- url =  blessed in 'URI::http'  [OS72]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/36/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/36/  [S73]
+   |- 7  [H74]
+   |  |- p  [A75]
+   |  |  |- 0 =   [S76]
+   |  |  |- 1 = 3b: 2den Afdelings skoledistrikt  [S77]
+   |  |  |- 2 =   [S78]
+   |  |  |- 3 =   [S79]
+   |  |  `- 4 = (49)  [S80]
+   |  |- page = (49)  [S81]
+   |  `- url =  blessed in 'URI::http'  [OS82]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/49/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/49/  [S83]
+   |- 8  [H84]
+   |  |- p  [A85]
+   |  |  |- 0 =   [S86]
+   |  |  |- 1 = 4: 1ste Afdelings skoledistrikt  [S87]
+   |  |  |- 2 =   [S88]
+   |  |  |- 3 =   [S89]
+   |  |  `- 4 = (52)  [S90]
+   |  |- page = (52)  [S91]
+   |  `- url =  blessed in 'URI::http'  [OS92]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/52/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/52/  [S93]
+   |- 9  [H94]
+   |  |- p  [A95]
+   |  |  |- 0 =   [S96]
+   |  |  |- 1 = 5: Hodalen, Narjord, Del af Tufsingdalen skoled.  [S97]
+   |  |  |- 2 =   [S98]
+   |  |  |- 3 =   [S99]
+   |  |  `- 4 = (65)  [S100]
+   |  |- page = (65)  [S101]
+   |  `- url =  blessed in 'URI::http'  [OS102]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/65/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/65/  [S103]
+   |- 10  [H104]
+   |  |- p  [A105]
+   |  |  |- 0 = Spesiallister Os sokn  [S106]
+   |  |  |- 1 = 6: Øversjødalen og Holøydalen skoledistrikt  [S107]
+   |  |  |- 2 =   [S108]
+   |  |  |- 3 =   [S109]
+   |  |  `- 4 = (77)  [S110]
+   |  |- page = (77)  [S111]
+   |  `- url =  blessed in 'URI::http'  [OS112]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/77/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/77/  [S113]
+   |- 11  [H114]
+   |  |- p  [A115]
+   |  |  |- 0 =   [S116]
+   |  |  |- 1 = 7: Tufsingdalen skoledistrikt  [S117]
+   |  |  |- 2 =   [S118]
+   |  |  |- 3 =   [S119]
+   |  |  `- 4 = (88)  [S120]
+   |  |- page = (88)  [S121]
+   |  `- url =  blessed in 'URI::http'  [OS122]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/88/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/88/  [S123]
+   |- 12  [H124]
+   |  |- p  [A125]
+   |  |  |- 0 =   [S126]
+   |  |  |- 1 = 8: Nøren skoledistrikt  [S127]
+   |  |  |- 2 =   [S128]
+   |  |  |- 3 =   [S129]
+   |  |  `- 4 = (95)  [S130]
+   |  |- page = (95)  [S131]
+   |  `- url =  blessed in 'URI::http'  [OS132]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/95/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/95/  [S133]
+   |- 13  [H134]
+   |  |- p  [A135]
+   |  |  |- 0 =   [S136]
+   |  |  |- 1 = 9: Del af Dalsbygden og Østgaards skoledistrikt  [S137]
+   |  |  |- 2 =   [S138]
+   |  |  |- 3 =   [S139]
+   |  |  `- 4 = (107)  [S140]
+   |  |- page = (107)  [S141]
+   |  `- url =  blessed in 'URI::http'  [OS142]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/107/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/107/  [S143]
+   |- 14  [H144]
+   |  |- p  [A145]
+   |  |  |- 0 =   [S146]
+   |  |  |- 1 = 10: Dalsbygden skoledistrikt  [S147]
+   |  |  |- 2 =   [S148]
+   |  |  |- 3 =   [S149]
+   |  |  `- 4 = (117)  [S150]
+   |  |- page = (117)  [S151]
+   |  `- url =  blessed in 'URI::http'  [OS152]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/117/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/117/  [S153]
+   |- 15  [H154]
+   |  |- p  [A155]
+   |  |  |- 0 = Spesiallister Røros sokn i Røros prestegjeld  [S156]
+   |  |  |- 1 = 10b: Elgaaen og Galaaen skoledistrikt  [S157]
+   |  |  |- 2 =   [S158]
+   |  |  |- 3 =   [S159]
+   |  |  `- 4 = (128)  [S160]
+   |  |- page = (128)  [S161]
+   |  `- url =  blessed in 'URI::http'  [OS162]
+   |     `- http://arkivverket.no/URN:db_read/ft/38049/128/ to scalar =
+   |        http://arkivverket.no/URN:db_read/ft/38049/128/  [S163]
+   `- 16  [H164]
+      |- p  [A165]
+      |  |- 0 = Spesiallister Os sokn  [S166]
+      |  |- 1 = 11: Ous faste skoledistrikt  [S167]
+      |  |- 2 =   [S168]
+      |  |- 3 =   [S169]
+      |  `- 4 = (140)  [S170]
+      |- page = (140)  [S171]
+      `- url =  blessed in 'URI::http'  [OS172]
+         `- http://arkivverket.no/URN:db_read/ft/38049/140/ to scalar =
+            http://arkivverket.no/URN:db_read/ft/38049/140/  [S173]
+2016/03/28 22:50:57 db_read-42182 -> 
+|- h2  [A1]
+|  `- 0 = Sandefjord innrulleringskontor, Annotasjonsruller, Annotasjonsrulle
+|     2, 1868 - 1869  [S2]
+`- row  [A3]
+   |- 0  [H4]
+   |  |- p  [A5]
+   |  |  |- 0 = Tittelblad  [S6]
+   |  |  |- 1 =   [S7]
+   |  |  |- 2 =   [S8]
+   |  |  |- 3 =   [S9]
+   |  |  `- 4 = (1)  [S10]
+   |  |- page = (1)  [S11]
+   |  `- url =  blessed in 'URI::http'  [OS12]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/2/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/2/  [S13]
+   |- 1  [H14]
+   |  |- p  [A15]
+   |  |  |- 0 = Patenter nr.  [S16]
+   |  |  |- 1 = 1-50  [S17]
+   |  |  |- 2 =   [S18]
+   |  |  |- 3 =   [S19]
+   |  |  `- 4 = (2)  [S20]
+   |  |- page = (2)  [S21]
+   |  `- url =  blessed in 'URI::http'  [OS22]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/3/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/3/  [S23]
+   |- 2  [H24]
+   |  |- p  [A25]
+   |  |  |- 0 =   [S26]
+   |  |  |- 1 = 51-100  [S27]
+   |  |  |- 2 =   [S28]
+   |  |  |- 3 =   [S29]
+   |  |  `- 4 = (12)  [S30]
+   |  |- page = (12)  [S31]
+   |  `- url =  blessed in 'URI::http'  [OS32]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/13/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/13/  [S33]
+   |- 3  [H34]
+   |  |- p  [A35]
+   |  |  |- 0 =   [S36]
+   |  |  |- 1 = 101-150  [S37]
+   |  |  |- 2 =   [S38]
+   |  |  |- 3 =   [S39]
+   |  |  `- 4 = (22)  [S40]
+   |  |- page = (22)  [S41]
+   |  `- url =  blessed in 'URI::http'  [OS42]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/23/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/23/  [S43]
+   |- 4  [H44]
+   |  |- p  [A45]
+   |  |  |- 0 =   [S46]
+   |  |  |- 1 = 151-200  [S47]
+   |  |  |- 2 =   [S48]
+   |  |  |- 3 =   [S49]
+   |  |  `- 4 = (32)  [S50]
+   |  |- page = (32)  [S51]
+   |  `- url =  blessed in 'URI::http'  [OS52]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/33/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/33/  [S53]
+   |- 5  [H54]
+   |  |- p  [A55]
+   |  |  |- 0 =   [S56]
+   |  |  |- 1 = 201-250  [S57]
+   |  |  |- 2 =   [S58]
+   |  |  |- 3 =   [S59]
+   |  |  `- 4 = (42)  [S60]
+   |  |- page = (42)  [S61]
+   |  `- url =  blessed in 'URI::http'  [OS62]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/43/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/43/  [S63]
+   |- 6  [H64]
+   |  |- p  [A65]
+   |  |  |- 0 =   [S66]
+   |  |  |- 1 = 251-300  [S67]
+   |  |  |- 2 =   [S68]
+   |  |  |- 3 =   [S69]
+   |  |  `- 4 = (52)  [S70]
+   |  |- page = (52)  [S71]
+   |  `- url =  blessed in 'URI::http'  [OS72]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/53/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/53/  [S73]
+   |- 7  [H74]
+   |  |- p  [A75]
+   |  |  |- 0 =   [S76]
+   |  |  |- 1 = 301-350  [S77]
+   |  |  |- 2 =   [S78]
+   |  |  |- 3 =   [S79]
+   |  |  `- 4 = (62)  [S80]
+   |  |- page = (62)  [S81]
+   |  `- url =  blessed in 'URI::http'  [OS82]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/63/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/63/  [S83]
+   |- 8  [H84]
+   |  |- p  [A85]
+   |  |  |- 0 =   [S86]
+   |  |  |- 1 = 351-400  [S87]
+   |  |  |- 2 =   [S88]
+   |  |  |- 3 =   [S89]
+   |  |  `- 4 = (72)  [S90]
+   |  |- page = (72)  [S91]
+   |  `- url =  blessed in 'URI::http'  [OS92]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/73/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/73/  [S93]
+   |- 9  [H94]
+   |  |- p  [A95]
+   |  |  |- 0 =   [S96]
+   |  |  |- 1 = 401-450  [S97]
+   |  |  |- 2 =   [S98]
+   |  |  |- 3 =   [S99]
+   |  |  `- 4 = (82)  [S100]
+   |  |- page = (82)  [S101]
+   |  `- url =  blessed in 'URI::http'  [OS102]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/83/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/83/  [S103]
+   |- 10  [H104]
+   |  |- p  [A105]
+   |  |  |- 0 =   [S106]
+   |  |  |- 1 = 451-500  [S107]
+   |  |  |- 2 =   [S108]
+   |  |  |- 3 =   [S109]
+   |  |  `- 4 = (92)  [S110]
+   |  |- page = (92)  [S111]
+   |  `- url =  blessed in 'URI::http'  [OS112]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/93/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/93/  [S113]
+   |- 11  [H114]
+   |  |- p  [A115]
+   |  |  |- 0 =   [S116]
+   |  |  |- 1 = 501-550  [S117]
+   |  |  |- 2 =   [S118]
+   |  |  |- 3 =   [S119]
+   |  |  `- 4 = (102)  [S120]
+   |  |- page = (102)  [S121]
+   |  `- url =  blessed in 'URI::http'  [OS122]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/103/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/103/  [S123]
+   |- 12  [H124]
+   |  |- p  [A125]
+   |  |  |- 0 =   [S126]
+   |  |  |- 1 = 551-601  [S127]
+   |  |  |- 2 =   [S128]
+   |  |  |- 3 =   [S129]
+   |  |  `- 4 = (112)  [S130]
+   |  |- page = (112)  [S131]
+   |  `- url =  blessed in 'URI::http'  [OS132]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/113/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/113/  [S133]
+   |- 13  [H134]
+   |  |- p  [A135]
+   |  |  |- 0 =   [S136]
+   |  |  |- 1 = 602-651  [S137]
+   |  |  |- 2 =   [S138]
+   |  |  |- 3 =   [S139]
+   |  |  `- 4 = (122)  [S140]
+   |  |- page = (122)  [S141]
+   |  `- url =  blessed in 'URI::http'  [OS142]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/123/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/123/  [S143]
+   |- 14  [H144]
+   |  |- p  [A145]
+   |  |  |- 0 =   [S146]
+   |  |  |- 1 = 652-701  [S147]
+   |  |  |- 2 =   [S148]
+   |  |  |- 3 =   [S149]
+   |  |  `- 4 = (132)  [S150]
+   |  |- page = (132)  [S151]
+   |  `- url =  blessed in 'URI::http'  [OS152]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/133/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/133/  [S153]
+   |- 15  [H154]
+   |  |- p  [A155]
+   |  |  |- 0 =   [S156]
+   |  |  |- 1 = 702-751  [S157]
+   |  |  |- 2 =   [S158]
+   |  |  |- 3 =   [S159]
+   |  |  `- 4 = (142)  [S160]
+   |  |- page = (142)  [S161]
+   |  `- url =  blessed in 'URI::http'  [OS162]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/143/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/143/  [S163]
+   |- 16  [H164]
+   |  |- p  [A165]
+   |  |  |- 0 =   [S166]
+   |  |  |- 1 = 752-801  [S167]
+   |  |  |- 2 =   [S168]
+   |  |  |- 3 =   [S169]
+   |  |  `- 4 = (152)  [S170]
+   |  |- page = (152)  [S171]
+   |  `- url =  blessed in 'URI::http'  [OS172]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/153/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/153/  [S173]
+   |- 17  [H174]
+   |  |- p  [A175]
+   |  |  |- 0 =   [S176]
+   |  |  |- 1 = 802-851  [S177]
+   |  |  |- 2 =   [S178]
+   |  |  |- 3 =   [S179]
+   |  |  `- 4 = (162)  [S180]
+   |  |- page = (162)  [S181]
+   |  `- url =  blessed in 'URI::http'  [OS182]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/163/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/163/  [S183]
+   |- 18  [H184]
+   |  |- p  [A185]
+   |  |  |- 0 =   [S186]
+   |  |  |- 1 = 852-901  [S187]
+   |  |  |- 2 =   [S188]
+   |  |  |- 3 =   [S189]
+   |  |  `- 4 = (172)  [S190]
+   |  |- page = (172)  [S191]
+   |  `- url =  blessed in 'URI::http'  [OS192]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/173/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/173/  [S193]
+   |- 19  [H194]
+   |  |- p  [A195]
+   |  |  |- 0 =   [S196]
+   |  |  |- 1 = 902-951  [S197]
+   |  |  |- 2 =   [S198]
+   |  |  |- 3 =   [S199]
+   |  |  `- 4 = (182)  [S200]
+   |  |- page = (182)  [S201]
+   |  `- url =  blessed in 'URI::http'  [OS202]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/183/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/183/  [S203]
+   |- 20  [H204]
+   |  |- p  [A205]
+   |  |  |- 0 =   [S206]
+   |  |  |- 1 = 952-1001  [S207]
+   |  |  |- 2 =   [S208]
+   |  |  |- 3 =   [S209]
+   |  |  `- 4 = (192)  [S210]
+   |  |- page = (192)  [S211]
+   |  `- url =  blessed in 'URI::http'  [OS212]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/194/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/194/  [S213]
+   |- 21  [H214]
+   |  |- p  [A215]
+   |  |  |- 0 =   [S216]
+   |  |  |- 1 = 1002-1051  [S217]
+   |  |  |- 2 =   [S218]
+   |  |  |- 3 =   [S219]
+   |  |  `- 4 = (202)  [S220]
+   |  |- page = (202)  [S221]
+   |  `- url =  blessed in 'URI::http'  [OS222]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/204/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/204/  [S223]
+   |- 22  [H224]
+   |  |- p  [A225]
+   |  |  |- 0 =   [S226]
+   |  |  |- 1 = 1052-1101  [S227]
+   |  |  |- 2 =   [S228]
+   |  |  |- 3 =   [S229]
+   |  |  `- 4 = (212)  [S230]
+   |  |- page = (212)  [S231]
+   |  `- url =  blessed in 'URI::http'  [OS232]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/214/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/214/  [S233]
+   |- 23  [H234]
+   |  |- p  [A235]
+   |  |  |- 0 =   [S236]
+   |  |  |- 1 = 1102-1151  [S237]
+   |  |  |- 2 =   [S238]
+   |  |  |- 3 =   [S239]
+   |  |  `- 4 = (222)  [S240]
+   |  |- page = (222)  [S241]
+   |  `- url =  blessed in 'URI::http'  [OS242]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/224/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/224/  [S243]
+   |- 24  [H244]
+   |  |- p  [A245]
+   |  |  |- 0 =   [S246]
+   |  |  |- 1 = 1152-1201  [S247]
+   |  |  |- 2 =   [S248]
+   |  |  |- 3 =   [S249]
+   |  |  `- 4 = (232)  [S250]
+   |  |- page = (232)  [S251]
+   |  `- url =  blessed in 'URI::http'  [OS252]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/234/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/234/  [S253]
+   |- 25  [H254]
+   |  |- p  [A255]
+   |  |  |- 0 =   [S256]
+   |  |  |- 1 = 1202-1251  [S257]
+   |  |  |- 2 =   [S258]
+   |  |  |- 3 =   [S259]
+   |  |  `- 4 = (242)  [S260]
+   |  |- page = (242)  [S261]
+   |  `- url =  blessed in 'URI::http'  [OS262]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/244/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/244/  [S263]
+   |- 26  [H264]
+   |  |- p  [A265]
+   |  |  |- 0 =   [S266]
+   |  |  |- 1 = 1252-1301  [S267]
+   |  |  |- 2 =   [S268]
+   |  |  |- 3 =   [S269]
+   |  |  `- 4 = (252)  [S270]
+   |  |- page = (252)  [S271]
+   |  `- url =  blessed in 'URI::http'  [OS272]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/254/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/254/  [S273]
+   |- 27  [H274]
+   |  |- p  [A275]
+   |  |  |- 0 =   [S276]
+   |  |  |- 1 = 1302-1351  [S277]
+   |  |  |- 2 =   [S278]
+   |  |  |- 3 =   [S279]
+   |  |  `- 4 = (262)  [S280]
+   |  |- page = (262)  [S281]
+   |  `- url =  blessed in 'URI::http'  [OS282]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/264/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/264/  [S283]
+   |- 28  [H284]
+   |  |- p  [A285]
+   |  |  |- 0 =   [S286]
+   |  |  |- 1 = 1352-1401  [S287]
+   |  |  |- 2 =   [S288]
+   |  |  |- 3 =   [S289]
+   |  |  `- 4 = (272)  [S290]
+   |  |- page = (272)  [S291]
+   |  `- url =  blessed in 'URI::http'  [OS292]
+   |     `- http://arkivverket.no/URN:db_read/db/42182/274/ to scalar =
+   |        http://arkivverket.no/URN:db_read/db/42182/274/  [S293]
+   `- 29  [H294]
+      |- p  [A295]
+      |  |- 0 =   [S296]
+      |  |- 1 = 1402-1446  [S297]
+      |  |- 2 =   [S298]
+      |  |- 3 =   [S299]
+      |  `- 4 = (282)  [S300]
+      |- page = (282)  [S301]
+      `- url =  blessed in 'URI::http'  [OS302]
+         `- http://arkivverket.no/URN:db_read/db/42182/284/ to scalar =
+            http://arkivverket.no/URN:db_read/db/42182/284/  [S303]

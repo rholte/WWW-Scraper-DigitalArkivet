@@ -1,0 +1,2 @@
+SQL error: Tilgang nektet for bruker: 'dba'@'localhost' (Bruker passord: JA) (1045) DBI connect('da:localhost:3306','dba',...) - DBI connect('da:localhost:3306','dba',...) failed: Tilgang nektet for bruker: 'dba'@'localhost' (Bruker passord: JA) at D:/Local/Perl/site/lib/WWW/Scraper/DigitalArkivet.pm line 511.
+
