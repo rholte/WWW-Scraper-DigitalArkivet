@@ -1412,20 +1412,35 @@ sub scrapeResultList {
             for my $i ( 0 .. $#{ $res->{'data'} } ) {
                 # this part only works if there is data to process thus hits>0
                 my $isSubList = 0;
+                my $base='';  # for parseURI - (don't use it...)
+                my $uri='';   # for parseURI - (don't use it...)
+                my $daID='';  #
+                my $cat='';   # for parseURI - (don't use it...)
+                my $lt='';    # for parseURI - (don't use it...)
+                my $file='';  # for parseURI - (don't use it...)
                 #resultID, siteID, page
                 $title = defined $res->{'data'}[$i]->{'title'} ? $res->{'data'}[$i]->{'title'} : '';
                 #isSubList if  # char 149 (bullet)
                 $_ = substr($title, 0, 1);
                 $isSubList = 1 if (/\W/);
                 $search = defined $res->{'data'}[$i]->{'search_url'} ? $res->{'data'}[$i]->{'search_url'} : '';
-                $read   = defined $res->{'data'}[$i]->{'read_url'}   ? $res->{'data'}[$i]->{'read_url'}   : '';
+                $read   = defined $res->{'data'}[$i]->{'read_url'}   ? $res->{'data'}[$i]->{'read_url'}   : ''; # empty ??
                 $browse = defined $res->{'data'}[$i]->{'browse_url'} ? $res->{'data'}[$i]->{'browse_url'} : '';
                 $print  = defined $res->{'data'}[$i]->{'print_url'}  ? $res->{'data'}[$i]->{'print_url'}  : '';
+                # need to get DA-ID, use parseURI which returns to much but works !! ToDO: getDAID?
+                ($base, $uri, $daID, $cat, $lt, $file) = &parseURI($search) unless ($search eq '');
+                if ($daID eq '') {
+                    ($base, $uri, $daID, $cat, $lt, $file) = &parseURI($print)  unless ($print eq '');
+                    if ($daID eq '') {
+                        ($base, $uri, $daID, $cat, $lt, $file) = &parseURI($browse) unless ($browse eq '');
+                    }
+                }
+                $print = $uri if ($print eq ''); # "always" have print ??
                 print "($i) $title\n" if ($gDebug);
                 @update = ($hits, 1, $resultID, $siteID); #hits, checked, resultID, siteID ... Pages must wait
                 #print "($hits, 1, $resultID, $siteID)\n" if ($gDebug);
                 #       `resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print`));
-                @row = ($resultID, $siteID, $page, $title, $isSubList, $search, $read, $browse, $print);
+                @row = ($resultID, $siteID, $page, $title, $isSubList, $search, $read, $browse, $print, $daID, $cat, $lt );
                 &DBIresultUpdate(\@update) if (isNew('resultID',$resultID)); #save only if it's new
                 my ($sth_handle,$resultListID) = &DBIresultList2DB(\@row);
             } # for
@@ -1941,7 +1956,7 @@ sub DBIloadCSVresultparms {
     my $rows=0;
     our $dbh = &Connect2DB() if not($Connected);
     #my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (resultID, siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' INSERT IGNORE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
+    my $sql = qq{LOAD DATA LOCAL INFILE '$file' IGNORE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
@@ -1995,7 +2010,7 @@ sub DBIloadFile {
     our $dbh = &Connect2DB() if not($Connected);
     my $fieldlist = join ", ", @fields;
     #CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' INSERT IGNORE INTO TABLE `$db`.`$table` CHARACTER SET UTF8 FIELDS TERMINATED BY  '$tab' ENCLOSED BY '"' IGNORE 1 LINES ( $fieldlist ) };
+    my $sql = qq{LOAD DATA LOCAL INFILE '$file' IGNORE INTO TABLE `$db`.`$table` CHARACTER SET UTF8 FIELDS TERMINATED BY  '$tab' ENCLOSED BY '"' IGNORE 1 LINES ( $fieldlist ) };
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
@@ -2151,7 +2166,7 @@ sub DBIresultList2DB {
     our $dbh = &Connect2DB() if not($Connected);
     #our $resultListID;
                    # $resultID, $siteID, $page, $title, $isSubList, $search, $read, $browse, $print);
-    my @fields = (qw(`resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`));
+    my @fields = (qw(`resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `DA-ID` `category` `lt` `runID` ));
     my $fieldlist = join ", ", @fields;
     #my $field_placeholders = join ", ", map { '?' } @fields;
     my $field_placeholders = join ', ', ('?') x @fields;
@@ -2159,7 +2174,7 @@ sub DBIresultList2DB {
     #my $sql =qq{REPLACE INTO `da`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
-    if ($sth->execute($data[0],$data[1],$data[2],$data[3],$data[4],$data[5],$data[6],$data[7],$data[8],$runID))
+    if ($sth->execute($data[0],$data[1],$data[2],$data[3],$data[4],$data[5],$data[6],$data[7],$data[8],$data[9],$data[10],$data[11],$runID))
     {
         $resultListID = $sth->{mysql_insertid};
         #print "insert ok $row\n" if ($gDebug);
