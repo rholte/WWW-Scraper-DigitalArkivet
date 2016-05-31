@@ -17,3 +17,11 @@ scripts/Digitalarkivet-Siste-100.pl
 scripts/11448 index new.html
 scripts/11448 index old.html
 scripts/Digitalarkivet-webscraper.mwb.beforefix
+scripts/20160530 Siste-100.csv
+scripts/20160524 Siste-100.csv
+scripts/20160509 Siste-100.csv
+scripts/20160522 Siste-100.csv
+scripts/20160510 Siste-100.csv
+scripts/Siste-100-x.csv
+scripts/20160525 Siste-100.csv
+lib/WWW/Scraper/Old-DigitalArkivet.html
