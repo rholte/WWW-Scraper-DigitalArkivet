@@ -37,13 +37,15 @@
       </li>
       <li><a href="#readCFG">_readCFG</a></li>
       <li><a href="#defineScraper">_defineScraper()</a></li>
-      <li><a href="#s2hms">s2hms()</a></li>
+      <li><a href="#getTxtGeoPlace">getTxtGeoPlace()</a></li>
+      <li><a href="#getTxtTypeSpan">getTxtTypeSpan()</a></li>
       <li><a href="#padZero">padZero()</a></li>
+      <li><a href="#s2hms">s2hms()</a></li>
       <li><a href="#Connect2DB">Connect2DB()</a></li>
       <li><a href="#Disconnect2DB">Disconnect2DB()</a></li>
       <li><a href="#DBIresetDA">DBIresetDA()</a></li>
       <li><a href="#getRunID">getRunID()</a></li>
-      <li><a href="#getResultatID">getResultatID()</a></li>
+      <li><a href="#getParmsID">getParmsID()</a></li>
       <li><a href="#doDBIrunStart">doDBIrunStart()</a></li>
       <li><a href="#doDBIrunStat">doDBIrunStat()</a></li>
       <li><a href="#doDBIfillSCD">doDBIfillSCD()</a></li>
@@ -58,7 +60,7 @@
       <li><a href="#scrapeResultList">scrapeResultList()</a></li>
       <li><a href="#parm2CSV">parm2CSV()</a></li>
       <li><a href="#isNew">isNew()</a></li>
-      <li><a href="#daResultparms">daResultparms()</a></li>
+      <li><a href="#daParms">daParms()</a></li>
       <li><a href="#daGeography">daGeography()</a></li>
       <li><a href="#daGeography2">daGeography2()</a></li>
       <li><a href="#daSource">daSource()</a></li>
@@ -66,11 +68,11 @@
       <li><a href="#daTheme">daTheme()</a></li>
       <li><a href="#daFormat">daFormat()</a></li>
       <li><a href="#daOrgan">daOrgan()</a></li>
-      <li><a href="#DBIloadCSVresultparms">DBIloadCSVresultparms()</a></li>
+      <li><a href="#DBIloadCSVdaParms">DBIloadCSVdaParms()</a></li>
       <li><a href="#DBIloadFile">DBIloadFile()</a></li>
-      <li><a href="#DBIresultParms2DB">DBIresultParms2DB()</a></li>
-      <li><a href="#DBIresultUpdate">DBIresultUpdate()</a></li>
-      <li><a href="#DBIresultList2DB">DBIresultList2DB()</a></li>
+      <li><a href="#DBIdaParms2DB">DBIdaParms2DB()</a></li>
+      <li><a href="#DBIparmsUpdate">DBIparmsUpdate()</a></li>
+      <li><a href="#DBIlist2DB">DBIlist2DB()</a></li>
       <li><a href="#parseURI">parseURI()</a></li>
     </ul>
   </li>
@@ -85,15 +87,16 @@
 
 <h1 id="VERSION">VERSION</h1>
 
-<pre><code> 0.07 - 05.04.2016 - Tweeked buildCSVsrc, documentation
+<pre><code> 0.08 - 09.05.2016 - redesigned table structures and naming constructors
+ 0.07 - 05.04.2016 - Tweeked buildCSVsrc, documentation
  0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, (Fifth Stage completed)
  0.05 - 31.07.2015 - Module - First stage complete
  0.04 - 01.07.2015 - POD - Documented, minor bugfix&#39;es
  0.03 - 01.10.2014 - Added proc resetDA
- 0.02 - 21.09.2014 - Added Tables resultList, resultParms, resultBrowse.
+ 0.02 - 21.09.2014 - Added Tables da__list, da__parms, da__browse.
                      Views: vgeography,vinput,vinputf,vinputformat,vinputk,
                             vinputka, vinputkt,vinputlt,vinputr,vinputtheme
- 0.01 - 01.08.2014 - Created. Tables form, site, toscrape</code></pre>
+ 0.01 - 01.08.2014 - Created. Tables da__form, da__site, da__toscrape</code></pre>
 
 <h1 id="SYNOPSIS">SYNOPSIS</h1>
 
@@ -200,14 +203,34 @@
  See Also  : directory &quot;scripts\Scraper examples&quot; contains working scraper
            : samples.</code></pre>
 
-<h2 id="s2hms">s2hms()</h2>
+<h2 id="getTxtGeoPlace">getTxtGeoPlace()</h2>
 
-<pre><code>  Purpose  : Converts seconds into a string with hours, minutes and seconds
-  Returns  : hh:mm:ss &lt;string&gt;
-  Argument : (s) seconds &lt;integer&gt;
+<pre><code>  Purpose  : Find text (geoID, placeID) in string
+  Returns  : (geoID)   - &lt;string&gt; - DA&#39;s area ID
+           : (placeID) - &lt;number&gt; - 4 digit &quot;kommunenr&quot;
+           : (txt)     - &lt;string&gt; - to year in span
+  Argument : $_[0] (txt) &lt;string&gt;
+           : $_[1] (shorten) &lt;boolean&gt; (undef == false)
+
   Throws   : -
-  Comment  : if seconds &gt;  86400 wich is a day,
-           : it will show days hours minutes seconds (dhms)
+  Comment  : Uses regexp to match pattern returns list
+           : if shorten true (or not undef) prematch is removed from string
+
+ See Also  :</code></pre>
+
+<h2 id="getTxtTypeSpan">getTxtTypeSpan()</h2>
+
+<pre><code>  Purpose  : Find text (type, span) in string
+  Returns  : (type) - &lt;string&gt; - source type
+           : (from) - &lt;year&gt;   - from year in span
+           : (to)   - &lt;year&gt;   - to year in span
+           : (txt)  - &lt;string&gt; - to year in span
+  Argument : $_[0] (txt) &lt;string&gt;
+           : $_[1] (shorten) &lt;boolean&gt; (undef == false)
+
+  Throws   : -
+  Comment  : Uses regexp to match some patterns returns those as list
+           : if shorten true (or not undef) prematch is removed from string
 
  See Also  :</code></pre>
 
@@ -219,6 +242,17 @@
            : (len) maximum lenght
   Throws   : -
   Comment  : zero pad string to given length
+
+ See Also  :</code></pre>
+
+<h2 id="s2hms">s2hms()</h2>
+
+<pre><code>  Purpose  : Converts seconds into a string with hours, minutes and seconds
+  Returns  : hh:mm:ss &lt;string&gt;
+  Argument : (s) seconds &lt;integer&gt;
+  Throws   : -
+  Comment  : if seconds &gt;  86400 wich is a day,
+           : it will show days hours minutes seconds (dhms)
 
  See Also  :</code></pre>
 
@@ -263,10 +297,10 @@
            : Used to identify which data is collected during which run.
            : (via stored procedure)</code></pre>
 
-<h2 id="getResultatID">getResultatID()</h2>
+<h2 id="getParmsID">getParmsID()</h2>
 
-<pre><code>  Purpose  : Retrieve current getResultatID
-  Returns  : (RunID) - integer - Last inserted getResultatID
+<pre><code>  Purpose  : Retrieve current getParmsID
+  Returns  : (RunID) - integer - Last inserted getParmsID
   Argument : &lt;none&gt;
   Throws   : Die - on SQL error
   Comment  : MySQL
@@ -381,7 +415,7 @@
 
 <pre><code>  Stage    : 2
 
-  Purpose  : Build list of params - save to resultparms.csv
+  Purpose  : Build list of params - save to da__parms.csv
   Returns  : -
   Argument : $_[0] - (siteID)   - process this site
            : $_[1] - (base_url) - url
@@ -464,7 +498,7 @@
   Purpose  : check url, scrape data to build a result list
   Returns  :
   Argument : $_[0] - (siteID) - process this site
-           : $_[1] - (resultID) - foreign key, link back to resultParms table
+           : $_[1] - (ParmsID) - foreign key, link back to da__parms table
            : $_[2] - (url) - url to scrape
            : $_[3] - (page) - start page
   Throws   : -
@@ -505,13 +539,13 @@
    <span class="variable">See</span> <span class="variable">Also</span>  <span class="operator">:</span>
 </code></pre>
 
-<h2 id="daResultparms">daResultparms()</h2>
+<h2 id="daParms">daParms()</h2>
 
 <pre><code>  Stage    : 2
 
   Purpose  : Retrieve URLs (and ID) - to be scraped - on Digital Archives of Norway.
   Returns  : ref to &#39;Array of hashes&#39;
-                `resultID` - id
+                `parmsID` - id
                 `url`      - url to scrape
   Argument : $_[0] - (siteID) - &lt;integer&gt; process this site
            : $_[1] - (skip)   - &lt;boolean&gt;
@@ -526,7 +560,7 @@
            :
            : `checked` = FALSE -&gt; normally those rows wich isn&#39;t scraped before.</code></pre>
 
-<p>See Also : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</p>
+<p>See Also : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</p>
 
 <h2 id="daGeography">daGeography()</h2>
 
@@ -545,7 +579,7 @@
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
 
 <h2 id="daGeography2">daGeography2()</h2>
 
@@ -563,7 +597,7 @@
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
 
 <h2 id="daSource">daSource()</h2>
 
@@ -581,7 +615,7 @@
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
 
 <h2 id="daListType">daListType()</h2>
 
@@ -600,7 +634,7 @@
            : Creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
 
 <h2 id="daTheme">daTheme()</h2>
 
@@ -617,7 +651,7 @@
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
-  See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+  See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
 
 <h2 id="daFormat">daFormat()</h2>
 
@@ -634,7 +668,7 @@
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
 
 <h2 id="daOrgan">daOrgan()</h2>
 
@@ -652,9 +686,9 @@
            : (Currently only 2 Organs - mining, industry)
            : Locally scoped &quot;boolean&quot; var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()</code></pre>
 
-<h2 id="DBIloadCSVresultparms">DBIloadCSVresultparms()</h2>
+<h2 id="DBIloadCSVdaParms">DBIloadCSVdaParms()</h2>
 
 <pre><code>  Stage    : 2
 
@@ -664,7 +698,7 @@
   Argument : $_[0] - (file) - file with data
   Throws   : Die - on SQL error
   Comment  : MySQL
-           : Saves file to table &quot;resultparms&quot; using LOAD DATA.
+           : Saves file to table &quot;da__parms&quot; using LOAD DATA.
            : File expected to have headers in first line
 
  See Also  : DBIloadFile()</code></pre>
@@ -686,14 +720,14 @@
            : File expected to have headers in first line
            : SET can be any valid SQL (Should failsafe it?)
 
- See Also  : DBIloadCSVresultparms()</code></pre>
+ See Also  : DBIloadCSVdaParms()</code></pre>
 
-<h2 id="DBIresultParms2DB">DBIresultParms2DB()</h2>
+<h2 id="DBIdaParms2DB">DBIdaParms2DB()</h2>
 
 <pre><code>  Stage    : 2
 
   Returns  : (\$sth) -  ref to statement handle
-           : ($resultID) - Last ID insterted
+           : ($ParmsID) - Last ID insterted
   Argument : $_[0] - (row) ref to array. list/&quot;row&quot; of data to be saved
                 `r`      - code for region (region)
                 `f`      - code for county (fylke)
@@ -713,24 +747,24 @@
            : data to further scrape), some parameters are logically linked,
            : however, there are 10 different parameters that all have several
            : possibilities. Each value gives different URL to check (later).
-           : Not all fields in table resultParms get saved/updated.
+           : Not all fields in table daParms get saved/updated.
            : Some things need to be scraped later on.
            : Following fields are for keeping track of next stage
            : * Checked=true means site is chekcked/scraped
            : * changed/hits/pages/runID is filled in after scrape
 
-  See Also : DBIresultUpdate()</code></pre>
+  See Also : DBIparmsUpdate()</code></pre>
 
-<h2 id="DBIresultUpdate">DBIresultUpdate()</h2>
+<h2 id="DBIparmsUpdate">DBIparmsUpdate()</h2>
 
 <pre><code>  Stage    : 2
 
-  Purpose  : Update a single line in resultparms.
+  Purpose  : Update a single line in da__parms.
   Returns  : True/False (ok/fail)
   Argument : $_[0] - (data) ref to list of data
                 0=&gt;hits, (value)
                 1=&gt;checked, (value)
-                2=&gt;resultID, (where)
+                2=&gt;ParmsID, (where)
                 3=&gt;siteID, (where)
   Throws   : Die - on SQL error in preperation, not execution
   Comment  : MySQL
@@ -739,20 +773,20 @@
            : if pages=0, then skip=true (no data found, don&#39;t waste time on next normal run).
            : Sometimes not all data can be harvested on a single page,  (pages are then =&gt; 2)
 
- See Also  : DBIresultParms2DB()</code></pre>
+ See Also  : DBIdaParms2DB()</code></pre>
 
-<h2 id="DBIresultList2DB">DBIresultList2DB()</h2>
+<h2 id="DBIlist2DB">DBIlist2DB()</h2>
 
 <pre><code>  Stage    : 3
 
   Purpose  : Save array of arrays (resultlist) to the database
   Returns  : ref to statement handler &amp; Last ID insterted C&lt;\$sth,$resultListID&gt;
   Argument :  $_[0] - (data) ref to array (list)
-           : Columns: `resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`
+           : Columns: `parmsID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Digital Archives of Norway &quot;Finn kilde&quot; (Find source) has listing
-           : (resultList) that is saved to database.
+           : (da__list) that is saved to database.
            : Data from scraping is an array of arrays.
 
  See Also   :</code></pre>

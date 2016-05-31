@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#REVISION-HISTORY">REVISION HISTORY</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+  <li><a href="#DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</a></li>
+  <li><a href="#POD-ERRORS">POD ERRORS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>DigitalArkivet-GetForm.pl</b> - Get data from web form at Digitalarkivet</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<pre><code> 0.01 - 01.07.2015</code></pre>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    DigitalArkivet-GetForm.pl [options] &lt;siteID&gt; &lt;url&gt; &lt;name&gt;
+
+    options/switches:
+    -d 1/0 - database   1 store to DB, 0 no storage
+    -h 1/0 - help       brief help message (Synopsis)
+    -m 1/0 - manual     full documentation (POD)
+    Note: digit must follow last option, since SiteID otherwise would be parsed as option value
+          -d1 and -d 1 are the same
+
+    Required parameters:
+    &lt;siteID&gt;    - identifying number (to site)
+    &lt;url&gt;       - url of site
+    &lt;name&gt;      - name of site
+
+    eg.
+        DigitalArkivet-GetForm.pl -d1 2 http://digitalarkivet.arkivverket.no/sok/eiendom_avansert eiendom_avansert</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>The script gets form inputs on the given web page at Digitalarkivet. These are needed to further scrape Digitalarkivet - The Digital Archives of Norway, on later stages. The script executes all of <b>Stage 1</b> for the given site.</p>
+
+<p>Basic functionality:</p>
+
+<p>What are the searchable options? Look at the form, grab all data about inputs. Store data (to a database)</p>
+
+<pre><code>    1. Find inputs -&gt; build @data
+    2. Store data in CSV file
+    3. [load CSV into a database]
+    4. [dump @data to file]</code></pre>
+
+<p>Storing data in CSV to have better control over data, also storing a CSV into a database with &quot;load data&quot; is faster than doing it incrementally.</p>
+
+<p>NB! Use -d option switch to store @data in the database. If set, it uses the switch. Not set, looks for noDB in config file noDB=1 means don&#39;t store to database. Default setting for noDB is 0. A switch will override any option set in the config file.</p>
+
+<p>Todo:</p>
+
+<pre><code>    1. Implment Slowly Changing Dimension (SCD)/ Change Data Capture (CDC) ?
+    2. Drop indexes on the database before load, reinstate after load.
+    3. Failsafe parameters - remove unwanted chars like &quot; .
+    4. Get hidden inputs (if needed ?? - currently doesn&#39;t seem to matter for later use).</code></pre>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
+
+<p>Testet on win7, no known ties to this platform, should work for other plattforms. see config file - <b>DigitalArkivet.cfg</b></p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
+
+<p>Config::Simple, Data::Dumper::Simple, Getopt::Std Web::Scraper, Pod::Usage WWW::Scraper::DigitalArkivet, WWW::Scraper::DigitalArkivet::Database, URI</p>
+
+<p>Databasestructure as of DigitalArkivet-webscraper.mwb v.1.0 or later</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Rolf B. Holte - <a href="http://www.holte.nu/">http://www.holte.nu/</a> - &lt;rolfbh@disnorge.no&gt; Member of DIS-Norge, The Genealogy Society of Norway-DIS</p>
+
+<p>Please drop me an email if you use this in any project. It would be nice to know if it&#39;s usable for others in any capacity. Any suggestions for improvement are also appreciated.</p>
+
+<h1 id="REVISION-HISTORY">REVISION HISTORY</h1>
+
+<p>0.003 - 02.87.2015 - options,POD - Documented</p>
+
+<p>0.001 - 01.08.2014 - Created.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><i>WWW::Scraper::DigitalArkivet::Database</i>, <i>WWW::Scraper::DigitalArkivet</i>, <i>DigitalArkivet-finn_kilde.pl</i>, <i>DigitalArkivet-eiendom_avansert.pl</i></p>
+
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
+
+<p>Copyright (c) 2015 Rolf B. Holte - <a href="http://www.holte.nu/">http://www.holte.nu/</a> - &lt;rolfbh@disnorge.no&gt;</p>
+
+<p><b>Artistic License (Perl)</b> Author (Copyright Holder) wishes to maintain &quot;artistic&quot; control over the licensed software and derivative works created from it.</p>
+
+<p>This code is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0.</p>
+
+<p>The full text of the license can be found in the LICENSE file included with this module, or &quot;<a>perlartistic</a>&quot;.</p>
+
+<h1 id="DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</h1>
+
+<p>This program is distributed in the hope that it will be useful, but it is provided &ldquo;as is&rdquo; and without any express or implied warranties. For details, see the full text of the license in the file LICENSE.</p>
+
+<h1 id="POD-ERRORS">POD ERRORS</h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+
+<dt id="Around-line-197">Around line 197:</dt>
+<dd>
+
+<p>Non-ASCII character seen before =encoding in &#39;&ldquo;as&#39;. Assuming UTF-8</p>
+
+</dd>
+</dl>
+
+
+</body>
+
+</html>
+
+

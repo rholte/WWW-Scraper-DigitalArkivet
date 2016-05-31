@@ -1,0 +1,150 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#TODO">TODO</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#REVISION-HISTORY">REVISION HISTORY</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+  <li><a href="#DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</a></li>
+  <li><a href="#POD-ERRORS">POD ERRORS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>DigitalArkivet-finn_kilde.pl</b> - script for harvesting metadata at Digitalarkivet</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<pre><code>  0.005 - 19.09.2015 Log4perl, filelocking</code></pre>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>  DigitalArkivet-finnkilde.pl [options]</code></pre>
+
+<p>In order to work script table form must contain data to fill table da__parms using build option. Normal usage then is to fill resultlist</p>
+
+<p>It is not possible possible to do all data collection in one pass. At some point communication will fail, another concern is memory usage. Script is only ment to process a small chuck of data in one &#39;run&#39;.</p>
+
+<p>Note! script needs working database filled with data from &quot;Stage 1&quot;</p>
+
+<pre><code>    options/switches:
+        -a 1/0 - all        all (reset skip=false &amp; build)
+        -b 1/0 - build      builds database
+        -h 1/0 - help       brief help message
+        -m 1/0 - manual     full documentation
+        -r 1/0 - reset      reset must be used with skip
+        -s 1/0 - skip       skip, must be combined with reset
+        -x 0...n - x</code></pre>
+
+<p>All options except x are boolean, without any number after them they default to 1 there is no need for a space between option and number</p>
+
+<p><b><i>NOTE needs at least one option to run, otherwise it displays help text</i></b></p>
+
+<pre><code>    Normal usage:
+        -b1 (build mode: constructs csv file and stores it into database (no scraping))
+        -b0 (web scraping mode:  hence not building csv, just scraping based upon `da__parms` )
+
+    [toDo] Reset: (set checked = false for either skip=false or skip=true)
+        (skip=true ) Not all urls had data to colloect on last run, if this is expected on rerun, don&#39;t waste time checking this run (skip)
+            -r1,-s1
+        (skip=false) Expecting or looking for new hits amoung previous (0 hits) We don&#39;t skip.
+            -r1,-s0
+    [/toDo]
+
+    Help: (print doc &amp; die)
+        -h</code></pre>
+
+<p>The script should be run as cron or using windows scheduler (as task). Thus restarting over and over. For windows example look at RunDigitalArkivetfinnKilde.txt and RunDigitalArkivetfinnKilde.cmd.</p>
+
+<p><b><i>NOTE Don&#39;t run as task if you don&#39;t need it to. The script will normally run for at least 10 days until completed. Do not test just for fun, site is crucial for a lot of people. webscraping can degrade a sites performance if bombarded with requests.</i></b></p>
+
+<pre><code>    takes approx 5 mins to fill da__parms, and 14 days for resultlist !!&gt;&gt;</code></pre>
+
+<h1 id="TODO">TODO</h1>
+
+<pre><code>  ??(-d database.... -&gt; file)??
+  all
+  reset</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>&quot;Finn kilde&quot; (Norwegian) or &quot;select source&quot; let&#39;s you find sources. This script harvests metadata on these sources from the Digital Archives of Norway, also known as DigitalArkivet.</p>
+
+<p>The script executes Stage 2, and depends on DigitalArkivet-GetForm.pl beeing run first to complete stage 1. This 2 step is time-consuming, most likly fail at some point. Thus, it is designed to pick up where it failed, and continue. If setup run for the first time as cron/task it will take at least 10 days before completion. Script reads from database and traverses all combo&#39;s of form-inputs</p>
+
+<p>Main objective of script is to either fill table `da__parms` with data or process it and fill table &#39;da__list&#39; (with data). da__parms contains parameters which define webpages that might/might not have data to be scraped at later stage. Each possible page is checked, if &quot;we&quot; hit a page with data, it&#39;s recorded into resultlist.</p>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
+
+<p>Tested on win7, no known ties to this platform should work for other platforms. see config file - <b>DigitalArkivet.cfg</b></p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
+
+<p>Requires modules Getopt::Std, Pod::Usage, WWW::Scraper::DigitalArkivet, WWW::Scraper::DigitalArkivet::Database</p>
+
+<p>Databasestructure as of DigitalArkivet-webscraper.mwb v.0.1</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Rolf B. Holte - <a href="http://www.holte.nu/">http://www.holte.nu/</a> - &lt;rolfbh@disnorge.no&gt; Member of DIS-Norge, The Genealogy Society of Norway-DIS</p>
+
+<p>Please drop me an email if you use this in any project. It would be nice to know if it&#39;s usable for others in any capacity. Any suggestions for improvement are also appreciated.</p>
+
+<h1 id="REVISION-HISTORY">REVISION HISTORY</h1>
+
+<pre><code> 0.005 - 11.05.2016 - Subs renamed in WWW::Scraper::DigitalArkivet
+ 0.005 - 19.09.2015 - Log4perl, filelocking preventing mutilpe instances of script
+ 0.004 - 01.08.2015 - Moved &quot;library&quot; to module
+ 0.003 - 01.07.2015 - Added POD, options
+ 0.002 - 21.09.2014 -
+ 0.001 - 01.08.2014 - Created.</code></pre>
+
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
+
+<p>Copyright (c) 2015 Rolf B. Holte - <a href="http://www.holte.nu/">http://www.holte.nu/</a> - &lt;rolfbh@disnorge.no&gt;</p>
+
+<p><b>Artistic License (Perl)</b> Author (Copyright Holder) wishes to maintain &quot;artistic&quot; control over the licensed software and derivative works created from it.</p>
+
+<p>This code is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0. The full text of the license can be found in the LICENSE file included with this module, or <a href="http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic">http://cpansearch.perl.org/src/NWCLARK/perl-5.8.9/Artistic</a></p>
+
+<h1 id="DISCLAIMER-OF-WARRANTY">DISCLAIMER OF WARRANTY</h1>
+
+<p>This program is distributed in the hope that it will be useful, but it is provided ?as is? and without any express or implied warranties. For details, see the full text of the license in the file LICENSE.</p>
+
+<h1 id="POD-ERRORS">POD ERRORS</h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+
+<dt id="Around-line-154">Around line 154:</dt>
+<dd>
+
+<p>Unterminated B&lt;I&lt;...&gt;&gt; sequence</p>
+
+</dd>
+</dl>
+
+
+</body>
+
+</html>
+
+

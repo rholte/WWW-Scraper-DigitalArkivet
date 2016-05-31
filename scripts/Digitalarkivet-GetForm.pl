@@ -9,7 +9,7 @@ use Data::Dumper::Simple;
 use Getopt::Std;
 use Pod::Usage;
 use URI;
-use WWW::Scraper::DigitalArkivet  qw/&processFormInput &DBIForm2DB/;
+use WWW::Scraper::DigitalArkivet  qw/&processFormInput &DBIForm2DB &doDBIfillSCD/;
 #use WWW::Scraper::DigitalArkivet::Database qw/&DBIForm2DB/;
 use 5.008001;
 $| = 1;

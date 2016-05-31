@@ -12,7 +12,7 @@ use Fcntl qw(:flock);
 use Getopt::Std;
 use Log::Log4perl qw(get_logger :levels);
 use Pod::Usage;
-use WWW::Scraper::DigitalArkivet  qw/&buildCSVparamList  &processParamList &isNew &getRunID &doDBIrunStart &doDBIrunStat &DBIloadCSVresultparms &s2hms/; # &buildCSVparamList  &processParamList   &getRunID &doDBIrunStart
+use WWW::Scraper::DigitalArkivet  qw/&buildCSVparamList  &processParamList &isNew &getRunID &doDBIrunStart &doDBIrunStat &DBIloadCSVdaParms &s2hms/; # &buildCSVparamList  &processParamList   &getRunID &doDBIrunStart
 
 $| = 1; # autoflush buffer
 
@@ -23,6 +23,8 @@ END { my $a=time-$^T; my $hms = s2hms($a);  warn sprintf "Runtime %s -- %d min %
 #Log::Log4perl->init("l4p.conf"); #checks reloads log4perl config every 900 sec (15 min)
 #my $log = Log::Log4perl->get_logger(); # root
 # use file locking to prevent script from running twice
+#open my $self, '<', $0 or $log->logdie("Couldn't open self: $!");
+#flock $self, LOCK_EX | LOCK_NB or $log->logdie("This script is already running");
 open my $self, '<', $0 or die("Couldn't open self: $!");
 flock $self, LOCK_EX | LOCK_NB or die("This script is already running");
 
@@ -60,27 +62,29 @@ my $gDebug   = defined $cfg{'Debug.debug'}   ? $cfg{'Debug.debug'}   : 0; # 1 tu
 my $doStat   = defined $cfg{'Option.doStat'} ? $cfg{'Option.doStat'} : 0;
 my $siteID   = defined $site{'siteID'}       ? $site{'siteID'}       : 1;
 my $path     = defined $site{'path'}         ? $site{'path'}         : '';
+my $daParm   = defined $site{'daParm'}       ? $site{'daParm'}       : 'da__parms.csv';
+
 #my $runID    = defined $cfg{'ID.Run'}        ? $site{'ID.Run'}       : 1;
 my $runID;
 
-isNew('resultID',0); #reset resultID
-$runID=doDBIrunStart(\%Option) if ($doStat);
+isNew('parmsID',0); #reset resultID
+$runID=doDBIrunStart(\%Option) if ($doStat && !$gBuild);
 
 #ToDO
 #&resetParamList($siteID,$gSkip) if ($gReset);
-  # .... UPDATE resultparms set set checked = false;
-  # .... UPDATE resultparms set skip=false WHERE skip=true and checked = false;
+  # .... UPDATE da__parms set set checked = false;
+  # .... UPDATE da__parms set skip=false WHERE skip=true and checked = false;
 
 my $base = $site{'url'}.'?s=&fra=&til=';
-my $csvFile  = $path."resultparms.csv";
+my $csvFile  = $path.$daParm;
 my ($db_handle,$built) = buildCSVparamList($siteID,$base,$csvFile) if ($gBuild || $gAll);
 
 #    # To be able to continue after error we need to store CSV (load) into database
-my ($handle,$rows)=&DBIloadCSVresultparms($csvFile) if ($gBuild || $gAll);
+my ($handle,$rows)=&DBIloadCSVdaParms($csvFile) if ($gBuild || $gAll);
 
 # TODO save csv to db (only when not build (b=0) or?? / and ?? not All (a=0) )
 my $processed = processParamList($siteID,$gSkip) unless ($gBuild || $gAll); #skip default false
-# UPDATE resultparms set skip=true WHERE hits=0; ??
+# UPDATE da__parms set skip=true WHERE hits=0; ??
 my $r = doDBIrunStat(0) if ($doStat);
 
 1;
@@ -106,7 +110,7 @@ B<DigitalArkivet-finn_kilde.pl> - script for harvesting metadata at Digitalarkiv
 
   DigitalArkivet-finnkilde.pl [options]
 
-In order to work script table form must contain data to fill table resultparms
+In order to work script table form must contain data to fill table da__parms
 using build option. Normal usage then is to fill resultlist
 
 It is not possible possible to do all data collection in one pass. At some point
@@ -131,13 +135,14 @@ B<I<NOTE needs at least one option to run, otherwise it displays help text>>
 
     Normal usage:
         -b1 (build mode: constructs csv file and stores it into database (no scraping))
-        -b0 (web scraping mode:  hence not building csv, just scraping based upon 'resultparms' )
+        -b0 (web scraping mode:  hence not building csv, just scraping based upon `da__parms` )
 
-    Reset: (set checked = false for either skip=false or skip=true)
+    [toDo] Reset: (set checked = false for either skip=false or skip=true)
         (skip=true ) Not all urls had data to colloect on last run, if this is expected on rerun, don't waste time checking this run (skip)
             -r1,-s1
         (skip=false) Expecting or looking for new hits amoung previous (0 hits) We don't skip.
             -r1,-s0
+    [/toDo]
 
     Help: (print doc & die)
         -h
@@ -147,11 +152,11 @@ over and over. For windows example look at RunDigitalArkivetfinnKilde.txt and
 RunDigitalArkivetfinnKilde.cmd.
 
 B<I<NOTE Don't run as task if you don't need it to. The script will normally run
-    for at least 4 days until completed. Do not test just for fun, site is
+    for at least 10 days until completed. Do not test just for fun, site is
     crucial for a lot of people. webscraping can degrade a sites performance if
     bombarded with requests.
 
-    takes approx 5 mins to fill resultparms, and 4-7 days for resultlist !!>>
+    takes approx 5 mins to fill da__parms, and 14 days for resultlist !!>>
 
 
 =head1 TODO
@@ -169,11 +174,11 @@ of Norway, also known as DigitalArkivet.
 The script executes Stage 2, and depends on DigitalArkivet-GetForm.pl beeing run
 first to complete stage 1. This 2 step is time-consuming, most likly fail at
 some point. Thus, it is designed to pick up where it failed, and continue.
-If setup run for the first time as cron/task it will take at least 4 days before
+If setup run for the first time as cron/task it will take at least 10 days before
 completion. Script reads from database and traverses all combo's of form-inputs
 
-Main objective of script is to either fill table 'resultparms' with data or
-process it and fill table 'resultlist' (with data). resultparms contains parameters
+Main objective of script is to either fill table `da__parms` with data or
+process it and fill table 'da__list' (with data). da__parms contains parameters
 which define webpages that might/might not have data to be scraped at later stage.
 Each possible page is checked, if "we" hit a page with data, it's recorded into
 resultlist.
@@ -204,6 +209,7 @@ are also appreciated.
 
 =head1 REVISION HISTORY
 
+ 0.005 - 11.05.2016 - Subs renamed in WWW::Scraper::DigitalArkivet
  0.005 - 19.09.2015 - Log4perl, filelocking preventing mutilpe instances of script
  0.004 - 01.08.2015 - Moved "library" to module
  0.003 - 01.07.2015 - Added POD, options

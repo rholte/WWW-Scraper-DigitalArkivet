@@ -10,16 +10,16 @@ BEGIN {
     @ISA         = qw/Exporter/;
     @EXPORT      = qw//;
     @EXPORT_OK   = qw/&processFormInput &buildCSVparamList  &processParamList &labelFor
-       &lastPage &s2hms &padZero &isNew &Connect2DB &Disconnect2DB &DBIresetDA
-       &getRunID &DBIForm2DB &daResultparms &daGeography &daGeography2 &daSource
-       &daListType &daTheme daFormat &daOrgan &DBIloadCSVresultparms &DBIloadFile
-       &DBIresultParms2DB &DBIresultParms2DB &DBIresultUpdate &DBIresultList2DB
+       &lastPage &getTxtGeoPlace &getTxtSpann &getTxtTypeSpan &s2hms &padZero &Connect2DB &Disconnect2DB &DBIresetDA
+       &getRunID &DBIForm2DB &daParms &isNew &daGeography &daGeography2 &daSource
+       &daListType &daTheme daFormat &daOrgan &DBIloadCSVdaParms &DBIloadFile
+       &DBIdaParms2DB &DBIparmsUpdate &DBIlist2DB &doDBIfillSCD
        &doDBIrunStart &doDBIrunStat &parseURI/;
     %EXPORT_TAGS = (ALL => [qw/&processFormInput &buildCSVparamList  &processParamList &labelFor
-       &lastPage &s2hms &padZero &isNew &Connect2DB &Disconnect2DB &DBIresetDA
-       &getRunID &DBIForm2DB &daResultparms &daGeography &daGeography2 &daSource
-       &daListType &daTheme daFormat &daOrgan &DBIloadCSVresultparms &DBIloadFile
-       &DBIresultParms2DB &DBIresultParms2DB &DBIresultUpdate &DBIresultList2DB
+       &lastPage &getTxtGeoPlace &getTxtSpann &getTxtTypeSpan &s2hms &padZero &isNew &Connect2DB &Disconnect2DB &DBIresetDA
+       &getRunID &DBIForm2DB &daParms &daGeography &daGeography2 &daSource
+       &daListType &daTheme daFormat &daOrgan &DBIloadCSVdaParms &DBIloadFile
+       &DBIdaParms2DB &DBIparmsUpdate &DBIlist2DB &doDBIfillSCD
        &doDBIrunStart doDBIrunStat &parseURI/],
                     Stage1  => [qw/&processFormInput &DBIForm2DB/],
                     Stage2  => [qw/&buildParamList  &processParamList &getRunID &doDBIrunStart &doDBIrunStat/],
@@ -37,15 +37,16 @@ B<WWW::Scraper::DigitalArkivet> - Routines for scraping Digitalarkivet
 
 =head1 VERSION
 
+ 0.08 - 09.05.2016 - redesigned table structures and naming constructors
  0.07 - 05.04.2016 - Tweeked buildCSVsrc, documentation
  0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, (Fifth Stage completed)
  0.05 - 31.07.2015 - Module - First stage complete
  0.04 - 01.07.2015 - POD - Documented, minor bugfix'es
  0.03 - 01.10.2014 - Added proc resetDA
- 0.02 - 21.09.2014 - Added Tables resultList, resultParms, resultBrowse.
+ 0.02 - 21.09.2014 - Added Tables da__list, da__parms, da__browse.
                      Views: vgeography,vinput,vinputf,vinputformat,vinputk,
                             vinputka, vinputkt,vinputlt,vinputr,vinputtheme
- 0.01 - 01.08.2014 - Created. Tables form, site, toscrape
+ 0.01 - 01.08.2014 - Created. Tables da__form, da__site, da__toscrape
 
 
 =head1 SYNOPSIS
@@ -132,15 +133,16 @@ use URI;
 use Web::Scraper;
 use 5.008001;
 
-our ($baseURL, $Connected, $config, $gDebug, $href, $runID, $resultID,
+our ($baseURL, $Connected, $config, $gDebug, $href, $runID, $ParmsID,
      $ResultList, $info, $resultListID, $recent);
-our (%cfg, %old, %site, @input, @select, @radio, @rlist, @data);
+our (%cfg, %old, %site, @input, @select, @radio, @rlist, @data, $print, $browse);
 our ($InG, $InS, $InL, $InT, $InF, $InO, $gLimit, $driver, $db, $host, $port, $res,
     $user, $pwd, $attr, $cfg_set, $gsState, $gsFact, $gsRand, $path, $pr, $maxHits,
-    $doStat, $dbh );
+    $doStat, $dbh, $daParm);
+my ($txt,$shorten);
 
 $runID     = undef;
-$resultID  = undef;
+$ParmsID  = undef;
 $Connected = undef; # only defined if connected to DB.
 #
 my $slept = 0;
@@ -260,6 +262,7 @@ sub _readCFG {
     $pr       = defined $cfg{'Option.pr'}      ? $cfg{'Option.pr'}      : 250;
     $maxHits  = defined $cfg{'Option.maxHits'} ? $cfg{'Option.maxHits'} : 500;
     $doStat   = defined $cfg{'Option.doStat'}  ? $cfg{'Option.doStat'}  : 0;
+    $daParm     = defined $site{'daParm'}        ? $site{'daParm'}        : 'da__parms.csv';
 
     $cfg_set=1;
 
@@ -420,9 +423,159 @@ sub _defineScraper {
              process 'li > a', 'src' => 'TEXT';
         };
         process 'div.oneCol > ol.numberList > li','txt[]' => 'TEXT';
-    }
+    };
+
+   # sub container object
+    my $tableData = scraper {
+            process 'td:nth-child(1)', 'label1' => 'TEXT';
+            process 'td:nth-child(2)', 'value1' => 'TEXT';
+            process 'td:nth-child(3)', 'label2' => 'TEXT';
+            process 'td:nth-child(4)', 'value2' => 'TEXT';
+    };
+
+   # main scraper object
+   $print = scraper {
+        process 'div.contentContainer','page' => scraper {
+            process 'ul > li > ul > li', 'search[]' => scraper {
+                process 'a', 'link' => 'TEXT', 'url'  => '@href';
+            }; # search redundant?
+            process 'ul > li > a', 'link[]' => 'TEXT', 'url[]'  => '@href';
+            process 'h4', 'h4[]' => 'TEXT';
+            process 'h3', 'h3[]' => 'TEXT';
+            process 'div.contentHeader > h1', 'title' => 'TEXT';
+            process 'table.infotable', 'data[]'  => scraper {
+                process 'tr', 'table[]' => $tableData;
+            };
+        };
+        result 'page'; # res == page
+    };
 }
 
+
+#-----------------------------------------------------------------------------
+=pod
+
+=head2 getTxtGeoPlace()
+
+  Purpose  : Find text (geoID, placeID) in string
+  Returns  : (geoID)   - <string> - DA's area ID
+           : (placeID) - <number> - 4 digit "kommunenr"
+           : (txt)     - <string> - to year in span
+  Argument : $_[0] (txt) <string>
+           : $_[1] (shorten) <boolean> (undef == false)
+
+  Throws   : -
+  Comment  : Uses regexp to match pattern returns list
+           : if shorten true (or not undef) prematch is removed from string
+
+ See Also  :
+
+=cut
+
+#-----------------------------------------------------------------------------
+sub getTxtGeoPlace {
+    $txt = shift;
+    $shorten = shift;
+    my ($geoID,$placeID);
+    # match: (1560P) or (0301M8)
+    if ($txt=~ m/\((\d\d\d\d)\w.*\)/) {
+        $placeID = $1;
+        $geoID = $&;
+        $txt = substr($txt,0,$-[0]) if ($shorten); # removes (pre)match from $src
+        $geoID = $1 if ($geoID =~ m/(\d\d\d\d\w\d*)/);
+        return ($geoID,$placeID,$txt);
+    } else {
+        return ('','',$txt);
+        };
+}
+
+#-----------------------------------------------------------------------------
+=pod
+
+=head2 getTxtSpan()
+
+  Purpose  : Find text (span) in string
+  Returns  : (from) - <year>   - from year in span
+           : (to)   - <year>   - to year in span
+           : (txt)  - <string> - to year in span
+  Argument : $_[0] (txt) <string>
+           : $_[1] (shorten) <boolean> (undef == false)
+
+  Throws   : -
+  Comment  : Uses regexp to match some patterns returns those as list
+           : if shorten true (or not undef) prematch is removed from string
+
+ See Also  :
+
+=cut
+
+#-----------------------------------------------------------------------------
+sub gtTxtSpann {
+    $txt = shift;
+    $shorten = shift;
+    if ($txt=~ m/\(\w+ (\d+).(\d*)\)/){
+        $txt = substr($txt,0,$-[0]) if ($shorten); # removes (pre)match from $txt
+        return ($1,$2,$txt);
+    } else {
+            return (undef,undef,$txt);
+    };
+}
+
+#-----------------------------------------------------------------------------
+=pod
+
+=head2 getTxtTypeSpan()
+
+  Purpose  : Find text (type, span) in string
+  Returns  : (type) - <string> - source type
+           : (from) - <year>   - from year in span
+           : (to)   - <year>   - to year in span
+           : (txt)  - <string> - to year in span
+  Argument : $_[0] (txt) <string>
+           : $_[1] (shorten) <boolean> (undef == false)
+
+  Throws   : -
+  Comment  : Uses regexp to match some patterns returns those as list
+           : if shorten true (or not undef) prematch is removed from string
+
+ See Also  :
+
+=cut
+
+#-----------------------------------------------------------------------------
+sub getTxtTypeSpan {
+    $txt = shift;
+    $shorten = shift;
+    if ($txt=~ m/\((\w+|\w+\W\w+)\){0,1}\W\(\w+ (\d+).(\d*)\)/g){
+        $txt = substr($txt,0,$-[0]) if ($shorten); # removes (pre)match from $txt
+        return ($1,$2,$3,$txt);
+    } else {
+            return (undef,undef,undef,$txt);
+    };
+}
+
+#-----------------------------------------------------------------------------
+=pod
+
+=head2 padZero()
+
+  Purpose  : Zero pad string  eg. 003 & 02
+  Returns  : zero padded number <string>
+  Argument : (num) number to pad
+           : (len) maximum lenght
+  Throws   : -
+  Comment  : zero pad string to given length
+
+ See Also  :
+
+=cut
+
+#-----------------------------------------------------------------------------
+sub padZero {
+  my ($num, $len) = @_;
+  #return '0' x ($len - length $num) . $num;
+  return substr('0'x$len.$num, -$len);
+}
 
 #-----------------------------------------------------------------------------
 =pod
@@ -464,29 +617,6 @@ sub s2hms{
 #-----------------------------------------------------------------------------
 =pod
 
-=head2 padZero()
-
-  Purpose  : Zero pad string  eg. 003 & 02
-  Returns  : zero padded number <string>
-  Argument : (num) number to pad
-           : (len) maximum lenght
-  Throws   : -
-  Comment  : zero pad string to given length
-
- See Also  :
-
-=cut
-
-#-----------------------------------------------------------------------------
-sub padZero {
-  my ($num, $len) = @_;
-  #return '0' x ($len - length $num) . $num;
-  return substr('0'x$len.$num, -$len);
-}
-
-#-----------------------------------------------------------------------------
-=pod
-
 =head2 Connect2DB()
 
   Purpose  : Establish and hold connection to a database
@@ -515,7 +645,7 @@ sub Connect2DB {
     else {
         $Connected = 1;
         $runID     = &getRunID(); #process id, used as key
-        $resultID  = &getResultatID();
+        $ParmsID  = &getParmsID();
     }
     return $dbh;
 }
@@ -586,7 +716,7 @@ sub DBIresetDA {
 #-----------------------------------------------------------------------------
 sub getRunID {
     #our $dbh = &Connect2DB() if not($Connected);
-    my $rtn = defined $cfg{'ID.Run'} ? $cfg{'ID.Run'} : 1; #failsafe value
+    my $rtn = defined $cfg{'ID.run'} ? $cfg{'ID.run'} : 1; #failsafe value
     my $sql = qq{CALL getRunID()};
     #my $sql= qq{SELECT `runID` FROM `$db`.`run` ORDER BY `runID` DESC LIMIT 1};
     our $sth = $dbh->prepare($sql)
@@ -596,7 +726,7 @@ sub getRunID {
     if (defined $runID) {
         unless ($runID==$rtn) {
             $rtn = $runID; #database value used instead
-            $config->param("ID.Run",$runID);
+            $config->param("ID.run",$runID);
             $config->write();
         }
     return $rtn;
@@ -606,10 +736,10 @@ sub getRunID {
 #-----------------------------------------------------------------------------
 =pod
 
-=head2 getResultatID()
+=head2 getParmsID()
 
-  Purpose  : Retrieve current getResultatID
-  Returns  : (RunID) - integer - Last inserted getResultatID
+  Purpose  : Retrieve current getParmsID
+  Returns  : (RunID) - integer - Last inserted getParmsID
   Argument : <none>
   Throws   : Die - on SQL error
   Comment  : MySQL
@@ -618,18 +748,18 @@ sub getRunID {
 =cut
 
 #-----------------------------------------------------------------------------
-sub getResultatID {
+sub getParmsID {
     #our $dbh = &Connect2DB() if not($Connected);
-    my $rtn = defined $cfg{'ID.Resultat'} ? $cfg{'ID.Resultat'} : 1; #failsafe value
-    my $sql = qq{CALL getResultatID()};
+    my $rtn = defined $cfg{'ID.parms'} ? $cfg{'ID.parms'} : 1; #failsafe value
+    my $sql = qq{CALL getParmsID()};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $sth->execute();
-    ($resultID) = $sth->fetchrow_array;
-    if (defined $resultID) {
-        unless ($resultID==$rtn) {
-            $rtn = $resultID; #database value used instead
-            $config->param("ID.Resultat",$resultID);
+    ($ParmsID) = $sth->fetchrow_array;
+    if (defined $ParmsID) {
+        unless ($ParmsID==$rtn) {
+            $rtn = $ParmsID; #database value used instead
+            $config->param("ID.parms",$ParmsID);
             $config->write();
         }
     }
@@ -956,7 +1086,7 @@ sub DBIForm2DB {
     my @fields = (qw(`siteID` `level` `line` `label_for` `text` `name` `value` `id` `type` `name2` `lf1` `lf2` `lf3`));
     my $fieldlist = join ", ", @fields;
     my $field_placeholders = join ", ", map {'?'} @fields;
-    my $sql = qq{REPLACE INTO `$db`.`form` ( $fieldlist ) VALUES( $field_placeholders )};
+    my $sql = qq{REPLACE INTO `$db`.`da__form` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     foreach my $row (@data) {
@@ -995,7 +1125,7 @@ sub DBIForm2DB {
 
   Stage    : 2
 
-  Purpose  : Build list of params - save to resultparms.csv
+  Purpose  : Build list of params - save to da__parms.csv
   Returns  : -
   Argument : $_[0] - (siteID)   - process this site
            : $_[1] - (base_url) - url
@@ -1015,10 +1145,10 @@ sub DBIForm2DB {
 sub buildCSVparamList {
     # pass = true, skip
     #$url = defined $site{url} ? $site{url} : ''; #reset url
-    #our $resultID;
+    #our $ParmsID;
     my $siteID   = $site{'finn_kilde'}[1]; # -> 1 !!
     my $base_url = $site{'finn_kilde'}[3].'?s=&fra=&til=';
-    my $csvFile  = $path."resultparms.csv";
+    my $csvFile  = $path.$daParm;
     my $ref;
 
     $siteID   = shift;
@@ -1026,7 +1156,7 @@ sub buildCSVparamList {
     $csvFile  = shift;
     #my $runID  = shift;
 
-    #@data = ($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+    #@data = ($ParmsID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
     my (@data, @geo, @geo2, @src, @lt, @theme, @format, @organ );
     my ($c, $cc);
 
@@ -1035,7 +1165,7 @@ sub buildCSVparamList {
     open our $csvFH, ">:encoding(utf8)", $csvFile or die Text::CSV_XS->error_diag;
     my $csv = Text::CSV_XS->new ({ binary => 1, auto_diag => 1, allow_loose_quotes => 1 });
     $csv->eol ("\r\n");
-    #my @fields = (qw(`resultID` `siteID` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko` `url` `skip` `runID`));
+    #my @fields = (qw(`parmsID` `siteID` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko` `url` `skip` `runID`));
     my @fields = (qw( `siteID` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko` `url` `skip` `runID`));
     $csv->print ($csvFH, \@fields) or $csv->error_diag;
 
@@ -1080,7 +1210,7 @@ sub buildCSVparamList {
     #push( @organ, \%xtra );
     undef %xtra;
 
-    $resultID=getResultatID() if !(defined $resultID);
+    $ParmsID=getParmsID() if !(defined $ParmsID);
 
     print "\nBuilding CSV........ ";
     # toDo save to log, number parms to of each
@@ -1088,29 +1218,29 @@ sub buildCSVparamList {
 
     #
     ## main loop
-    print "[csv id=src] $resultID" if ($gDebug);
+    print "[csv id=src] $ParmsID" if ($gDebug);
     $c=&buildCSVsrc($siteID, $base_url, $csv, $csvFH,\@geo,\@src,\@lt);
     #print "#" if ($gDebug);
     $cc+=$c;
-    print "\n[/csv id=src count= $c] $resultID\n" if ($gDebug);
+    print "\n[/csv id=src count= $c] $ParmsID\n" if ($gDebug);
     #
     ##each theme
-    print "[csv id=theme] $resultID" if ($gDebug);
+    print "[csv id=theme] $ParmsID" if ($gDebug);
     $c=&buildCSVsimple($siteID, $base_url,'theme',$csv, $csvFH, \@geo2,\@theme);
     $cc+=$c;
-    print "\n[/csv id=theme count= $c - $cc ] $resultID\n" if ($gDebug);
+    print "\n[/csv id=theme count= $c - $cc ] $ParmsID\n" if ($gDebug);
     #
     ##each format
-    print "[csv id=format] $resultID" if ($gDebug);
+    print "[csv id=format] $ParmsID" if ($gDebug);
     $c=&buildCSVsimple($siteID, $base_url,'format',$csv, $csvFH,\@geo2,\@format);
     $cc+=$c;
-    print "\n[/csv id= format: $c - $cc ] $resultID\n" if ($gDebug);
+    print "\n[/csv id= format: $c - $cc ] $ParmsID\n" if ($gDebug);
     #
     ##each organ
-    #print "[csv id=organ] $resultID" if ($gDebug);
+    #print "[csv id=organ] $ParmsID" if ($gDebug);
     #$c=&buildCSVsimple($siteID, $base_url,'organ',$csv, $csvFH,\@geo2,\@organ);
     #$cc+=$c;
-    #print "\n[/csv id= organ: $c - $cc ] $resultID\n" if ($gDebug);
+    #print "\n[/csv id= organ: $c - $cc ] $ParmsID\n" if ($gDebug);
     #
 
     close($csvFH)  or die "\n can't close $csvFile: $!"; #close csv file
@@ -1151,7 +1281,7 @@ sub buildCSVsrc(){
     # build param string, save to csv
     # "list" is needed to restart from when script fail's before scraping is completed
     #  ->fault tolerant way to webscrape, recovery enabled
-    #our $resultID;
+    #our $ParmsID;
     my ($r, $f, $k, $ka, $kt, $lt, $ltka, $format, $theme, $ok, $ko, $skip, $bit, $url,  @data);
 #    my $siteID   = $site{'finn_kilde'}->{'siteID'};
 #    my $base_url = $site{'finn_kilde'}->{'url'}.'?s=&fra=&til=';
@@ -1204,10 +1334,10 @@ sub buildCSVsrc(){
                         # NOTE ! Potenially wrong assumption in long run (remove kt restrain or whole if elsif)
                         # todo unless?
                         if ( ($ka eq '3') || ($kt eq 'AVSK') || ($kt eq 'DIVR') || ($kt eq 'FREG') || ($kt eq 'KLOK') || ($kt eq 'KOMM') || ($kt eq 'LYSN') || ($kt eq 'MINI')|| ($kt eq 'KLAD') || ($kt eq 'RESK' ) ) {
-                            #@data =($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+                            #@data =($ParmsID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                             @data =($siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                             $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
-                            $resultID++;
+                            $ParmsID++;
                             $rows++;
                         }
                     }
@@ -1216,10 +1346,10 @@ sub buildCSVsrc(){
             else { # ka <> 2 or 3
                 $lt = ''; # not "liste type"
                 $url = $base_url.$bitGeo.$bitSrc."&page=";
-                #@data = ($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+                #@data = ($ParmsID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                 @data = ( $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
                 $csv->print ($FH, \@data) or $csv->error_diag; # save to csv
-                $resultID++;
+                $ParmsID++;
                 $rows++;
             }
         }
@@ -1258,7 +1388,7 @@ sub buildCSVsrc(){
 
 #-----------------------------------------------------------------------------
 sub buildCSVsimple {
-    #our $resultID;
+    #our $ParmsID;
     my ($r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip,$bit,  @data);
     my $siteID   = shift;
     my $base_url = shift;
@@ -1302,10 +1432,10 @@ sub buildCSVsimple {
             }
             $bitX = defined $d[$j]{bit} ? $d[$j]{bit} : '';
             $url = $base_url.$bitGeo.$bitX."&page=";
-            #@data = ($resultID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
+            #@data = ($ParmsID, $siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
             @data = ($siteID, $r, $f, $k, $ka, $kt, $lt, $format, $theme, $ok, $ko, $url, $skip);
             $csv->print ($FH, \@data) or $csv->error_diag; #save to csv
-            $resultID++;
+            $ParmsID++;
             $rows++;
         }
     } # for @g
@@ -1345,9 +1475,9 @@ sub processParamList {
 
     # data to process
     # read unproccessed urls into Array (of hashes)
-    my (@data) = @{&daResultparms($siteID, $skip)};
+    my (@data) = @{&daParms($siteID, $skip)};
     for my $i ( 0 .. $#data ) {
-        ($page) = &scrapeResultList($siteID,$data[$i]{resultID},$data[$i]{url},1);
+        ($page) = &scrapeResultList($siteID,$data[$i]{ParmsID},$data[$i]{url},1);
     }
     $page=0;
 }
@@ -1363,7 +1493,7 @@ sub processParamList {
   Purpose  : check url, scrape data to build a result list
   Returns  :
   Argument : $_[0] - (siteID) - process this site
-           : $_[1] - (resultID) - foreign key, link back to resultParms table
+           : $_[1] - (ParmsID) - foreign key, link back to da__parms table
            : $_[2] - (url) - url to scrape
            : $_[3] - (page) - start page
   Throws   : -
@@ -1377,7 +1507,7 @@ sub processParamList {
 #-----------------------------------------------------------------------------
 sub scrapeResultList {
     my $siteID     = shift;
-    my $resultID   = shift;
+    my $ParmsID   = shift;
     my $url        = shift;
     my $page       = shift;
 
@@ -1402,12 +1532,12 @@ sub scrapeResultList {
     my $currentPage =  defined $res->{'page'} ? $res->{'page'} : $page ;
 
     my ($hits) = $res->{'comment'} =~ /(\d+)/; # strip comment for non-digits -> hits == digits
-    print "$resultID \t: $hits\n" if (($gDebug) && (($c%$pr==0) || ($hits>0)));
+    print "$ParmsID \t: $hits\n" if (($gDebug) && (($c%$pr==0) || ($hits>0)));
     unless ( $hits >= $maxHits ) {
         if ($hits==0) {
-            @update = (0, 1, $resultID, $siteID); #hits, checked, resultID, siteID ... Pages må vente
-            #print "($hits, 1, $resultID, $siteID)\n" if ($gDebug);
-            &DBIresultUpdate(\@update) if (isNew('resultID',$resultID));
+            @update = (0, 1, $ParmsID, $siteID); #hits, checked, ParmsID, siteID ... Pages må vente
+            #print "($hits, 1, $ParmsID, $siteID)\n" if ($gDebug);
+            &DBIparmsUpdate(\@update) if (isNew('ParmsID',$ParmsID));
         } else {
             for my $i ( 0 .. $#{ $res->{'data'} } ) {
                 # this part only works if there is data to process thus hits>0
@@ -1418,7 +1548,7 @@ sub scrapeResultList {
                 my $cat='';   # for parseURI - (don't use it...)
                 my $lt='';    # for parseURI - (don't use it...)
                 my $file='';  # for parseURI - (don't use it...)
-                #resultID, siteID, page
+                #ParmsID, siteID, page
                 $title = defined $res->{'data'}[$i]->{'title'} ? $res->{'data'}[$i]->{'title'} : '';
                 #isSubList if  # char 149 (bullet)
                 $_ = substr($title, 0, 1);
@@ -1437,12 +1567,12 @@ sub scrapeResultList {
                 }
                 $print = $uri if ($print eq ''); # "always" have print ??
                 print "($i) $title\n" if ($gDebug);
-                @update = ($hits, 1, $resultID, $siteID); #hits, checked, resultID, siteID ... Pages must wait
-                #print "($hits, 1, $resultID, $siteID)\n" if ($gDebug);
-                #       `resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print`));
-                @row = ($resultID, $siteID, $page, $title, $isSubList, $search, $read, $browse, $print, $daID, $cat, $lt );
-                &DBIresultUpdate(\@update) if (isNew('resultID',$resultID)); #save only if it's new
-                my ($sth_handle,$resultListID) = &DBIresultList2DB(\@row);
+                @update = ($hits, 1, $ParmsID, $siteID); #hits, checked, ParmsID, siteID ... Pages must wait
+                #print "($hits, 1, $ParmsID, $siteID)\n" if ($gDebug);
+                #       `parmsID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print`));
+                @row = ($ParmsID, $siteID, $page, $title, $isSubList, $search, $read, $browse, $print, $daID, $cat, $lt );
+                &DBIparmsUpdate(\@update) if (isNew('ParmsID',$ParmsID)); #save only if it's new
+                my ($sth_handle,$resultListID) = &DBIlist2DB(\@row);
             } # for
         } # if else
         $page++;
@@ -1455,8 +1585,8 @@ sub scrapeResultList {
         #    print "Sleep: $sleep - $slept\t" if ($gDebug);
         #    sleep($sleep);
         #}
-        #$siteID,$resultID,$url,$page
-        ($page) = &scrapeResultList($siteID,$resultID,$url,$page) if $page < $maxPage; #recursive (repeat if more pages)
+        #$siteID,$ParmsID,$url,$page
+        ($page) = &scrapeResultList($siteID,$ParmsID,$url,$page) if $page < $maxPage; #recursive (repeat if more pages)
     } #unless
     return ($page);
 }
@@ -1489,7 +1619,7 @@ sub parm2CSV {
     #print "$string" if ($count % $pr == 0);
     print "." if ($count % $pr == 0);
     print $csvFH $string ;
-    $count++; # next resultID
+    $count++; # next ParmsID
 }
 
 
@@ -1536,13 +1666,13 @@ sub isNew{
 #-----------------------------------------------------------------------------
 =pod
 
-=head2 daResultparms()
+=head2 daParms()
 
   Stage    : 2
 
   Purpose  : Retrieve URLs (and ID) - to be scraped - on Digital Archives of Norway.
   Returns  : ref to 'Array of hashes'
-                `resultID` - id
+                `parmsID` - id
                 `url`      - url to scrape
   Argument : $_[0] - (siteID) - <integer> process this site
            : $_[1] - (skip)   - <boolean>
@@ -1557,20 +1687,20 @@ sub isNew{
            :
            : `checked` = FALSE -> normally those rows wich isn't scraped before.
 
-See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
+See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
 
 =cut
 
 #-----------------------------------------------------------------------------
-sub daResultparms {
+sub daParms {
     my $skip = defined $_[1] ? $_[1] : 0;
-    my @fields = (qw(resultID url));
-    my ($resultID, $url, $ref);
+    my @fields = (qw(ParmsID url));
+    my ($ParmsID, $url, $ref);
     my %data =();
     my %rtn = ();
     my $LIMIT ="";
     $LIMIT = "LIMIT $gLimit" if ($gLimit);
-    my $sql = qq{SELECT `resultID`,`url` FROM `$db`.`resultparms` WHERE `checked`=false AND `siteID`=? AND `skip`= ? ORDER BY `resultID` $LIMIT};
+    my $sql = qq{SELECT `parmsID`,`url` FROM `$db`.`da__parms` WHERE `checked`=false AND `siteID`=? AND `skip`= ? ORDER BY `parmsID` $LIMIT};
     our $dbh = &Connect2DB() if not($Connected);
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
@@ -1610,7 +1740,7 @@ sub daResultparms {
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
 
 =cut
 
@@ -1658,7 +1788,7 @@ sub daGeography {
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
 
 =cut
 
@@ -1705,7 +1835,7 @@ sub daGeography2 {
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
 
 =cut
 
@@ -1753,7 +1883,7 @@ sub daSource {
            : Creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
 
 =cut
 
@@ -1799,7 +1929,7 @@ sub daListType {
            : The function creates an array of hashes (to be traversed later).
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
-  See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
+  See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
 
 =cut
 
@@ -1845,7 +1975,7 @@ sub daTheme {
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
 
 =cut
 
@@ -1893,7 +2023,7 @@ sub daFormat {
            : (Currently only 2 Organs - mining, industry)
            : Locally scoped "boolean" var may prevent SQL to be executed (IF clause).
 
- See Also  : daResultparms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
+ See Also  : daParms(), daGeography2(), daGeography2(), daSource(), daListType(), daTheme(), daFormat(), daOrgan()
 
 =cut
 
@@ -1926,7 +2056,7 @@ sub daOrgan {
 #-----------------------------------------------------------------------------
 =pod
 
-=head2 DBIloadCSVresultparms()
+=head2 DBIloadCSVdaParms()
 
   Stage    : 2
 
@@ -1936,7 +2066,7 @@ sub daOrgan {
   Argument : $_[0] - (file) - file with data
   Throws   : Die - on SQL error
   Comment  : MySQL
-           : Saves file to table "resultparms" using LOAD DATA.
+           : Saves file to table "da__parms" using LOAD DATA.
            : File expected to have headers in first line
 
  See Also  : DBIloadFile()
@@ -1944,8 +2074,8 @@ sub daOrgan {
 =cut
 
 #-----------------------------------------------------------------------------
-sub DBIloadCSVresultparms {
-    my $file   = shift;
+sub DBIloadCSVdaParms {
+    my $daParm   = shift;
     #my $runID  = shift;
 
     #my @fields = @{ $_[2] };
@@ -1955,8 +2085,9 @@ sub DBIloadCSVresultparms {
     my $lf     = '\n'; #default linfeed is  x0A (LF)
     my $rows=0;
     our $dbh = &Connect2DB() if not($Connected);
-    #my $sql = qq{LOAD DATA LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (resultID, siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' IGNORE INTO TABLE `$db`.`resultparms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
+    #`siteID`,`r`,`f`,`k`,`ka`,`kt`,`lt`,`format`,`theme`,`ok`,`ko`,`url`,`skip`,`runID`
+    #my $sql = qq{LOAD DATA LOCAL INFILE '$daParm' REPLACE INTO TABLE `$db`.`da__parms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (ParmsID, siteID, r, f, k, ka, kt, lt, format, theme, ok, ko, url, skip, runID)};
+    my $sql = qq{LOAD DATA LOCAL INFILE '$daParm' REPLACE INTO TABLE `$db`.`da__parms` CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES (`siteID`,`r`,`f`,`k`,`ka`,`kt`,`lt`,`format`,`theme`,`ok`,`ko`,`url`,`skip`,`runID`)};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
@@ -1990,7 +2121,7 @@ sub DBIloadCSVresultparms {
            : File expected to have headers in first line
            : SET can be any valid SQL (Should failsafe it?)
 
- See Also  : DBIloadCSVresultparms()
+ See Also  : DBIloadCSVdaParms()
 
 =cut
 
@@ -2010,7 +2141,7 @@ sub DBIloadFile {
     our $dbh = &Connect2DB() if not($Connected);
     my $fieldlist = join ", ", @fields;
     #CHARACTER SET UTF8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' IGNORE 1 LINES
-    my $sql = qq{LOAD DATA LOCAL INFILE '$file' IGNORE INTO TABLE `$db`.`$table` CHARACTER SET UTF8 FIELDS TERMINATED BY  '$tab' ENCLOSED BY '"' IGNORE 1 LINES ( $fieldlist ) };
+    my $sql = qq{LOAD DATA LOW_PRIORITY LOCAL INFILE '$file' REPLACE INTO TABLE `$db`.`$table` CHARACTER SET UTF8 FIELDS TERMINATED BY  '$tab' ENCLOSED BY '"' IGNORE 1 LINES ( $fieldlist ) };
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     $rows = $sth->execute();
@@ -2028,12 +2159,12 @@ sub DBIloadFile {
 #-----------------------------------------------------------------------------
 =pod
 
-=head2 DBIresultParms2DB()
+=head2 DBIdaParms2DB()
 
   Stage    : 2
 
   Returns  : (\$sth) -  ref to statement handle
-           : ($resultID) - Last ID insterted
+           : ($ParmsID) - Last ID insterted
   Argument : $_[0] - (row) ref to array. list/"row" of data to be saved
                 `r`      - code for region (region)
                 `f`      - code for county (fylke)
@@ -2053,52 +2184,52 @@ sub DBIloadFile {
            : data to further scrape), some parameters are logically linked,
            : however, there are 10 different parameters that all have several
            : possibilities. Each value gives different URL to check (later).
-           : Not all fields in table resultParms get saved/updated.
+           : Not all fields in table daParms get saved/updated.
            : Some things need to be scraped later on.
            : Following fields are for keeping track of next stage
            : * Checked=true means site is chekcked/scraped
            : * changed/hits/pages/runID is filled in after scrape
 
-  See Also : DBIresultUpdate()
+  See Also : DBIparmsUpdate()
 
 =cut
 
 #-----------------------------------------------------------------------------
-sub DBIresultParms2DB {
+sub DBIdaParms2DB {
     my @row= @{ $_[0]};
-    #our $resultID;
+    #our $ParmsID;
     our $dbh = &Connect2DB() if not($Connected);
     my @fields =(qw(`siteID` `hits` `url` `r` `f` `k` `ka` `kt` `lt` `format` `theme` `ok` `ko`));
     my $fieldlist = join ", ", @fields;
     my $field_placeholders = join ', ', ('?') x @fields;
-    my $sql = qq{INSERT IGNORE INTO `$db`.`resultParms` ( $fieldlist ) VALUES( $field_placeholders )};
-    #my $sql = qq{REPLACE INTO `da`.`resultParms` ( $fieldlist ) VALUES( $field_placeholders )};
+    my $sql = qq{INSERT IGNORE INTO `$db`.`da__parms` ( $fieldlist ) VALUES( $field_placeholders )};
+    #my $sql = qq{REPLACE INTO `da`.`daParms` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     if ($sth->execute($row[0],$row[1],$row[2],$row[3],$row[4],$row[5],$row[6],$row[7],$row[8],$row[9],$row[10],$row[11],$row[12]))
     {
-        $resultID = $sth->{mysql_insertid};
+        $ParmsID = $sth->{mysql_insertid};
     } else {
         #or die
         print "Can't execute SQL statement: ", $sth->errstr(), "\n";
         print "NOT ok - insert\n";
     }
-    return (\$sth,$resultID);
+    return (\$sth,$ParmsID);
 }
 
 #-----------------------------------------------------------------------------
 =pod
 
-=head2 DBIresultUpdate()
+=head2 DBIparmsUpdate()
 
   Stage    : 2
 
-  Purpose  : Update a single line in resultparms.
+  Purpose  : Update a single line in da__parms.
   Returns  : True/False (ok/fail)
   Argument : $_[0] - (data) ref to list of data
                 0=>hits, (value)
                 1=>checked, (value)
-                2=>resultID, (where)
+                2=>ParmsID, (where)
                 3=>siteID, (where)
   Throws   : Die - on SQL error in preperation, not execution
   Comment  : MySQL
@@ -2107,19 +2238,19 @@ sub DBIresultParms2DB {
            : if pages=0, then skip=true (no data found, don't waste time on next normal run).
            : Sometimes not all data can be harvested on a single page,  (pages are then => 2)
 
- See Also  : DBIresultParms2DB()
+ See Also  : DBIdaParms2DB()
 
 =cut
 
 #-----------------------------------------------------------------------------
-sub DBIresultUpdate {
-    #0=>hits, 1=>checked, (skip), 2=>resultID, 3=>siteID
+sub DBIparmsUpdate {
+    #0=>hits, 1=>checked, (skip), 2=>ParmsID, 3=>siteID
     my @data = @{ $_[0] };
     my $rtn;
     our $dbh = &Connect2DB() if not($Connected);
     my $skip = ($data[0]>0) ? 0 : 1; #hits >0 -> false else true
-    my $sql =qq{Update `$db`.`resultparms` SET `hits`=?, `checked`=?, `skip`=?, `runID`=? WHERE `resultID`=? AND `siteID`=? };
-    #my $sql =qq{Update `da`.`resultparms` SET `hits`=?, `checked`=?, `skip`=?, `runID`=? WHERE `resultID`=? AND `siteID`=? };
+    my $sql =qq{Update `$db`.`da__parms` SET `hits`=?, `checked`=?, `skip`=?, `runID`=? WHERE `parmsID`=? AND `siteID`=? };
+    #my $sql =qq{Update `da`.`da__parms` SET `hits`=?, `checked`=?, `skip`=?, `runID`=? WHERE `parmsID`=? AND `siteID`=? };
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     if ($sth->execute($data[0],$data[1],$skip,$runID,$data[2],$data[3]))
@@ -2142,18 +2273,18 @@ sub DBIresultUpdate {
 #-----------------------------------------------------------------------------
 =pod
 
-=head2 DBIresultList2DB()
+=head2 DBIlist2DB()
 
   Stage    : 3
 
   Purpose  : Save array of arrays (resultlist) to the database
   Returns  : ref to statement handler & Last ID insterted C<\$sth,$resultListID>
   Argument :  $_[0] - (data) ref to array (list)
-           : Columns: `resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`
+           : Columns: `parmsID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `runID`
   Throws   : Die - on SQL error
   Comment  : MySQL
            : Digital Archives of Norway "Finn kilde" (Find source) has listing
-           : (resultList) that is saved to database.
+           : (da__list) that is saved to database.
            : Data from scraping is an array of arrays.
 
  See Also   :
@@ -2161,17 +2292,17 @@ sub DBIresultUpdate {
 =cut
 
 #-----------------------------------------------------------------------------
-sub DBIresultList2DB {
+sub DBIlist2DB {
     my @data = @{ $_[0] };
     our $dbh = &Connect2DB() if not($Connected);
     #our $resultListID;
-                   # $resultID, $siteID, $page, $title, $isSubList, $search, $read, $browse, $print);
-    my @fields = (qw(`resultID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `DA-ID` `category` `lt` `runID` ));
+                   # $ParmsID, $siteID, $page, $title, $isSubList, $search, $read, $browse, $print);
+    my @fields = (qw(`parmsID` `siteID` `page` `title` `isSubList` `search` `read` `browse` `print` `daID` `category` `lt` `runID` ));
     my $fieldlist = join ", ", @fields;
     #my $field_placeholders = join ", ", map { '?' } @fields;
     my $field_placeholders = join ', ', ('?') x @fields;
-    my $sql =qq{INSERT IGNORE INTO `$db`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
-    #my $sql =qq{REPLACE INTO `da`.`resultList` ( $fieldlist ) VALUES( $field_placeholders )};
+    my $sql =qq{INSERT IGNORE INTO `$db`.`da__list` ( $fieldlist ) VALUES( $field_placeholders )};
+    #my $sql =qq{REPLACE INTO `da`.`da__list` ( $fieldlist ) VALUES( $field_placeholders )};
     our $sth = $dbh->prepare($sql)
       or die "Can't prepare SQL statement: ", $dbh->errstr(), "\n";
     if ($sth->execute($data[0],$data[1],$data[2],$data[3],$data[4],$data[5],$data[6],$data[7],$data[8],$data[9],$data[10],$data[11],$runID))
@@ -2191,6 +2322,8 @@ sub DBIresultList2DB {
 #-----------------------------------------------------------------------------
 #                            S T A G E  4
 #-----------------------------------------------------------------------------
+
+
 
 #-----------------------------------------------------------------------------
 #                            S T A G E  5
@@ -2239,12 +2372,12 @@ sub parseURI{
         $file = 1;
     } elsif ( $#str == 2 ) {
         $daID=$_;
-        $uri="http://digitalarkivet.arkivverket.no/kilde/$daID";
+        $uri="$baseURL/kilde/$daID";
         $lt = pop   @str;
         $cat= shift @str;
     } else {
         $daID=$_;
-        $uri="http://digitalarkivet.arkivverket.no/kilde/$daID";
+        $uri="$baseURL/kilde/$daID";
     }
     return ($base, $uri, $daID, $cat, $lt, $file);
 }
