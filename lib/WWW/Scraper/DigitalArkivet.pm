@@ -20,7 +20,7 @@ BEGIN {
                     'Stage1'  => [qw/&processFormInput &DBIForm2DB/],
                     'Stage2'  => [qw/&buildParamList &processParamList &getRunID &doDBIrunStart &doDBIrunStat/],
                     'Stage5'  => [qw/&parseURI/],
-                    'Recent'  => [qw/&getTxtTypeSpan &getTxtGeoPlace &getTxtYearPlace &getTxtSpan &DBIloadFile/]
+                    'Recent'  => [qw/&getTxtTypeSpan &getTxtGeoPlace &getTxtYearPlace &getTxtSpan &DBIloadFile &parseURI/]
                     );
  }
 
