@@ -8,22 +8,19 @@ BEGIN {
     use vars qw/$VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS/;
     $VERSION = sprintf "%d.%03d", q$Revision: 0.6 $ =~ /(\d+)/g;
     @ISA         = qw/Exporter/;
-    @EXPORT      = qw//;
-    @EXPORT_OK   = qw/&processFormInput &buildCSVparamList  &processParamList &labelFor
-       &lastPage &getTxtGeoPlace &getTxtSpann &getTxtTypeSpan &s2hms &padZero &Connect2DB &Disconnect2DB &DBIresetDA
-       &getRunID &DBIForm2DB &daParms &isNew &daGeography &daGeography2 &daSource
-       &daListType &daTheme daFormat &daOrgan &DBIloadCSVdaParms &DBIloadFile
-       &DBIdaParms2DB &DBIparmsUpdate &DBIlist2DB &doDBIfillSCD
-       &doDBIrunStart &doDBIrunStat &parseURI/;
-    %EXPORT_TAGS = (ALL => [qw/&processFormInput &buildCSVparamList  &processParamList &labelFor
-       &lastPage &getTxtGeoPlace &getTxtSpann &getTxtTypeSpan &s2hms &padZero &isNew &Connect2DB &Disconnect2DB &DBIresetDA
-       &getRunID &DBIForm2DB &daParms &daGeography &daGeography2 &daSource
-       &daListType &daTheme daFormat &daOrgan &DBIloadCSVdaParms &DBIloadFile
-       &DBIdaParms2DB &DBIparmsUpdate &DBIlist2DB &doDBIfillSCD
-       &doDBIrunStart doDBIrunStat &parseURI/],
-                    Stage1  => [qw/&processFormInput &DBIForm2DB/],
-                    Stage2  => [qw/&buildParamList  &processParamList &getRunID &doDBIrunStart &doDBIrunStat/],
-                    Stage5  => [qw/&parseURI/]
+    @EXPORT      = qw/%cfg/;
+    @EXPORT_OK   = qw/&processFormInput &buildCSVparamList  &processParamList
+      &labelFor &lastPage &getTxtTypeSpan &getTxtGeoPlace &getTxtYearPlace
+      &getTxtSpan &s2hms &padZero &Connect2DB &Disconnect2DB &DBIresetDA
+      &getRunID &DBIForm2DB &daParms &isNew &daGeography &daGeography2 &daSource
+      &daListType &daTheme daFormat &daOrgan &DBIloadCSVdaParms &DBIloadFile
+      &DBIdaParms2DB &DBIparmsUpdate &DBIlist2DB &doDBIfillSCD &doDBIrunStart
+      &doDBIrunStat &parseURI/;
+    %EXPORT_TAGS = ('All' => \@EXPORT_OK,
+                    'Stage1'  => [qw/&processFormInput &DBIForm2DB/],
+                    'Stage2'  => [qw/&buildParamList &processParamList &getRunID &doDBIrunStart &doDBIrunStat/],
+                    'Stage5'  => [qw/&parseURI/],
+                    'Recent'  => [qw/&getTxtTypeSpan &getTxtGeoPlace &getTxtYearPlace &getTxtSpan &DBIloadFile/]
                     );
  }
 
@@ -37,7 +34,7 @@ B<WWW::Scraper::DigitalArkivet> - Routines for scraping Digitalarkivet
 
 =head1 VERSION
 
- 0.08 - 09.05.2016 - redesigned table structures and naming constructors
+ 0.08 - 09.05.2016 - Redesigned table structures and naming constructors
  0.07 - 05.04.2016 - Tweeked buildCSVsrc, documentation
  0.06 - 26.09.2015 - Module - Second stage complete ex.log4perl, (Fifth Stage completed)
  0.05 - 31.07.2015 - Module - First stage complete
@@ -460,7 +457,7 @@ sub _defineScraper {
   Purpose  : Find text (geoID, placeID) in string
   Returns  : (geoID)   - <string> - DA's area ID
            : (placeID) - <number> - 4 digit "kommunenr"
-           : (txt)     - <string> - to year in span
+           : (txt)     - <string> - text
   Argument : $_[0] (txt) <string>
            : $_[1] (shorten) <boolean> (undef == false)
 
@@ -497,7 +494,7 @@ sub getTxtGeoPlace {
   Purpose  : Find text (span) in string
   Returns  : (from) - <year>   - from year in span
            : (to)   - <year>   - to year in span
-           : (txt)  - <string> - to year in span
+           : (txt)  - <string> - text
   Argument : $_[0] (txt) <string>
            : $_[1] (shorten) <boolean> (undef == false)
 
@@ -510,14 +507,18 @@ sub getTxtGeoPlace {
 =cut
 
 #-----------------------------------------------------------------------------
-sub gtTxtSpann {
+sub getTxtSpan {
     $txt = shift;
     $shorten = shift;
-    if ($txt=~ m/\(\w+ (\d+).(\d*)\)/){
+    $_ = $txt;
+    if (/\(\w+ (\d+).(\d*)\)/){
         $txt = substr($txt,0,$-[0]) if ($shorten); # removes (pre)match from $txt
         return ($1,$2,$txt);
+    } elsif (/(\d{4})/) {
+        $txt = substr($txt,0,$-[0]) if ($shorten); # removes (pre)match from $txt
+        return ($1,$1,$txt);
     } else {
-            return (undef,undef,$txt);
+        return (undef,undef,$txt);
     };
 }
 
@@ -530,7 +531,7 @@ sub gtTxtSpann {
   Returns  : (type) - <string> - source type
            : (from) - <year>   - from year in span
            : (to)   - <year>   - to year in span
-           : (txt)  - <string> - to year in span
+           : (txt)  - <string> - text
   Argument : $_[0] (txt) <string>
            : $_[1] (shorten) <boolean> (undef == false)
 
@@ -552,6 +553,64 @@ sub getTxtTypeSpan {
     } else {
             return (undef,undef,undef,$txt);
     };
+}
+
+#-----------------------------------------------------------------------------
+=pod
+
+=head2 getTxtYearPlace()
+
+  Purpose  : Find text (span/year, placeID, place) in string
+  Returns  : (from) - <year>   - from year in span
+           : (to)   - <year>   - to year in span
+           : (placeID) - <string> - PlaceID
+           : (place)   - <string> - Placename
+           : (txt)     - <string> - text
+  Argument : $_[0] (txt) <string>
+           : $_[1] (shorten) <boolean> (undef == false)
+  Throws   : -
+  Comment  : Uses regexp to match some patterns returns those as list
+           : if shorten true (or not undef) prematch is removed from string
+
+ See Also  :
+
+=cut
+
+#-----------------------------------------------------------------------------
+sub getTxtYearPlace {
+    $_       = shift;
+    $shorten = shift;
+    my $year1   = undef;
+    my $year2   = undef;
+    my $placeID = undef;
+    my $place   = undef;
+    my $txt     = undef;
+    if (m/(\d{4})* for (\d{4})\w* (\D+) (prestegjeld|kommune|ladested|landsogn|kj.pstad|herred|sorenskriver|fogderi|menighet|Baptistmenighet)/g){
+        $year1 = $1;
+        $year2 = $1;
+        $placeID = $2;
+        $place   = $3;
+    } elsif (m/ for (\d{4})\w* (\D+) (prestegjeld|kommune|ladested|landsogn|kj.pstad|herred|sorenskriver|fogderi|menighet|Baptistmenighet)/g){
+        $placeID = $1;
+        $place   = $2;
+    } elsif (m/ for\s*(\d{4})\w* (\D+) prestegjeld \D+ (sokn|sogn)/){
+        $placeID = $1;
+        $place   = $2;
+    } elsif (m/ for (\D+) (prestegjeld|kommune|ladested|landsogn|kj.pstad|herred|sorenskriver|fogderi|menighet)/g){
+        $place   = $1;
+    } elsif (m/ (Norske|Norge|Norges|Noreg|Noregs) /gi){
+        $place = 'Norge';
+    }
+    if ((!defined $year1) && (/(\d+).(\d*)$/)){
+        $year1 = $1;
+        $year2 = $2;
+    } elsif ((!defined $year1) && (/(\d{4})$/)) {
+        $year1 = $1;
+        $year2 = $1;
+    }
+    $txt=$_ unless ($shorten);
+    $txt = substr($_,0,$-[0]) if ($shorten); # removes (pre)match
+    return  ($year1,$year2,$placeID,$place,$txt);
 }
 
 #-----------------------------------------------------------------------------
