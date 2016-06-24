@@ -17,10 +17,12 @@ BEGIN {
       &DBIdaParms2DB &DBIparmsUpdate &DBIlist2DB &doDBIfillSCD &doDBIrunStart
       &doDBIrunStat &parseURI/;
     %EXPORT_TAGS = ('All' => \@EXPORT_OK,
-                    'Stage1'  => [qw/&processFormInput &DBIForm2DB/],
-                    'Stage2'  => [qw/&buildParamList &processParamList &getRunID &doDBIrunStart &doDBIrunStat/],
-                    'Stage5'  => [qw/&parseURI/],
-                    'Recent'  => [qw/&getTxtTypeSpan &getTxtGeoPlace &getTxtYearPlace &getTxtSpan &DBIloadFile &parseURI/]
+                    'Stage1' => [qw/&processFormInput &DBIForm2DB/],
+                    'Stage2' => [qw/&buildParamList &processParamList &getRunID &doDBIrunStart &doDBIrunStat/],
+                    'Stage5' => [qw/&parseURI/],
+                    'Recent' => [qw/&getTxtTypeSpan &getTxtGeoPlace &getTxtYearPlace &getTxtSpan &DBIloadFile &parseURI/],
+                    'FindSource' => [qw/&buildCSVparamList &processParamList &isNew &getRunID &doDBIrunStart &doDBIrunStat &DBIloadCSVdaParms &s2hms/],
+                    'Fix' => [qw/%cfg &parseURI/]
                     );
  }
 
